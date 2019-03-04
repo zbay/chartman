@@ -1,0 +1,1 @@
+drop function if exists public.fn_add_user(json);

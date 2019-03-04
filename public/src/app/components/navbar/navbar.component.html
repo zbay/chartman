@@ -1,0 +1,22 @@
+<nav id="headerNav"
+  [attr.fxLayout]="orientation === Orientation.HORIZONTAL ? 'row wrap' : null"
+  [attr.fxLayoutAlign]="orientation === Orientation.HORIZONTAL ? 'end' : null"
+  [class.horizMenu]="orientation === Orientation.HORIZONTAL">
+  <app-nav-button link="/about" textContent="About">
+  </app-nav-button>
+  <app-nav-button link="/login" textContent="Login" 
+    [requireLoggedOut]="true" equivalentLink="/">
+  </app-nav-button>
+  <app-nav-button link="/charting/stocks" textContent="Stocks" 
+    equivalentLink="/charting" [requireLoggedIn]="true">
+  </app-nav-button>
+  <app-nav-button link="/charting/currencies" textContent="Currencies" 
+    [requireLoggedIn]="true">
+  </app-nav-button>
+  <app-nav-button link="/account/manage" textContent="My Account" 
+    equivalentLink="/account" [requireLoggedIn]="true">
+  </app-nav-button>
+  <app-nav-button link="/logout" textContent="Log Out" 
+    [requireLoggedIn]="true">
+  </app-nav-button>
+</nav>

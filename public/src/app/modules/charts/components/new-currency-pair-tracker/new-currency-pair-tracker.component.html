@@ -1,0 +1,59 @@
+<mat-card 
+  class="background-box near-max-width mat-elevation-z4 padded">
+  <h2>Save a currency pair</h2>
+    <div fxLayout="column"
+        fxLayoutAlign="space-around center">
+        <label class="radio-label">Search by: </label>
+        <br />
+        <div [formGroup]="searchFilterGroup">
+            <mat-radio-group formControlName="searchFilter"
+              fxLayout="row wrap" fxLayoutAlign="space-between center">
+              <mat-radio-button value="Fiat,Crypto">
+                All currencies
+              </mat-radio-button>
+              <mat-radio-button value="Fiat">
+                Fiat only
+              </mat-radio-button>
+              <mat-radio-button value="Crypto">
+                Crypto only
+              </mat-radio-button>
+            </mat-radio-group>
+        </div>
+            <mat-form-field style="width:90%;" [formGroup]="currencyGroup1">
+              <input type="text" 
+                #searchBox1
+                placeholder="Currency 1" 
+                matInput 
+                formControlName="userInput" 
+                [matAutocomplete]="auto1">
+              <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayFn"
+                panelWidth="{{ searchBox1.style.width }}">
+                <mat-option *ngFor="let currency of (filteredCurrencies1$ | async)" [value]="currency"
+                  (click)="setNewCurrency(currency, 0)">
+                  <span>{{ currency.name }}</span>
+                  <small> | {{currency.code}}</small>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+      <mat-form-field [formGroup]="currencyGroup2" style="width:90%;">
+        <input type="text" 
+          #searchBox2
+          placeholder="Currency 2" 
+          matInput 
+          formControlName="userInput" 
+          [matAutocomplete]="auto2">
+        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn"
+          panelWidth="{{ searchBox2.style.width }}">
+          <mat-option *ngFor="let currency of (filteredCurrencies2$ | async)" [value]="currency"
+            (click)="setNewCurrency(currency, 1)">
+            <span>{{ currency.name }}</span>
+            <small> | {{currency.code}}</small>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    <button mat-button (click)="saveNewCurrencyPair()" 
+        [disabled]="currencyGroup1.invalid || currencyGroup2.invalid || !newCurrencyPair.from || !newCurrencyPair.to" style="display:inline">
+      <mat-icon>add_circle</mat-icon>
+  </button>
+  </div>
+</mat-card>

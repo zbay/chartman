@@ -1,0 +1,15 @@
+<!-- TODO: 
+add currency pair charting, use ngx chart library
+use a message queue to regulate flow of AlphaVantage API calls
+add chart drilldown/zoom -->
+<div class="wrapper chartman-theme" fxLayout="column">
+  <app-header></app-header>
+  <main id="mainContent" (click)="closeNavBar()">
+    <router-outlet></router-outlet>
+  </main>
+  <footer class="bookend" fxLayout="column" fxLayoutAlign="center center" fxFlex="1">
+    <div fxFlexAlign="start"></div>
+    <h2>&copy; 2019 - Zbay Industries</h2>
+    <div fxFlexAlign="end"></div>
+  </footer>
+</div>

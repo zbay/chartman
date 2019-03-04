@@ -1,0 +1,15 @@
+<header class="jumbotron bookend mat-elevation-z10" fxLayout="column">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+      <h1>&cent;hartman</h1>
+      <div fxLayoutAlign="center center" fxHide.gt-md class="dropdownToggle">
+        <button mat-icon-button 
+            class="menu-button"
+            (click)="toggleDropdownNav()">
+          <mat-icon *ngIf="!dropdownNavActivated">dehaze</mat-icon>
+          <mat-icon *ngIf="dropdownNavActivated">close</mat-icon>
+        </button>
+      </div>
+      <app-navbar [orientation]="Orientation.HORIZONTAL" fxHide.lt-lg></app-navbar>
+  </div>
+  <app-navbar [orientation]="Orientation.VERTICAL" fxHide.gt-md [@slideUpDown]="dropdownNavActivated"></app-navbar>
+</header>

@@ -1,0 +1,11 @@
+<a [routerLink]="link" (click)="closeNavBar()" [@fadeInOutExpandContract]
+*ngIf="(requireLoggedIn && (loggedIn$ | async)) 
+  || (requireLoggedOut && !(loggedIn$ | async)) 
+  || (!requireLoggedIn && !requireLoggedOut)">
+  <button mat-button
+      [class.current]="(currentUrl$ | async) === link 
+        || (equivalentLink && ((currentUrl$ | async) === equivalentLink))">
+    {{textContent}}
+  </button>
+</a>
+   

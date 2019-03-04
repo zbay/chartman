@@ -1,0 +1,1 @@
+drop function if exists public.fn_request_password_change(text, text);

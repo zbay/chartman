@@ -1,0 +1,1 @@
+drop function public.fn_update_user(jsonb, int4);

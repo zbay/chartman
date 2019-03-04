@@ -1,0 +1,23 @@
+@import '../node_modules/@angular/material/theming';
+
+@include mat-core();
+
+$cm-primary: mat-palette($mat-grey, 50, 300, 600);
+$cm-accent: mat-palette($mat-green, 500, 600, 700);
+$cm-warn: mat-palette($mat-yellow);
+
+.chartman-theme {
+
+  $chartman-theme: mat-dark-theme($cm-primary, $cm-accent, $cm-warn);
+
+  @include angular-material-theme($chartman-theme);
+}
+
+$accent-dark: mat-color($cm-accent, 900);
+$accent-light: mat-color($cm-accent, A400);
+$warn: mat-color($cm-warn);
+$fancy-font-family: 'Russo One', sans-serif;
+$bookend-background: url('./assets/images/footer_lodyas.png');
+$bookend-background-color: #404040;
+$bookend-background-color-light: #606060;
+$body-background: url('./assets/images/paper_1.png');

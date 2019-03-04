@@ -1,0 +1,1 @@
+drop table if exists public.password_change_requests;

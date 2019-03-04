@@ -1,0 +1,1 @@
+drop function if exists fn_retrieve_user_for_login(text);

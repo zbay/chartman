@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.fn_get_currency_pair(int, int);

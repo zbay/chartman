@@ -1,0 +1,1 @@
+drop function if exists public.fn_add_stock_tracker(int4, int4);

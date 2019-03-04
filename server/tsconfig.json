@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es6",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@accounts/*": [
+        "modules/accounts/*"
+      ],
+      "@common/*": [
+        "common/*"
+      ],
+      "@currencies/*": [
+        "modules/currencies/*"
+      ],
+      "@shared/*": [
+        "modules/shared/*"
+      ],
+      "@stocks/*": [
+        "modules/stocks/*"
+      ],
+      "@errors/*": [
+        "modules/errors/*"
+      ],
+      "@technicals/*": [
+        "modules/technicals/*"
+      ]
+    }
+  },
+  "exclude": ["node_modules"]
+}

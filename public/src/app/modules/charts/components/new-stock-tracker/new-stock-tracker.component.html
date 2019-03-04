@@ -1,0 +1,28 @@
+<mat-card 
+  class="background-box near-max-width mat-elevation-z4 padded" 
+  [formGroup]="stockGroup">
+  <h2>Save a stock</h2>
+    <div fxLayout.gt-sm="row"
+         fxLayout.lt-md="column"
+        fxLayoutAlign="space-around center">
+      <mat-form-field style="width:90%;">
+        <input type="text" 
+          #searchBox
+          placeholder="Stock" 
+          matInput 
+          formControlName="userInput" 
+          [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+          panelWidth="{{ searchBox.style.width }}">
+          <mat-option *ngFor="let stock of (filteredStocks$ | async)" [value]="stock"
+            (click)="setNewStock(stock)">
+            <span>{{ stock.name }}</span>
+            <small> | {{stock.symbol}}</small>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <button mat-button (click)="addStock()" [disabled]="stockGroup.invalid || !newStock" style="display:inline">
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </div>
+</mat-card>

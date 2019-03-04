@@ -1,0 +1,15 @@
+#headerNav {
+    padding-bottom: 5px;
+    a { 
+        display: block;
+    }
+}
+
+#headerNav.horizMenu {
+    padding-left: 10px;
+    padding-bottom: 0;
+
+    a {
+        display: inline-block;
+    }
+}  

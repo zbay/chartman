@@ -1,0 +1,41 @@
+@import "../chartman-theme";
+
+.wrapper {
+  min-height:100vh;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.bookend {
+  background-image: $bookend-background;
+  color:$accent-light;
+  font-family: $fancy-font-family;
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: normal !important;
+  }
+}
+
+.jumbotron {
+  color: white;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  h1 {
+    text-align: left;
+    color: $accent-light;
+    font-size: 2em;
+    min-width:20%;
+    max-width:75%;
+  }
+}
+
+footer {
+  width: 100%;
+  padding: 15px;
+  color: $accent-light;
+  margin-top: 1em;
+}

@@ -1,0 +1,116 @@
+#technical-chart {
+    * {
+      font-family: Roboto, "Helvetica Neue", sans-serif;
+    }
+
+    #display, #legend {
+        max-width: 99%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    svg.viz {
+      background-image: url("../../../../../assets/images/footer_lodyas.png") !important;
+      display:block;
+      margin: auto;
+      width:98%;
+      padding: 1em 0;
+    }
+    
+    .tooltip{
+      position:absolute;
+      color:white;
+      background-color:grey;
+      width:120px;
+      padding:10px;
+      border:3px solid white;
+      border-radius:3px;
+      font-weight:bold;
+      opacity:0;
+    }
+    .alarm{
+      animation-name: alarm;
+      animation-duration: 0.5s;
+      animation-iteration-count: infinite;
+      -webkit-animation-name: alarm;
+      -webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
+      -webkit-animation-iteration-count: infinite;
+    }
+    @-webkit-keyframes alarm {
+      0%   {opacity:1;}
+      25%  {opacity:0.6;}
+      50%  {opacity:0.1;}
+      75%  {opacity:0.6;}
+      100% {opacity:1;}
+    }
+    @keyframes alarm {
+      0%   {opacity:1;}
+      25%  {opacity:0.6;}
+      50%  {opacity:0.1;}
+      75%  {opacity:0.6;}
+      100% {opacity:1;}
+    }
+    
+    .axis line{
+      stroke: white;
+    }
+    
+    .axis path{
+      stroke: white;
+    }
+    
+    .axis text{
+      fill: white;
+    }
+    
+    #date{
+      text-decoration:underline;
+    }
+    
+    .entry{
+      margin-left:10px;
+      margin-top:10px;
+      font-weight:bold;
+    }
+    #legend #legend-wrap{
+      display: flex;
+      justify-content: space-around;
+      flex-wrap:wrap;
+      margin:0 auto;
+      background-image: url("../../../../../assets/images/footer_lodyas.png");
+      width:98%;
+      height:10%;
+    }
+    #chart-header{
+      text-align:center;
+      padding: 1em 0;
+      margin-top: 1em;
+    }
+    h2{
+      font-family:'Russo One', sans-serif;
+    }
+    select{
+      margin-bottom:5px;
+    }
+    .orange{
+      color:orange;
+    }
+    .blue{
+      color:#8080ff;
+    }
+    .white{
+      color:white;
+    }
+    .gold{
+      color:gold;
+    }
+    .cyan{
+      color:cyan;
+    }
+    .green{
+      color:lightgreen;
+    }
+    .red{
+      color:lightcoral;
+    }  
+  }

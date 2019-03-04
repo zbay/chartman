@@ -1,0 +1,95 @@
+@import './chartman-theme.scss';
+@import 'stylesheets/material-modifications';
+@import 'stylesheets/bookends';
+
+body {
+  margin: 0;
+  text-align: center;
+  color: $accent-light;
+  font-size: 16px;
+  background-image: $body-background;
+}
+
+.near-max-width {
+  max-width: 90% !important;
+}
+
+a{
+  font-weight:bold;
+}
+
+.success{
+  color:$accent-dark;
+}
+.error{
+  color:$warn !important;
+}
+
+.fancy-font{
+  font-family: $fancy-font-family;
+  font-weight: normal !important;
+}
+
+.big-icon {
+  font-size: 50px;
+  height: 50px !important;
+  width: 50px !important;
+}
+
+.block {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#legend-wrap {
+  border: 3px solid $accent-light;
+  border-radius: 3px 3px 0 0;
+  border-bottom: 0;
+}
+
+@media only screen and (min-width: 601px) {
+  .seventy-wide {
+      width: 70%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .ninety-thin {
+      width: 90% !important;
+  }
+}
+
+.padded {
+    padding-right: 5%;
+    padding-left: 5%;
+}
+
+.margin-left {
+  margin-left: 10px;
+}
+
+.tracker-list {
+  table {
+    width: 100%;
+  }
+  tr {
+    border: 1px solid white;
+    border-collapse: collapse;
+    min-height: 1.5em !important;
+  }
+  th, td {
+    text-align: center;
+  }
+  
+  mat-progress-spinner {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+svg.viz {
+  border: 3px solid $accent-light !important;
+  border-top: 0 !important;
+  border-radius: 0 0 3px 3px !important;
+}

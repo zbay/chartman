@@ -1,0 +1,38 @@
+<div id="technical-chart" [@fadeInOut]>
+  <mat-card class="background-box near-max-width mat-elevation-z4" id="chart-header">
+    <h2 style="font-weight:normal">{{fullLabel ? fullLabel : 'Loading...'}} {{abbreviatedLabel ? '(' + abbreviatedLabel + ')' : '' }}</h2>
+    <div>
+      <mat-chip-list fxLayout="row" fxLayoutAlign="center center">
+        <mat-chip (click)="this.displayChart(TechnicalsChartType.MACD)"
+              [disabled]="isLoading"
+              [class.selected-chip]="chartType===TechnicalsChartType.MACD">
+          MACD
+        </mat-chip>
+        <mat-chip (click)="this.displayChart(TechnicalsChartType.OSCILLATORS)"
+          [disabled]="isLoading"
+          [class.selected-chip]="chartType===TechnicalsChartType.OSCILLATORS">
+          Oscillators
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <br />
+    <app-progress-spinner *ngIf="isLoading"></app-progress-spinner>
+  </mat-card>
+  <div id="legend" *ngIf="!isLoading">
+    <div *ngIf="chartType === TechnicalsChartType.MACD" id="legend-wrap">
+      <div class="entry orange">Orange: Slow Moving Average</div>
+      <div class="entry blue">Blue: Fast Moving Average</div>
+      <div class="entry white">White: Bollinger Bands</div>
+      <div class="entry gold">Gold: Relative Volume</div>
+    </div>
+    <div *ngIf="chartType === TechnicalsChartType.OSCILLATORS" id="legend-wrap">
+      <div class="entry blue">Blue: %K</div>
+      <div class="entry orange">Orange: %D</div>
+      <div class="entry cyan">Cyan: RSI</div>
+      <div class="entry green">Green: Overbought?</div>
+      <div class="entry red">Red: Oversold?</div>
+      <div class="entry white">White: Relative Price</div>
+    </div>
+  </div>
+  <div id="display"></div>
+</div>

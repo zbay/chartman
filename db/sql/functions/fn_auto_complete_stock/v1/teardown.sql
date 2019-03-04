@@ -1,0 +1,1 @@
+DROP function if exists public.fn_auto_complete_stock(text);

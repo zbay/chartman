@@ -1,0 +1,1 @@
+drop function if exists fn_reset_user_strikes(text);
