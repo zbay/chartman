@@ -1,6 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 
-// user is zbay-cli
+// There needs to be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables
 import * as AWS from 'aws-sdk';
 AWS.config.update({region: 'us-east-1'});
 

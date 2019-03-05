@@ -29,12 +29,12 @@ export class LoginService {
             .catch((err: Error) => {
                 throw new CustomException({
                     name: `Login Failure`,
-                    message:  `Could not login. Please try again later.`,
+                    message: `Could not login. Please try again later.`,
                     stack: err.stack
                 },
                 HttpStatus.INTERNAL_SERVER_ERROR);
             });
-        if (!user) {
+        if (!user || !user.password) {
             throw new CustomException({name: `Invalid Credentials`
             , message: `Invalid Credentials`}
             , HttpStatus.FORBIDDEN);

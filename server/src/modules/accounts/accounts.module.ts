@@ -26,7 +26,6 @@ export class AccountsModule {
         consumer
           .apply(hasJWT)
           .exclude(
-            { path: 'accounts/user/password/:routeID', method: RequestMethod.PATCH },
             { path: 'accounts/user', method: RequestMethod.POST }
           )
           .forRoutes(UserController);

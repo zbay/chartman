@@ -4,16 +4,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
+import * as helmet from 'helmet';
+
 import { join, resolve } from 'path';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-
+  const ENV = AppModule.env;
   const app = await NestFactory.create(AppModule
     // , { cors: true
     , { cors: {
-        origin: AppModule.env !== `prod` ? `*` : `${AppModule.host}:${AppModule.port}`,
+        origin: ENV !== `prod` ? `*` : `${AppModule.host}:${AppModule.port}`,
         preflightContinue: false
       }
     }
@@ -23,6 +25,11 @@ async function bootstrap() {
 
   const morgan = require(`morgan`);
   app.use(morgan(`combined`));
+
+  if (ENV !== `dev`) {
+    app.use(helmet()); // TODO: customize options
+  }
+
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
   app.useStaticAssets(join(__dirname, '../../', 'public/dist'));
@@ -58,7 +65,7 @@ async function bootstrap() {
   const FRONTEND_REGEX = /\/((?!(api|swagger)\/)[^}]+)/;
 
   app.use(FRONTEND_REGEX, (req, res) => {
-    if (AppModule.env === `dev`) {
+    if (ENV === `dev`) {
       return res.sendFile(resolve(`../public/dist/index.html`));
     } else {
       return res.status(HttpStatus.NOT_FOUND);

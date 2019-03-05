@@ -1,4 +1,4 @@
-# chartman2
+# chartman
 
 Chart stock and currency values
 

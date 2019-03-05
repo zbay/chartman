@@ -23,7 +23,7 @@ export class AccountService {
   }
 
   changePassword (creds: PasswordChangeCredentials): Observable<any> {
-    return this.http.patch(`${accountsUrl}/user/password/${creds.routeID}`, creds.user);
+    return this.http.post(`${accountsUrl}/reset-password/change-password/${creds.routeID}`, creds.user);
   }
 
   checkValidPasswordChangeRequest (routeID: string): Observable<any> {

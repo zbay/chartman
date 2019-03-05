@@ -3,7 +3,6 @@ import { Controller, Post, Patch, Body, HttpStatus, HttpCode, Req, Get, Param } 
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
 import { UserService } from '@accounts/services/user/user.service';
 import { User } from '@accounts/interfaces/user';
-import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
 
 @Controller('accounts/user')
 export class UserController {
@@ -21,12 +20,6 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     async editUser(@Body() editedUser: NewUserDTO, @Req() req): Promise<boolean> {
         return this.userService.editUser(editedUser, req.payload.sub);
-    }
-
-    @Patch('password/:passwordChangeID')
-    @HttpCode(HttpStatus.NO_CONTENT)
-    changePassword(@Body() changePasswordDto: ChangePasswordUserDTO, @Param('passwordChangeID') passwordChangeID: string): Promise<void> {
-        return this.userService.changePassword(passwordChangeID, changePasswordDto);
     }
 
     @Post()
