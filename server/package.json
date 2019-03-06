@@ -31,7 +31,6 @@
     "class-validator": "^0.9.1",
     "dotenv": "^6.2.0",
     "express-rate-limit": "^3.4.0",
-    "helmet": "^3.15.1",
     "jsonwebtoken": "^8.5.0",
     "jwt-decode": "^2.2.0",
     "morgan": "^1.9.1",
