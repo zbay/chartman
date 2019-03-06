@@ -148,7 +148,7 @@ async function migrate () {
                 processMigrations();
             }
             catch (e) {
-                console.log(e);
+                console.log(`Database already exists! No starter migration necessary`);
             }
         } else {
             processMigrations();

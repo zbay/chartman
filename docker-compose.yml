@@ -37,8 +37,6 @@ services:
       - db_migrator
     env_file:
       - ./server/.env
-    volumes:
-      - /etc/ssl:/etc/ssl
     # environment:
     #   NODE_ENV: 'example'  
   
