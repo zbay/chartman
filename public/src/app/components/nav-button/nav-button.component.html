@@ -1,4 +1,4 @@
-<a [routerLink]="link" (click)="closeNavBar()" [@fadeInOutExpandContract]
+<a [routerLink]="link" (click)="closeNavBar()"
 *ngIf="(requireLoggedIn && (loggedIn$ | async)) 
   || (requireLoggedOut && !(loggedIn$ | async)) 
   || (!requireLoggedIn && !requireLoggedOut)">

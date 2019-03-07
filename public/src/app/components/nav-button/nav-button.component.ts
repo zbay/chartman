@@ -2,15 +2,13 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { Animations } from '@app/shared/animations/animations';
 import { AuthService } from '@app/services/auth/auth.service';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 
 @Component({
   selector: 'app-nav-button',
   templateUrl: './nav-button.component.html',
-  styleUrls: ['./nav-button.component.scss'],
-  animations: [Animations.fadeInOutExpandContract]
+  styleUrls: ['./nav-button.component.scss']
 })
 export class NavButtonComponent implements OnInit {
 
