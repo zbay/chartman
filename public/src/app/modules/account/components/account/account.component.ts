@@ -48,11 +48,11 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
       .subscribe((response) => {
         // TODO
     },
-    (res) => {
+    (err: Error) => {
       this.errorService.openErrorDialog({
-        message: res.error.message || 'Premium memberships are not yet available!',
-        name: res.error.name,
-        stack: res.error.stack
+        message: err.message || 'Premium memberships are not yet available!',
+        name: err.name,
+        stack: err.stack
       });
     });
   }

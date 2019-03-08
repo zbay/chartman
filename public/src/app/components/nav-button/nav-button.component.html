@@ -1,4 +1,4 @@
-<a [routerLink]="link" (click)="closeNavBar()"
+<a [routerLink]="link" (click)="closeNavBar()" [@fadeInOutExpandContractNavButton]="(navbarHasLoaded$ | async) ? NavbarLoadStatus.SUBSEQUENT : NavbarLoadStatus.INITIAL"
 *ngIf="(requireLoggedIn && (loggedIn$ | async)) 
   || (requireLoggedOut && !(loggedIn$ | async)) 
   || (!requireLoggedIn && !requireLoggedOut)">

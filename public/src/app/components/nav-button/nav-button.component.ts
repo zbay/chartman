@@ -1,19 +1,24 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, DoCheck, ChangeDetectorRef } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
+import { Animations } from '@app/shared/animations/animations';
 import { AuthService } from '@app/services/auth/auth.service';
+import { NavbarLoadStatus } from '@app/enums/navbar-load-status';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 
 @Component({
   selector: 'app-nav-button',
   templateUrl: './nav-button.component.html',
-  styleUrls: ['./nav-button.component.scss']
+  styleUrls: ['./nav-button.component.scss'],
+  animations: [Animations.fadeInOutExpandContractNavButton]
 })
-export class NavButtonComponent implements OnInit {
+export class NavButtonComponent implements OnInit, DoCheck {
 
-  loggedIn$: Observable<boolean>;
-  currentUrl$: Observable<string>;
+  private readonly currentUrl$: Observable<string>;
+  private readonly loggedIn$: Observable<boolean>;
+  private readonly navbarHasLoaded$: BehaviorSubject<boolean>;
+  NavbarLoadStatus: typeof NavbarLoadStatus = NavbarLoadStatus;
 
   @Input() link: string;
   @Input() textContent: string;
@@ -21,13 +26,22 @@ export class NavButtonComponent implements OnInit {
   @Input() requireLoggedOut: boolean;
   @Input() equivalentLink: string;
 
-  constructor(private authService: AuthService,
-      private navigationService: NavigationService) {
+  constructor(private readonly authService: AuthService,
+      private readonly cdRef: ChangeDetectorRef,
+      private readonly navigationService: NavigationService) {
+        this.navbarHasLoaded$ = this.navigationService.navbarHasLoaded$;
+        this.loggedIn$ = this.authService.isLoggedIn$;
+        this.currentUrl$ = this.navigationService.currentUrl$;
+        console.log(this.NavbarLoadStatus);
    }
 
-  ngOnInit() {
-    this.loggedIn$ = this.authService.isLoggedIn$;
-    this.currentUrl$ = this.navigationService.currentUrl$;
+  ngOnInit() {}
+
+  ngDoCheck() {
+    this.navbarHasLoaded$
+    .subscribe(() => {
+      this.cdRef.detectChanges();
+    });
   }
 
   closeNavBar() {

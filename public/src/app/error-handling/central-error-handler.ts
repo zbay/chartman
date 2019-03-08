@@ -6,6 +6,7 @@ import { ErrorService } from '@app/services/error/error.service';
 export class CentralErrorHandler implements ErrorHandler {
   constructor(private errorService: ErrorService) { }
   handleError(error: Error) {
+     console.log(error);
      this.errorService.sendErrorToDB(error);
      throw error;
   }

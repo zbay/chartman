@@ -36,7 +36,6 @@ export class AccountService {
   }
 
   requestPasswordChange (email: string): Observable<any> {
-    console.log(email);
     return this.http.post(`${accountsUrl}/reset-password/request-password-change`, {email: email});
   }
 

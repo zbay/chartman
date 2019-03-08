@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter, map, distinctUntilChanged } from 'rxjs/operators';
+
 import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class NavigationService {
 
   currentUrl$: BehaviorSubject<string> = new BehaviorSubject<string>('/');
+  navbarHasLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   navClosings$: Subject<boolean> = new Subject();
 
   constructor(private router: Router) {

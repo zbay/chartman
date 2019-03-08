@@ -13,7 +13,6 @@ export class ErrorLoggingService {
 
     async logError(errorDTO: LoggedErrorDto): Promise<null> {
         const err: Error = errorDTO.error;
-        // TODO: server-side logging
         return this._pool.query(`SELECT public.fn_log_error($1, $2, $3, $4)`,
                 [errorDTO.userID, errorDTO.url, err.message, err.stack])
             .then(() => {

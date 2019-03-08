@@ -8,11 +8,6 @@ export class ErrorsController {
     constructor(private readonly errorLoggingService: ErrorLoggingService) {
     }
 
-    @Get()
-    errTest() {
-        return `errtest`;
-    }
-
     @Post()
     @HttpCode(HttpStatus.NO_CONTENT) // Errors caused by logging errors will fail silently
     async logError(@Body() error: LoggedErrorDto): Promise<any> {
