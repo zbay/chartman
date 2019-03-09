@@ -15,9 +15,9 @@ import { NavigationService } from '@app/services/navigation/navigation.service';
 })
 export class NavButtonComponent implements OnInit, DoCheck {
 
-  private readonly currentUrl$: Observable<string>;
-  private readonly loggedIn$: Observable<boolean>;
-  private readonly navbarHasLoaded$: BehaviorSubject<boolean>;
+  readonly currentUrl$: Observable<string>;
+  readonly loggedIn$: Observable<boolean>;
+  readonly navbarHasLoaded$: BehaviorSubject<boolean>;
   NavbarLoadStatus: typeof NavbarLoadStatus = NavbarLoadStatus;
 
   @Input() link: string;
@@ -32,7 +32,6 @@ export class NavButtonComponent implements OnInit, DoCheck {
         this.navbarHasLoaded$ = this.navigationService.navbarHasLoaded$;
         this.loggedIn$ = this.authService.isLoggedIn$;
         this.currentUrl$ = this.navigationService.currentUrl$;
-        console.log(this.NavbarLoadStatus);
    }
 
   ngOnInit() {}

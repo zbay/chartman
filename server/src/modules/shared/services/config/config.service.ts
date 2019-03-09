@@ -1,18 +1,32 @@
 import { Injectable } from '@nestjs/common';
 
-import * as dotenv from 'dotenv';
+import * as customEnv from 'custom-env';
 
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
-import { configs } from '@shared/services/config/configs';
 
 @Injectable()
 export class ConfigService {
     private _config: ChartmanAppConfig;
 
     constructor() {
-        dotenv.config();
-        this._config = configs[process.env.NODE_ENV];
-        this._config.jwtSecret = process.env.JWT_SECRET;
+        customEnv.env(process.env.NODE_ENV);
+        const env = process.env;
+        this._config = {
+            alphaVantageApiKey: env.ALPHAVANTAGE_API_KEY,
+            cryptoCompareApiKey: env.CRYPTOCOMPARE_API_KEY,
+            env: env.APP_ENV,
+            host: env.HOST,
+            iexApiKey: env.IEX_API_KEY,
+            jwtSecret: env.JWT_SECRET,
+            port: Number(env.PORT),
+            postgresConfig: {
+                host: env.POSTGRES_HOST,
+                user: env.POSTGRES_USER,
+                password: env.POSTGRES_PASSWORD,
+                port: Number(env.POSTGRES_PORT),
+                database: env.POSTGRES_DATABASE
+            }
+        };
     }
 
     get config(): ChartmanAppConfig {

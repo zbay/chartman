@@ -2,8 +2,8 @@ import { HttpStatus } from '@nestjs/common';
 
 import * as jwt from 'jsonwebtoken';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
+import * as customEnv from 'custom-env';
+customEnv.env(process.env.NODE_ENV);
 
 import { CustomException } from '@common/exceptions/custom.exception';
 

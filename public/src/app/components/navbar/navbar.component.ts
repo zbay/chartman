@@ -11,7 +11,7 @@ import { NavigationService } from '@app/services/navigation/navigation.service';
 export class NavbarComponent implements OnInit, AfterViewInit {
   loggedIn = false;
   currentUrl: string;
-  private readonly Orientation = Orientation;
+  readonly Orientation = Orientation;
 
   @Input() orientation: Orientation;
 

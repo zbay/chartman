@@ -1,5 +1,6 @@
-require('dotenv').config();
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || `dev`;
+require('custom-env').env(env);
+
 const postgresConfig = {
     database: `postgres`,
     host: ((env === 'prod') || (env === 'test')) ? `postgres` : `localhost`,
