@@ -30,8 +30,8 @@ export class LoginComponent extends ExitAnimatingComponent implements OnInit {
     confirmPassword: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
   });
 
-  constructor(private authService: AuthService,
-              private route: ActivatedRoute) {
+  constructor(private readonly authService: AuthService,
+              private readonly route: ActivatedRoute) {
     super();
   }
 

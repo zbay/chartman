@@ -73,7 +73,7 @@ async function runMigration (migration, filename, isReversal) {
             }
 
             const doPath = `${paths[op.type + 's']}/${op.name}/v${op.v}/${op.op}.sql`; 
-            const undoPath = `${paths[op.type + 's']}/v${op.name}/v${op.v}/${oppositeOperations[op.op]}.sql`
+            const undoPath = `${paths[op.type + 's']}/${op.name}/v${op.v}/${oppositeOperations[op.op]}.sql`
 
             if (!errorWasThrown) {
                 console.log(`Running: ${doPath}`);

@@ -5,7 +5,8 @@ export interface ChartmanAppConfig {
     cryptoCompareApiKey: string;
     env: string;
     host: string;
-    iexApiKey: string;
+    iexApiPublicToken: string;
+    iexApiSecretToken: string;
     jwtSecret: string;
     port: number;
     postgresConfig: PostgresConnectionConfig;

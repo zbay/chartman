@@ -1,4 +1,5 @@
 export enum ThirdPartyApi {
     ALPHA_VANTAGE,
-    CRYPTO_COMPARE
+    CRYPTO_COMPARE,
+    IEX
 }

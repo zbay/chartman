@@ -16,7 +16,8 @@ export class ConfigService {
             cryptoCompareApiKey: env.CRYPTOCOMPARE_API_KEY,
             env: env.APP_ENV,
             host: env.HOST,
-            iexApiKey: env.IEX_API_KEY,
+            iexApiPublicToken: env.IEX_PUBLIC_TOKEN,
+            iexApiSecretToken: env.IEX_SECRET_TOKEN,
             jwtSecret: env.JWT_SECRET,
             port: Number(env.PORT),
             postgresConfig: {

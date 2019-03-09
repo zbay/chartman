@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 import { Pool, QueryResult } from 'pg';
 import { map, catchError } from 'rxjs/operators';
 
-import { ALPHAVANTAGE_PREFIX } from '@common/vars/prefixes';
+import { ALPHAVANTAGE_PREFIX, IEX_PROD_PREFIX, IEX_SANDBOX_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
@@ -16,8 +16,12 @@ import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
 
 @Injectable()
 export class StockDataService {
-    private config: ChartmanAppConfig;
-    private pool: Pool;
+    private readonly config: ChartmanAppConfig;
+    private readonly IEX_PREFIX: string;
+    private readonly pool: Pool;
+
+    // TODO: start using IEX and balance the load between it and AlphaVantage.
+    // Wait until they've got OHLC data in their new Cloud API, first though
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
@@ -25,6 +29,7 @@ export class StockDataService {
                 private readonly technicalsCalculationService: TechnicalsCalculationService) {
         this.config = this.configService.config;
         this.pool = this.postgresService.pool;
+        this.IEX_PREFIX = this.config.env === `prod` ? IEX_PROD_PREFIX : IEX_SANDBOX_PREFIX;
     }
 
     async getChartData(symbolID: number): Promise<StockChartData> {

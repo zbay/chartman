@@ -1,6 +1,3 @@
-# On parent server: install openssl and generate certs in /etc/ssl directory
-# ENV=prod docker-compose up
-
 version: '3.5'
 
 services:
