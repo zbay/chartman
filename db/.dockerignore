@@ -1,1 +1,4 @@
 autocomplete_data
+.env.dev
+.env.prod
+.env.test
