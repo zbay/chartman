@@ -219,13 +219,13 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
     svgContainer.append('path')
       .attr('d', femaFunction(chartData))
       .attr('stroke', 'blue')
-      .attr('stroke-width', stickWidth * 0.6)
+      .attr('stroke-width', stickWidth * 0.4)
       .attr('fill', 'none');
     // SEMA
     svgContainer.append('path')
       .attr('d', semaFunction(chartData))
       .attr('stroke', 'orange')
-      .attr('stroke-width', stickWidth * 0.6)
+      .attr('stroke-width', stickWidth * 0.4)
       .attr('fill', 'none');
     // resistance
     svgContainer.append('path')
