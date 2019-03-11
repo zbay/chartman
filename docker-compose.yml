@@ -5,7 +5,7 @@ services:
   postgres:
     image: postgres:11
     ports: 
-      - 5432:5432
+      - 5433:5432
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -50,12 +50,13 @@ services:
     depends_on:
       - nest
     environment:
-      - ENV
+      - ENV=${ENV}
     volumes:
       - /etc/ssl:/etc/ssl
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/cors.conf:/etc/nginx/cors.conf
       - /var/log/nginx/:/var/log/nginx
+      - ./ng-env/environment.${ENV}.ts:/usr/src/app/src/environments/environment.prod.ts
 
 volumes: 
   db-data: {}

@@ -93,3 +93,11 @@ svg.viz {
   border-top: 0 !important;
   border-radius: 0 0 3px 3px !important;
 }
+
+.cdk-overlay-container {
+  z-index: $header-z-index + 1;
+}
+
+.fixed-position {
+  position: fixed;
+}

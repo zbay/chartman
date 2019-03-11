@@ -47,7 +47,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
 
   constructor(private readonly chartDataService: ChartDataService,
     private readonly errorService: ErrorService,
-    private route: ActivatedRoute) {
+    private readonly route: ActivatedRoute) {
     super();
    }
 
@@ -95,6 +95,8 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
             this.isLoading = false;
             this.isStock = true;
             this.displayChart(this.chartType);
+          }, (err) => {
+            this.showErrorPopup(err);
           });
     },
     (err) => {
@@ -103,7 +105,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
     // End: stock loading
 
     fromEvent(window, 'resize')
-    .pipe(debounceTime(500))
+    .pipe(debounceTime(300))
     .subscribe(() => {
       if (this.chartData) {
         this.displayChart(this.chartType);
@@ -111,7 +113,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
     });
   }
 
-  showErrorPopup(err: Error) {
+  showErrorPopup (err: Error) {
     this.errorService.openErrorDialog({
       message: `Failed to load chart data!`,
       name: `Chart Data Error`,
@@ -119,7 +121,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
     });
   }
 
-  displayChart(chartType: TechnicalsChartType): void {
+  displayChart (chartType: TechnicalsChartType): void {
     this.chartType = chartType;
     switch (chartType) {
       case TechnicalsChartType.MACD:
@@ -134,9 +136,10 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
     }
   }
 
-  macd(isStock: boolean): void {
+  macd (isStock: boolean): void {
     const chartData = this.chartData;
     const firstElement = this.chartData[0];
+    const xAxisHeight = 18;
 
     const previous = document.getElementById('display');
     previous.parentNode.removeChild(previous);
@@ -151,7 +154,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       d3.mean(chartData, (d) => d.volume);
     const yMin = d3.min(chartData, (d) => Math.min(d.support, d.low) );
     const yMax = d3.max(chartData, (d) => Math.max(d.resistance, d.high) );
-    const yExtent = [ yMin, yMax ];
+    const yExtent = [ yMin - yMin * 0.01, yMax + yMax * 0.01 ];
     const yExtentVolume = d3.extent(chartData, (d) => d.volume);
     const xExtent = d3.extent(chartData, (d) => d.time);
     const xScale = d3.scaleTime()
@@ -211,7 +214,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .attr('x', (d) => xScale(d.time) - stickWidth / 2)
       .attr('width', (d) => stickWidth)
       .attr('y', (d) => yScaleVolume(1 * d.volume))
-      .attr('height', (d) => containerHeight * 0.97 - yScaleVolume(1 * d.volume))
+      .attr('height', (d) => (containerHeight - xAxisHeight) - yScaleVolume(1 * d.volume))
       .attr('fill', 'gold')
       .attr('opacity', 0.7);
 
@@ -293,7 +296,8 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .call(yAxis);
     // x axis group
     svgContainer.append('g')
-      .attr('transform', 'translate(0, ' + containerHeight * 0.97 + ')')
+      .attr('transform', 'translate(0, ' +
+        (containerHeight - xAxisHeight) + ')')
       .attr('class', 'axis')
       .call(xAxis);
 
@@ -322,7 +326,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       function addCommas(str): string {
         let count = 0;
         for (let i = str.length - 1; i > 0; i--) {
-          count++;
+          count = str[i] === `.` ? 0 : count + 1;
           if (count === 3) {
             str = str.slice(0, i) + ',' + str.slice(i);
             i--;
@@ -337,13 +341,14 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
   oscillators(isStock: boolean): void {
     const chartData = this.chartData;
     const previous = document.getElementById(`display`);
+    const xAxisHeight = 18;
     previous.parentNode.removeChild(previous);
     const newDisplay = document.createElement(`div`);
     newDisplay.setAttribute(`id`, `display`);
     document.getElementById(`technical-chart`).appendChild(newDisplay);
 
     const containerWidth = window.innerWidth * 0.97;
-    const containerHeight = window.innerHeight * 0.75;
+    const containerHeight = window.innerHeight * 0.78;
     const yExtent = [0, 100];
     const xExtent = d3.extent(chartData, (d) => d.time);
     const yExtentPrice = d3.extent(chartData, (d) => d.close);
@@ -352,7 +357,8 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .range([36, containerWidth * 0.98 - 6]);
     d3.timeParse('%d-%b-%y');
     const xAxis = d3.axisBottom()
-      .scale(xScale);
+      .scale(xScale)
+      .ticks(containerWidth / 100);
     const yScale = d3.scaleLinear()
       .domain(yExtent)
       .range([containerHeight * 0.96, containerHeight * 0.025]);
@@ -445,7 +451,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .call(yAxis);
     // X axis group
     svgContainer.append('g')
-      .attr('transform', 'translate(0, ' + containerHeight * 0.97 + ')')
+      .attr('transform', 'translate(0, ' + (containerHeight - xAxisHeight) + ')')
       .attr('class', 'axis')
       .attr('color', 'white')
       .call(xAxis);

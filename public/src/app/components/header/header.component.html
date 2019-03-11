@@ -1,4 +1,6 @@
-<header class="jumbotron bookend mat-elevation-z10" fxLayout="column">
+<header class="jumbotron fixed-position bookend mat-elevation-z10"
+[class.hidden]="(isShowingChart$ | async)"
+fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="space-between center">
       <h1>&cent;hartman</h1>
       <div fxLayoutAlign="center center" fxHide.gt-md class="dropdownToggle">

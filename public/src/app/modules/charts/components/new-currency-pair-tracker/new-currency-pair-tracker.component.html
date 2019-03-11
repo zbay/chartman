@@ -27,7 +27,8 @@
                 formControlName="userInput" 
                 [matAutocomplete]="auto1">
               <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayFn"
-                panelWidth="{{ searchBox1.style.width }}">
+                panelWidth="{{ searchBox1.style.width }}"
+                class="mat-elevation-z12">
                 <mat-option *ngFor="let currency of (filteredCurrencies1$ | async)" [value]="currency"
                   (click)="setNewCurrency(currency, 0)">
                   <span>{{ currency.name }}</span>

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit } from '@angular/core';
-import { Orientation } from '@shared/enums/orientation';
+
 import { NavigationService } from '@app/services/navigation/navigation.service';
+import { Orientation } from '@shared/enums/orientation';
 
 @Component({
   selector: 'app-navbar',

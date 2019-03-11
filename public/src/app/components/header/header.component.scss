@@ -1,3 +1,5 @@
+@import '../../../chartman-theme.scss';
+
 header {
     box-sizing: border-box;
     margin-bottom:1em;
@@ -6,11 +8,14 @@ header {
     padding-top: 0;
     padding-bottom: 0;
     top: 0;
-    position: fixed;
     width: 100vw;
-    z-index: 10000;
+    z-index: $header-z-index;
 
     .menu-button {
         margin-right: 5px;
     }
+}
+
+.hidden {
+    display: none;
 }

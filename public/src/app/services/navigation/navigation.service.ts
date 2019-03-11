@@ -10,6 +10,7 @@ import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 export class NavigationService {
 
   currentUrl$: BehaviorSubject<string> = new BehaviorSubject<string>('/');
+  isShowingChart$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   navbarHasLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   navClosings$: Subject<boolean> = new Subject();
 
@@ -20,6 +21,10 @@ export class NavigationService {
       distinctUntilChanged()
     ).subscribe((url) => {
       this.currentUrl$.next(url);
+      this.isShowingChart$.next(
+        (url.indexOf(`/stocks/chart/`) !== -1
+        ||
+        url.indexOf(`/currencies/chart?`) !== -1));
       }
     );
   }
