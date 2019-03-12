@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
-import { BasicProfile } from '@app/shared/models/basic-profile';
+import { BasicProfile } from '@common/models/basic-profile';
 import { environment } from '@env/environment';
-import { NewCredentials } from '@app/shared/models/new-credentials';
+import { NewCredentials } from '@common/models/new-credentials';
 import { PasswordChangeCredentials } from '@account/models/password-change-credentials';
 
 const accountsUrl = `${environment.apiEndpoint}/accounts`;

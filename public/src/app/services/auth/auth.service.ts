@@ -7,10 +7,10 @@ import * as jwtDecode from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Credentials } from '@shared/models/credentials';
+import { Credentials } from '@common/models/credentials';
 import { environment } from '@env/environment';
 import { ErrorService } from '../error/error.service';
-import { NewCredentials } from '@shared/models/new-credentials';
+import { NewCredentials } from '@common/models/new-credentials';
 import { SnackBarService } from '../snack-bar/snack-bar.service';
 
 const accountsURL = `${environment.apiEndpoint}/accounts`;

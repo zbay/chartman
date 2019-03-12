@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-import { Animations } from '@app/shared/animations/animations';
+import { Animations } from '@common/animations/animations';
 import { AuthService } from '@app/services/auth/auth.service';
 import { ExitAnimatingComponent } from '@app/modules/shared/components/exit-animating/exit-animating.component';
 import { MatchingPasswordsValidator } from '@app/validators/matching-passwords';

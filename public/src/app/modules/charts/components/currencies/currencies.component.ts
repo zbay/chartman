@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Animations } from '@app/shared/animations/animations';
+import { Animations } from '@common/animations/animations';
 import { ExitAnimatingComponent } from '@app/modules/shared/components/exit-animating/exit-animating.component';
 
 @Component({

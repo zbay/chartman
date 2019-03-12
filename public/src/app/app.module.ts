@@ -12,7 +12,7 @@ import { AuthService } from '@app/services/auth/auth.service';
 import { CentralErrorHandler } from './error-handling/central-error-handler';
 import { ErrorDialogComponent } from '@app/modules/shared/components/error-dialog/error-dialog.component';
 import { HeaderComponent } from './components/header/header.component';
-import { JwtHttpInterceptor } from '@shared/jwt-http-interceptor';
+import { JwtHttpInterceptor } from '@common/jwt-http-interceptor';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { NavbarComponent } from './components/navbar/navbar.component';

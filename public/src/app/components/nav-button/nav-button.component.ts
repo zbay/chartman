@@ -2,7 +2,7 @@ import { Component, OnInit, Input, DoCheck, ChangeDetectorRef } from '@angular/c
 
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { Animations } from '@app/shared/animations/animations';
+import { Animations } from '@common/animations/animations';
 import { AuthService } from '@app/services/auth/auth.service';
 import { NavbarLoadStatus } from '@app/enums/navbar-load-status';
 import { NavigationService } from '@app/services/navigation/navigation.service';

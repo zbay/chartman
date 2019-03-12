@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AccountService } from '@account/services/account-service';
-import { Animations } from '@app/shared/animations/animations';
+import { Animations } from '@common/animations/animations';
 import { ErrorService } from '@app/services/error/error.service';
 import { ExitAnimatingComponent } from '@app/modules/shared/components/exit-animating/exit-animating.component';
 

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AccountService } from '@account/services/account-service';
-import { Animations } from '@app/shared/animations/animations';
-import { BasicProfile } from '@shared/models/basic-profile';
+import { Animations } from '@common/animations/animations';
+import { BasicProfile } from '@common/models/basic-profile';
 import { ErrorService } from '@app/services/error/error.service';
 import { ExitAnimatingComponent } from '@app/modules/shared/components/exit-animating/exit-animating.component';
 import { MatchingPasswordsValidator } from '@app/validators/matching-passwords';

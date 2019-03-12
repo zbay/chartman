@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
 import { NavigationService } from './services/navigation/navigation.service';
+import { Debounce } from '@common/decorators/debounce';
 
 @Component({
   selector: 'app-root',
@@ -17,8 +18,8 @@ export class AppComponent implements OnInit {
     this.navigationService.closeNavBar();
   }
 
-  // TODO: Decorate to debounce https://stackoverflow.com/questions/44634992/debounce-hostlistener-event
   @HostListener('window:scroll', ['$event']) // for window scroll events
+  @Debounce()
   onScroll(event) {
     this.navigationService.scrollTop$.next(event.target.scrollingElement.scrollTop);
   }

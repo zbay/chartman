@@ -25,7 +25,10 @@
         "./src/app/modules/charts/*"
       ],
       "@shared/*": [
-        "./src/app/shared/*"
+        "./src/app/modules/shared/*"
+      ],
+      "@common/*": [
+        "./src/app/common/*"
       ]
     },
       "target": "es5",

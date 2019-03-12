@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import { fromEvent, combineLatest } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { Animations } from '@app/shared/animations/animations';
+import { Animations } from '@common/animations/animations';
 import { ChartDataService } from '@charts/services/chart-data/chart-data.service';
 import { CurrencyPairChartData } from '@charts/models/currency-pair-chart-data';
 import { ErrorService } from '@app/services/error/error.service';
@@ -256,6 +256,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .attr('stroke-width', stickWidth)
       .attr('stroke', 'grey')
       .attr(`stroke-linecap`, `round`)
+      .style(`opacity`, `0.8`)
       .on(`mouseover`, (d) => showTip(d))
       .on(`click`, (d) => showTip(d));
 
@@ -272,13 +273,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .attr('y1', (d) => d.open > d.close ? yScale(d.open) : yScale(d.close))
       .attr('y2', (d) => d.open <= d.close ? yScale(d.open) : yScale(d.close))
       .attr('stroke-width', stickWidth * 1.4)
-      .attr('stroke', (d) => {
-        if (d.close >= d.open) {
-          return 'green';
-        } else {
-          return 'red';
-        }
-      })
+      .attr('stroke', (d) => d.close >= d.open ? `green` : `red`)
       .attr('class', (datum) => {
         if (datum.volume >= alarmingVolume) {
           return 'alarm';

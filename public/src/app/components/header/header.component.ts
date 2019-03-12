@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { takeUntil } from 'rxjs/operators';
 
-import { Animations } from '@app/shared/animations/animations';
+import { Animations } from '@common/animations/animations';
 import { BehaviorSubject } from 'rxjs';
 import { NavigationService } from '@app/services/navigation/navigation.service';
-import { Orientation } from '@app/shared/enums/orientation';
+import { Orientation } from '@common/enums/orientation';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 
 @Component({
