@@ -1,8 +1,4 @@
-<!-- TODO: 
-add currency pair charting, use ngx chart library
-use a message queue to regulate flow of AlphaVantage API calls
-add chart drilldown/zoom -->
-<div class="wrapper chartman-theme" fxLayout="column">
+<div class="wrapper chartman-theme" fxLayout="column" (scroll)="onScroll($event)">
   <app-header></app-header>
   <main id="mainContent" (click)="closeNavBar()">
     <router-outlet></router-outlet>

@@ -1,5 +1,5 @@
 <header class="jumbotron fixed-position bookend mat-elevation-z10"
-[class.hidden]="(isShowingChart$ | async)"
+[class.hidden]="(isShowingChart$ | async) && (scrollTop$ | async) > 50"
 fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="space-between center">
       <h1>&cent;hartman</h1>

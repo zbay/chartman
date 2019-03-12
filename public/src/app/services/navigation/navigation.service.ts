@@ -13,8 +13,9 @@ export class NavigationService {
   isShowingChart$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   navbarHasLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   navClosings$: Subject<boolean> = new Subject();
+  scrollTop$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  constructor(private router: Router) {
+  constructor(private readonly router: Router) {
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map((event: NavigationEnd) => event.url),

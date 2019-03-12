@@ -8,9 +8,6 @@ import { NavigationService } from '@app/services/navigation/navigation.service';
 import { Orientation } from '@app/shared/enums/orientation';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 
-// TODO: use scroll event to hide navbar on chart pages past a certain scroll point
-// https://brianflove.com/2016/10/10/angular-2-window-scroll-event-using-hostlistener/
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -20,11 +17,13 @@ import { SubscribingComponent } from '@app/modules/shared/components/subscribing
 export class HeaderComponent extends SubscribingComponent implements OnInit {
   dropdownNavActivated = false;
   isShowingChart$: BehaviorSubject<boolean>;
+  scrollTop$: BehaviorSubject<number>;
   readonly Orientation = Orientation;
 
   constructor(private readonly navigationService: NavigationService) {
     super();
     this.isShowingChart$ = this.navigationService.isShowingChart$;
+    this.scrollTop$ = this.navigationService.scrollTop$;
    }
 
   ngOnInit() {
