@@ -1,9 +1,10 @@
-<header class="jumbotron fixed-position bookend mat-elevation-z10"
-[class.hidden]="(isShowingChart$ | async) && (scrollTop$ | async) > 50"
+<header class="jumbotron fixed-position bookend"
+[class.stealth]="!showingFullHeader && !dropdownNavActivated"
+[class.mat-elevation-z10]="showingFullHeader && !dropdownNavActivated"
 fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="space-between center">
-      <h1>&cent;hartman</h1>
-      <div fxLayoutAlign="center center" fxHide.gt-md class="dropdownToggle">
+      <h1 [class.hidden]="!showingFullHeader && !dropdownNavActivated">&cent;hartman</h1>
+      <div *ngIf="showingFullHeader || dropdownNavActivated" fxLayoutAlign="center center" fxHide.gt-md class="dropdownToggle">
         <button mat-icon-button 
             class="menu-button"
             (click)="toggleDropdownNav()">
@@ -12,6 +13,14 @@ fxLayout="column">
         </button>
       </div>
       <app-navbar [orientation]="Orientation.HORIZONTAL" fxHide.lt-lg></app-navbar>
+  </div>
+  <div *ngIf="!showingFullHeader && !dropdownNavActivated" fxFlexAlign="end" class="dropdownToggle">
+    <button mat-icon-button 
+        class="menu-button"
+        (click)="toggleDropdownNav()">
+      <mat-icon *ngIf="!dropdownNavActivated" color="accent">dehaze</mat-icon>
+      <mat-icon *ngIf="dropdownNavActivated" color="accent">close</mat-icon>
+    </button>
   </div>
   <app-navbar [orientation]="Orientation.VERTICAL" fxHide.gt-md [@slideUpDown]="dropdownNavActivated"></app-navbar>
 </header>

@@ -150,6 +150,7 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
     const containerWidth = window.innerWidth * 0.95;
     const containerHeight = window.innerHeight * 0.75;
     const stickWidth = containerWidth / (chartData.length * 3);
+    const barWidth = stickWidth * 1.25;
     const alarmingVolume = d3.deviation(chartData, (d) => d.volume) * 1.5 +
       d3.mean(chartData, (d) => d.volume);
     const yMin = d3.min(chartData, (d) => Math.min(d.support, d.low) );
@@ -211,8 +212,8 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
       .data(chartData, (d) => d)
       .enter()
       .append('rect')
-      .attr('x', (d) => xScale(d.time) - stickWidth / 2)
-      .attr('width', (d) => stickWidth)
+      .attr('x', (d) => xScale(d.time) - barWidth / 2)
+      .attr('width', (d) => barWidth)
       .attr('y', (d) => yScaleVolume(1 * d.volume))
       .attr('height', (d) => (containerHeight - xAxisHeight) - yScaleVolume(1 * d.volume))
       .attr('fill', 'gold')
