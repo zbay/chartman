@@ -4,17 +4,16 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Animations } from '@common/animations/animations';
 import { combineLatest } from 'rxjs';
+
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { Orientation } from '@common/enums/orientation';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 
-// TODO: white border on bottom for chart nav
-// TODO: animate hide/show, entry/exit for chart nav
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  animations: [Animations.slideUpDown]
+  animations: [Animations.elasticUpDown, Animations.slideUpDown]
 })
 export class HeaderComponent extends SubscribingComponent implements OnInit {
   dropdownNavActivated = false;
@@ -42,6 +41,17 @@ export class HeaderComponent extends SubscribingComponent implements OnInit {
   closeDropdownNav () {
     this.dropdownNavActivated = false;
   }
+
+  scrollToTop () {
+    const scrollToTop = window.setInterval(() => {
+      const pos = window.pageYOffset;
+      if (pos > 0) {
+        window.scrollTo(0, pos - 20); // how far to scroll on each step
+      } else {
+          window.clearInterval(scrollToTop);
+      }
+    }, 16);
+}
 
   toggleDropdownNav () {
     this.dropdownNavActivated = !this.dropdownNavActivated;

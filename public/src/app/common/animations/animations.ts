@@ -4,6 +4,12 @@ import { NavbarLoadStatus } from '@app/enums/navbar-load-status';
 
 export const Animations = {
     slideUpDown: trigger('slideUpDown', [
+        state('0', style({ transform: 'translateY(-100%)', opacity: 0 })),
+        state('1', style({ transform: 'translateY(0)', opacity: 1 })),
+        transition('0 => 1', animate('200ms ease-in-out')),
+        transition('1 => 0', animate('200ms ease-in-out'))
+      ]),
+    elasticUpDown: trigger('elasticUpDown', [
         state('0', style({ height: 0, transform: 'scaleY(0)', opacity: 0 })),
         state('1', style({ height: '*', transform: 'scaleY(1)', opacity: 1 })),
         transition('0 => 1', animate('400ms ease-in-out')),
