@@ -58,6 +58,16 @@ module.exports = {
         },
         {
             op: `build`,
+            type: `table`,
+            name: `bounces`
+        },
+        {
+            op: `build`,
+            type: `table`,
+            name: `complaints`
+        },
+        {
+            op: `build`,
             type: `function`,
             name: `account/fn_add_user`
         },
@@ -150,6 +160,16 @@ module.exports = {
             op: `build`,
             type: `function`,
             name: `currency/fn_get_currency_pair`
+        },
+        {
+            op: `build`,
+            type: `function`,
+            name: `admin/fn_save_bounce`
+        },
+        {
+            op: `build`,
+            type: `function`,
+            name: `admin/fn_save_complaint`
         },
         {
             op: `populate`, // populate op is implied to be a table
