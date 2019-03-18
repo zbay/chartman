@@ -26,16 +26,16 @@ export class HeaderComponent extends SubscribingComponent implements OnInit {
 
   ngOnInit() {
       const scrollThreshold = 50;
-        this.navigationService.navClosings$.pipe(
-          takeUntil(this.destroy$)
-        ).subscribe(() => this.closeDropdownNav());
+      this.navigationService.navClosings$.pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(() => this.closeDropdownNav());
 
-        combineLatest(this.navigationService.isShowingChart$, this.navigationService.scrollTop$)
-          .subscribe((vals) => {
-            const isShowingChart: boolean = vals[0];
-            const scrollTop: number = vals[1];
-            this.showingFullHeader = !isShowingChart || (scrollTop < scrollThreshold);
-          });
+      combineLatest(this.navigationService.isShowingChart$, this.navigationService.scrollTop$)
+        .subscribe((vals) => {
+          const isShowingChart: boolean = vals[0];
+          const scrollTop: number = vals[1];
+          this.showingFullHeader = !isShowingChart || (scrollTop < scrollThreshold);
+        });
   }
 
   closeDropdownNav () {

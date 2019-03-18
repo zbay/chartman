@@ -1,13 +1,10 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 
-// There needs to be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables
-import * as AWS from 'aws-sdk';
-AWS.config.update({region: 'us-east-1'});
-
-import * as bcrypt from 'bcrypt';
+import { hash as bcryptHash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { Pool, QueryResult } from 'pg';
 
+import { AwsService } from '@shared/services/aws/aws.service';
 import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
@@ -18,13 +15,12 @@ import { PostgresService } from '@shared/services/postgres/postgres.service';
 import { TokenService } from '@accounts/services/token/token.service';
 import { User } from '@accounts/interfaces/user';
 
-const HELP_EMAIL = `chartman.help@gmail.com`;
-
 @Injectable()
 export class UserService {
     private config: ChartmanAppConfig;
     private pool: Pool;
-    constructor(private readonly configService: ConfigService,
+    constructor(private readonly awsService: AwsService,
+                private readonly configService: ConfigService,
                 private readonly tokenService: TokenService,
                 private readonly postgresService: PostgresService) {
         this.pool = this.postgresService.pool;
@@ -131,7 +127,7 @@ export class UserService {
 
     async hashPassword(password: string): Promise<string> {
         const saltRounds = 10;
-        return bcrypt.hash(password, saltRounds);
+        return bcryptHash(password, saltRounds);
     }
 
     passwordsDoMatch(newUser: NewUserDTO | ChangePasswordUserDTO): boolean {
@@ -149,38 +145,7 @@ export class UserService {
                     stack: err.stack
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             });
-        const emailParams = {
-                Destination: { ToAddresses: [email] },
-                Message: {
-                  Body: {
-                    Html: {
-                     Charset: `UTF-8`,
-                     Data: `<p>Hello,</p>
-                             <p>You've requested a password change for your Chartman account.
-                                  Please visit <a href="${this.config.host}/account/reset-password/${randomRoute}">this link</a> to reset it.</p>
-                              <p>Best,</p>
-                              <p>Your friends at Chartman</p>`
-                    }
-                   },
-                   Subject: {
-                    Charset: `UTF-8`,
-                    Data: `Resetting your Chartman password`
-                   }
-                  },
-                Source: HELP_EMAIL,
-                ReplyToAddresses: [HELP_EMAIL],
-              };
-
-        return new AWS.SES({apiVersion: `2010-12-01`})
-                .sendEmail(emailParams)
-                .promise()
-                .catch((err: Error) => {
-                    throw new CustomException({
-                        message: `Failed to send the password reset email to your inbox!`,
-                        name: `Password Reset Email Failure`,
-                        stack: err.stack
-                    }, HttpStatus.INTERNAL_SERVER_ERROR);
-                });
+        return this.awsService.sendPasswordResetEmail(email, randomRoute);
     }
 
     async isValidPasswordChangeRequest(route: string): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, HttpCode, HttpStatus, Body, Req } from '@nestjs/common';
+import { Controller, Post, HttpCode, HttpStatus, Body } from '@nestjs/common';
 
 import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
 import { LoggedErrorDto } from '@errors/dto/logged-error.dto';

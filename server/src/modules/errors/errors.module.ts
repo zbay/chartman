@@ -5,6 +5,7 @@ import { ErrorLoggingService } from '@errors/services/error-logging/error-loggin
 
 @Module({
     controllers: [ErrorsController],
+    exports: [ErrorLoggingService],
     providers: [ErrorLoggingService]
 })
 export class ErrorsModule {

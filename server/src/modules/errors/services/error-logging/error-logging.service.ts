@@ -11,17 +11,13 @@ export class ErrorLoggingService {
         this._pool = this.postgresService.pool;
     }
 
-    async logError(errorDTO: LoggedErrorDto): Promise<null> {
+    async logError(errorDTO: LoggedErrorDto): Promise<any> {
         const err: Error = errorDTO.error;
         return this._pool.query(`SELECT public.fn_log_error($1, $2, $3, $4)`,
                 [errorDTO.userID, errorDTO.url, err.message, err.stack])
-            .then(() => {
-                return null;
-            })
             .catch((log_error) => {
                 // tslint:disable-next-line:no-console
                 console.log(log_error);
-                return null;
             });
     }
 }
