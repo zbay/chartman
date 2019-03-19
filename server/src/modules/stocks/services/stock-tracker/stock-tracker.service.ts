@@ -2,33 +2,30 @@ import { Injectable, HttpStatus, HttpService } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
 import { catchError, tap } from 'rxjs/operators';
-import { Pool, QueryResult } from 'pg';
+import { Connection } from 'typeorm';
 
 import { ALPHAVANTAGE_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 
 @Injectable()
 export class StockTrackerService {
     private config: ChartmanAppConfig;
-    private pool: Pool;
 
     constructor(private readonly configService: ConfigService,
-                private readonly httpService: HttpService,
-                private readonly postgresService: PostgresService) {
+                private readonly connection: Connection,
+                private readonly httpService: HttpService) {
         this.config = this.configService.config;
-        this.pool = this.postgresService.pool;
     }
 
     async autocompleteStocks(searchQuery: string): Promise<Stock[]> {
         const rowName = 'search_result';
-        return this.pool.query(`SELECT * FROM public.fn_auto_complete_stock($1) AS search_result`,
+        return this.connection.query(`SELECT * FROM public.fn_auto_complete_stock($1) AS search_result`,
             [searchQuery])
-        .then((results: QueryResult) => {
-            return results.rows.map((row) => row[rowName]);
+        .then((results) => {
+            return results.map((row) => row[rowName]);
         })
         .catch((err: Error) => {
             throw new CustomException({
@@ -40,11 +37,11 @@ export class StockTrackerService {
     }
 
     async getMyStocks(userID: number): Promise<Stock[]> {
-        return this.pool.query(`SELECT * FROM public.fn_get_my_stocks($1) AS stock`,
+        return this.connection.query(`SELECT * FROM public.fn_get_my_stocks($1) AS stock`,
             [userID])
-        .then((results: QueryResult) => {
+        .then((results) => {
             // todo: abstract this map pattern
-            return results.rows.map((row) => row.stock);
+            return results.map((row) => row.stock);
         })
         .catch((err: Error) => {
             throw new CustomException({
@@ -77,7 +74,7 @@ export class StockTrackerService {
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             })).toPromise();
 
-        return this.pool.query(`SELECT public.fn_add_stock_tracker($1, $2)`,
+        return this.connection.query(`SELECT public.fn_add_stock_tracker($1, $2)`,
             [userID, stockID])
         .catch((err: Error) => {
             throw new CustomException({
@@ -90,7 +87,7 @@ export class StockTrackerService {
     }
 
 async deleteStockTracker(userID: number, stockID: number): Promise<any> {
-    return this.pool.query(`SELECT from public.fn_delete_stock_tracker($1, $2)`,
+    return this.connection.query(`SELECT from public.fn_delete_stock_tracker($1, $2)`,
         [userID, stockID])
     .catch((err: Error) => {
         throw new CustomException({

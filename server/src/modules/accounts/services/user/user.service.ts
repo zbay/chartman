@@ -2,37 +2,29 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 
 import { hash as bcryptHash } from 'bcrypt';
 import { randomBytes } from 'crypto';
-import { Pool, QueryResult } from 'pg';
 
 import { AwsService } from '@shared/services/aws/aws.service';
 import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
-import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
-import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { JwtPayload } from '@accounts/interfaces/jwt-payload';
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
 import { TokenService } from '@accounts/services/token/token.service';
 import { User } from '@accounts/interfaces/user';
+import { Connection } from 'typeorm';
 
 @Injectable()
 export class UserService {
-    private config: ChartmanAppConfig;
-    private pool: Pool;
     constructor(private readonly awsService: AwsService,
-                private readonly configService: ConfigService,
-                private readonly tokenService: TokenService,
-                private readonly postgresService: PostgresService) {
-        this.pool = this.postgresService.pool;
-        this.config = this.configService.config;
+                private readonly connection: Connection,
+                private readonly tokenService: TokenService) {
     }
 
-    firstRow(data: QueryResult): any {
-        return data.rows[0] || {};
+    firstRow(data: any[]): any {
+        return data[0] || {};
     }
 
-    getFirstRowNamedProperty(result: QueryResult, name: string): any {
-        return result.rows[0] ? result.rows[0][name] : null;
+    getFirstRowNamedProperty(result, name: string): any {
+        return result[0] ? result[0][name] : null;
     }
 
     async changePassword(passwordChangeID: string, user: ChangePasswordUserDTO): Promise<void> {
@@ -43,9 +35,9 @@ export class UserService {
         }
         const rowName = `change_succeeded`;
         user.password = await this.hashPassword(user.password);
-        return this.pool.query(`SELECT * FROM public.fn_change_password($1, $2, $3) AS ${rowName}`,
+        return this.connection.query(`SELECT * FROM public.fn_change_password($1, $2, $3) AS ${rowName}`,
                 [passwordChangeID, user.email, user.password])
-            .then((data: QueryResult) => {
+            .then((data) => {
                 const changeWasSuccessful = this.getFirstRowNamedProperty(data, rowName);
                 if (!changeWasSuccessful) {
                     throw new CustomException({
@@ -73,9 +65,9 @@ export class UserService {
         }
         const resultName = `new_user`;
         newUser.password = await this.hashPassword(newUser.password);
-        return this.pool.query(`SELECT * from public.fn_add_user($1) AS ${resultName}`,
+        return this.connection.query(`SELECT * from public.fn_add_user($1) AS ${resultName}`,
                 [newUser])
-            .then(async (result: QueryResult) => {
+            .then(async (result) => {
                 const user: User = this.getFirstRowNamedProperty(result, resultName);
                 return await this.tokenService.getToken(user.user_id, user.permissions);
             })
@@ -96,7 +88,7 @@ export class UserService {
                 , HttpStatus.BAD_REQUEST);
         }
         user.password = await this.hashPassword(user.password);
-        return this.pool.query(`SELECT * from public.fn_update_user($1, $2) AS updatedUser`,
+        return this.connection.query(`SELECT * from public.fn_update_user($1, $2) AS updatedUser`,
             [user, userID])
             .then(() =>  true)
             .catch((err: Error) => {
@@ -109,11 +101,11 @@ export class UserService {
     }
 
     async findOneByID(id: number): Promise<User> {
-        return this.pool.query(`SELECT first_name, last_name, email
+        return this.connection.query(`SELECT first_name, last_name, email
                 FROM public.users
                 WHERE user_id = $1`,
                 [id])
-        .then((data: QueryResult) => {
+        .then((data) => {
             return this.firstRow(data);
         })
         .catch((err) => {
@@ -136,7 +128,7 @@ export class UserService {
 
     async requestPasswordChange(email: string): Promise<any> {
         const randomRoute = await randomBytes(48).toString(`hex`);
-        await this.pool.query(`SELECT FROM public.fn_request_password_change($1, $2)`,
+        await this.connection.query(`SELECT FROM public.fn_request_password_change($1, $2)`,
                 [email, randomRoute])
             .catch((err: Error) => {
                 throw new CustomException({
@@ -150,9 +142,9 @@ export class UserService {
 
     async isValidPasswordChangeRequest(route: string): Promise<boolean> {
         const rowName = `is_valid_change_request`;
-        return this.pool.query(`SELECT * FROM public.fn_validate_password_change_request_route($1) AS ${rowName}`,
+        return this.connection.query(`SELECT * FROM public.fn_validate_password_change_request_route($1) AS ${rowName}`,
                 [route])
-            .then((data: QueryResult) => {
+            .then((data) => {
                 return this.getFirstRowNamedProperty(data, rowName);
             })
             .catch((err: Error) => {

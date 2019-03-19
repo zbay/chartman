@@ -1,8 +1,8 @@
 import { Injectable, HttpService, HttpStatus } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
+import { Connection } from 'typeorm';
 import { map } from 'rxjs/operators';
-import { Pool, QueryResult } from 'pg';
 
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
@@ -13,18 +13,15 @@ import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CurrencySearchQueryDTO } from '@currencies/dto/currency-search-query.dto';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
 
 @Injectable()
 export class CurrencyTrackerService {
     private config: ChartmanAppConfig;
-    private pool: Pool;
 
     constructor(private readonly configService: ConfigService,
-                private readonly httpService: HttpService,
-                private readonly postgresService: PostgresService) {
+                private readonly connection: Connection,
+                private readonly httpService: HttpService) {
         this.config = this.configService.config;
-        this.pool = this.postgresService.pool;
     }
 
     async addCurrencyPairTracker(userID: number, currencyPair: CreateCurrencyPairTrackerDTO): Promise<any> {
@@ -41,7 +38,7 @@ export class CurrencyTrackerService {
                 }
             }))
             .toPromise();
-        return this.pool.query(`SELECT public.fn_add_currency_pair($1, $2, $3)`
+        return this.connection.query(`SELECT public.fn_add_currency_pair($1, $2, $3)`
             , [userID, currencyPair.from.id, currencyPair.to.id])
         .catch((err: Error) => {
             throw new CustomException({
@@ -54,10 +51,10 @@ export class CurrencyTrackerService {
 
     async autocompleteCurrencies(query: CurrencySearchQueryDTO): Promise<Currency[]> {
         const rowName = `search_result`;
-        return this.pool.query(`SELECT * FROM public.fn_auto_complete_currency($1, $2) AS ${rowName}`,
+        return this.connection.query(`SELECT * FROM public.fn_auto_complete_currency($1, $2) AS ${rowName}`,
             [query.searchQuery, query.searchFilter])
-        .then((results: QueryResult) => {
-            return results.rows.map((row) => row[rowName]);
+        .then((results) => {
+            return results.map((row) => row[rowName]);
         })
         .catch((err: Error) => {
             throw new CustomException({
@@ -70,7 +67,7 @@ export class CurrencyTrackerService {
     }
 
     async deleteCurrencyPair(userID: number, pair: CurrencyPairIdsDTO): Promise<any> {
-        return this.pool.query(`SELECT public.fn_delete_currency_pair($1, $2, $3)`,
+        return this.connection.query(`SELECT public.fn_delete_currency_pair($1, $2, $3)`,
             [userID, pair.fromID, pair.toID])
         .catch((err: Error) => {
             throw new CustomException({
@@ -83,10 +80,10 @@ export class CurrencyTrackerService {
 
     async getMyCurrencyPairs(userID: number): Promise<CurrencyPair[]> {
        const rowName = `currency_pair`;
-       return this.pool.query(`SELECT * FROM public.fn_get_my_currency_pairs($1) AS ${rowName}`,
+       return this.connection.query(`SELECT * FROM public.fn_get_my_currency_pairs($1) AS ${rowName}`,
             [userID])
-        .then((results: QueryResult) => {
-            return results.rows.map((row) => row[rowName]);
+        .then((results) => {
+            return results.map((row) => row[rowName]);
         })
         .catch((err: Error) => {
             throw new CustomException({

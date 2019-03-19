@@ -16,17 +16,20 @@
       "@common/*": [
         "common/*"
       ],
+      "@cron/*": [
+        "modules/cron/*"
+      ],
       "@currencies/*": [
         "modules/currencies/*"
+      ],
+      "@errors/*": [
+        "modules/errors/*"
       ],
       "@shared/*": [
         "modules/shared/*"
       ],
       "@stocks/*": [
         "modules/stocks/*"
-      ],
-      "@errors/*": [
-        "modules/errors/*"
       ],
       "@technicals/*": [
         "modules/technicals/*"
