@@ -10,4 +10,6 @@ export interface ChartmanAppConfig {
     jwtSecret: string;
     port: number;
     postgresConfig: PostgresConnectionConfig;
+    sesBounceQueueURL: string;
+    sesComplaintQueueURL: string;
 }

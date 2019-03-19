@@ -13,21 +13,20 @@ import { ReceiveMessageResult, Message } from 'aws-sdk/clients/sqs';
 
 AWS_CONFIG.update({region: 'us-east-1'});
 
-const bounceQueueURL = ``;
-const complaintQueueURL = ``;
-
 const HELP_EMAIL = `chartman.help@gmail.com`;
 
 @Injectable()
 export class AwsService {
     private chartmanConfig: ChartmanAppConfig;
     private pool: Pool;
+    private sqs: SQS;
 
     constructor(private readonly configService: ConfigService,
                 private readonly errorLoggingService: ErrorLoggingService,
                 private readonly postgresService: PostgresService) {
         this.chartmanConfig = this.configService.config;
         this.pool = this.postgresService.pool;
+        this.sqs = new SQS();
     }
 
     private logAwsError(err: AWSError, url: string): void {
@@ -42,23 +41,13 @@ export class AwsService {
         });
     }
 
-    // TODO: 1. Change db schema to handle bounces and complaints
-    // 2. Allow for account deletion
-    // 3. Alter code to make DB changes as needed and mark message as received on AWS
-    // 4. Change cron job to ping SQS once daily
-    // 5. Move URLs to .env file
-    pingSQS(): void {
-        const sqs = new SQS();
-
+    saveBounces(): void {
+        const bounceQueueURL = this.chartmanConfig.sesBounceQueueURL;
         const bounceParams = {
-                QueueUrl: bounceQueueURL,
-                MaxNumberOfMessages: 10
+            QueueUrl: bounceQueueURL,
+            MaxNumberOfMessages: 10
         };
-        const complaintParams = {
-                QueueUrl: complaintQueueURL,
-                MaxNumberOfMessages: 10
-        };
-        sqs.receiveMessage(bounceParams, (err: AWSError, data: ReceiveMessageResult) => {
+        this.sqs.receiveMessage(bounceParams, (err: AWSError, data: ReceiveMessageResult) => {
             if (err) {
                 this.logAwsError(err, bounceQueueURL);
             } else {
@@ -71,7 +60,7 @@ export class AwsService {
                         const body = JSON.parse(msg.Body);
                         const bounce = body.bounce;
                         if (!bounce) {
-                            sqs.deleteMessage(deleteParams, (delErr) => {
+                            this.sqs.deleteMessage(deleteParams, (delErr) => {
                                 if (delErr) {
                                     this.logAwsError(delErr, bounceQueueURL);
                                 }
@@ -87,7 +76,7 @@ export class AwsService {
                                     }]);
                                 }))
                                 .then(() => {
-                                    sqs.deleteMessage(deleteParams, (delErr) => {
+                                    this.sqs.deleteMessage(deleteParams, (delErr) => {
                                         if (delErr) {
                                             this.logAwsError(delErr, bounceQueueURL);
                                         }
@@ -105,64 +94,70 @@ export class AwsService {
                 }
             }
         });
-        sqs.receiveMessage(complaintParams, (err: Error, data: ReceiveMessageResult) => {
-                // tslint:disable-next-line:no-console
-                console.log(`pinging complaint queue`);
-                if (err) {
-                    this.errorLoggingService.logError({
-                        error: {
-                            message: err.message,
-                            stack: err.stack,
-                            name: err.name
-                        },
-                        userID: null,
-                        url: complaintQueueURL
-                    });
-                } else {
-                    console.log(data);
-                    if (data.Messages) {
-                        data.Messages.forEach((msg: Message) => {
-                            const deleteParams = {
-                                QueueUrl: complaintQueueURL,
-                                ReceiptHandle: msg.ReceiptHandle
-                            };
-                            const body = JSON.parse(msg.Body);
-                            const content = JSON.parse(body.Message);
-                            if (!content || !content.complaint) {
-                                sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
-                                    if (err) {
-                                        this.logAwsError(delErr, complaintQueueURL);
-                                    }
-                                });
-                            } else {
-                                const complaint = content.complaint;
-                                Promise.all(
-                                    complaint.complainedRecipients.map((recipient) => {
-                                        return this.pool.query(`SELECT public.fn_save_complaint($1)`, [{
-                                            timestamp: complaint.timestamp,
-                                            message_id: content.mail.messageId,
-                                            complained_recipient: recipient.emailAddress
-                                        }]);
-                                    }))
-                                    .then(() => {
-                                        sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
-                                            if (delErr) {
-                                                this.logAwsError(delErr, complaintQueueURL);
-                                            }
-                                        });
-                                    })
-                                    .catch((error: Error) => {
-                                        this.errorLoggingService.logError({
-                                            error,
-                                            userID: null,
-                                            url: complaintQueueURL
-                                        });
+    }
+    saveComplaints(): void {
+        const complaintQueueURL = this.chartmanConfig.sesComplaintQueueURL;
+
+        const complaintParams = {
+                QueueUrl: complaintQueueURL,
+                MaxNumberOfMessages: 10
+        };
+
+        this.sqs.receiveMessage(complaintParams, (err: Error, data: ReceiveMessageResult) => {
+            if (err) {
+                this.errorLoggingService.logError({
+                    error: {
+                        message: err.message,
+                        stack: err.stack,
+                         name: err.name
+                     },
+                    userID: null,
+                    url: complaintQueueURL
+                });
+            } else {
+                if (data.Messages) {
+                    data.Messages.forEach((msg: Message) => {
+                        const deleteParams = {
+                            QueueUrl: complaintQueueURL,
+                            ReceiptHandle: msg.ReceiptHandle
+                        };
+                        const body = JSON.parse(msg.Body);
+                        const content = JSON.parse(body.Message);
+                        if (!content || !content.complaint) {
+                            this.sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
+                                if (err) {
+                                    this.logAwsError(delErr, complaintQueueURL);
+                                }
+                            });
+                        } else {
+                            const complaint = content.complaint;
+                            Promise.all(
+                                complaint.complainedRecipients.map((recipient) => {
+                                    return this.pool.query(`SELECT public.fn_save_complaint($1)`, [{
+                                        timestamp: complaint.timestamp,
+                                        message_id: content.mail.messageId,
+                                        complained_recipient: recipient.emailAddress
+                                    }]);
+                                }))
+                                .then(() => {
+                                    this.sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
+                                        if (delErr) {
+                                            this.logAwsError(delErr, complaintQueueURL);
+                                        }
                                     });
-                            }
-                        });
-                    }
+                                })
+                                .catch((error: Error) => {
+                                    this.errorLoggingService.logError({
+                                        error,
+                                        userID: null,
+                                        url: complaintQueueURL
+                                    });
+                                });
+                        }
+                    });
                 }
-            });
+            }
+        });
     }
 
     async sendPasswordResetEmail(email: string, randomRoute: string) {
