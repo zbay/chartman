@@ -1,8 +1,8 @@
 import { Injectable, HttpService, HttpStatus } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
-import { Connection } from 'typeorm';
 import { map, catchError } from 'rxjs/operators';
+import { Pool, QueryResult } from 'pg';
 
 import { CRYPTOCOMPARE_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
@@ -11,6 +11,7 @@ import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairChartData } from '@currencies/interfaces/currency-pair-chart-data.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CustomException } from '@common/exceptions/custom.exception';
+import { PostgresService } from '@shared/services/postgres/postgres.service';
 import { TechnicalsCalculationService } from '@technicals/services/technicals-calculation/technicals-calculation.service';
 import { TechnicalDataPoint } from '@technicals/interfaces/technical-data-point';
 import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
@@ -18,20 +19,22 @@ import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
 @Injectable()
 export class CurrencyDataService {
     private config: ChartmanAppConfig;
+    private pool: Pool;
 
     constructor(private readonly configService: ConfigService,
-                private readonly connection: Connection,
                 private readonly httpService: HttpService,
+                private readonly postgresService: PostgresService,
                 private readonly technicalsCalculationService: TechnicalsCalculationService) {
         this.config = this.configService.config;
+        this.pool = this.postgresService.pool;
     }
 
     async getChartData(query: CurrencyPairIdsDTO): Promise<CurrencyPairChartData> {
         const rowName = `pair`;
-        const pair: CurrencyPair = await this.connection.query(`SELECT * FROM public.fn_get_currency_pair($1, $2) AS ${rowName}`
+        const pair: CurrencyPair = await this.pool.query(`SELECT * FROM public.fn_get_currency_pair($1, $2) AS ${rowName}`
         , [query.fromID, query.toID])
-        .then((result) => {
-            return result[0][rowName];
+        .then((result: QueryResult) => {
+            return result.rows[0][rowName];
         })
         .catch((err: Error) => {
             return new CustomException({

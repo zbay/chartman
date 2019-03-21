@@ -10,7 +10,7 @@ export class SchedulerService {
 
     saveSesNotifications() {
         // Three asterisks: once per day
-        cron.schedule('* * * 01 00', () => {
+        cron.schedule(`* * *`, () => {
             this.awsService.saveBounces();
             this.awsService.saveComplaints();
         });

@@ -1,7 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 
-import { ReceiveMessageResult, Message } from 'aws-sdk/clients/sqs';
-import { Connection } from 'typeorm';
+import { Pool } from 'pg';
 
 // There needs to be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables
 import { config as AWS_CONFIG, SES, SQS, AWSError } from 'aws-sdk';
@@ -9,6 +8,8 @@ import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
+import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { ReceiveMessageResult, Message } from 'aws-sdk/clients/sqs';
 
 AWS_CONFIG.update({region: 'us-east-1'});
 
@@ -17,12 +18,14 @@ const HELP_EMAIL = `chartman.help@gmail.com`;
 @Injectable()
 export class AwsService {
     private chartmanConfig: ChartmanAppConfig;
+    private pool: Pool;
     private sqs: SQS;
 
     constructor(private readonly configService: ConfigService,
-                private readonly connection: Connection,
-                private readonly errorLoggingService: ErrorLoggingService) {
+                private readonly errorLoggingService: ErrorLoggingService,
+                private readonly postgresService: PostgresService) {
         this.chartmanConfig = this.configService.config;
+        this.pool = this.postgresService.pool;
         this.sqs = new SQS();
     }
 
@@ -65,7 +68,7 @@ export class AwsService {
                         } else {
                             Promise.all(
                                 bounce.bouncedRecipients.map((recipient) => {
-                                    return this.connection.query(`SELECT public.fn_save_bounce($1)`, [{
+                                    return this.pool.query(`SELECT public.fn_save_bounce($1)`, [{
                                         bounce_type: bounce.bounceType,
                                         bounce_subtype: bounce.bounceSubType,
                                         timestamp: bounce.timestamp,
@@ -130,7 +133,7 @@ export class AwsService {
                             const complaint = content.complaint;
                             Promise.all(
                                 complaint.complainedRecipients.map((recipient) => {
-                                    return this.connection.query(`SELECT public.fn_save_complaint($1)`, [{
+                                    return this.pool.query(`SELECT public.fn_save_complaint($1)`, [{
                                         timestamp: complaint.timestamp,
                                         message_id: content.mail.messageId,
                                         complained_recipient: recipient.emailAddress
