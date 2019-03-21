@@ -8,7 +8,7 @@ import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { ReceiveMessageResult, Message } from 'aws-sdk/clients/sqs';
 
 AWS_CONFIG.update({region: 'us-east-1'});
@@ -23,7 +23,7 @@ export class AwsService {
 
     constructor(private readonly configService: ConfigService,
                 private readonly errorLoggingService: ErrorLoggingService,
-                private readonly postgresService: PostgresService) {
+                private readonly postgresService: PostgresConnectionService) {
         this.chartmanConfig = this.configService.config;
         this.pool = this.postgresService.pool;
         this.sqs = new SQS();

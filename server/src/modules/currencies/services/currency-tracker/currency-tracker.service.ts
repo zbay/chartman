@@ -13,7 +13,7 @@ import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CurrencySearchQueryDTO } from '@currencies/dto/currency-search-query.dto';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 
 @Injectable()
 export class CurrencyTrackerService {
@@ -22,7 +22,7 @@ export class CurrencyTrackerService {
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
-                private readonly postgresService: PostgresService) {
+                private readonly postgresService: PostgresConnectionService) {
         this.config = this.configService.config;
         this.pool = this.postgresService.pool;
     }

@@ -8,7 +8,7 @@ import { ALPHAVANTAGE_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class StockTrackerService {
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
-                private readonly postgresService: PostgresService) {
+                private readonly postgresService: PostgresConnectionService) {
         this.config = this.configService.config;
         this.pool = this.postgresService.pool;
     }

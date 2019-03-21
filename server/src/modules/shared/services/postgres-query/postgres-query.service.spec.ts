@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostgresService } from './postgres.service';
+import { PostgresQueryService } from './postgres-query.service';
 
-describe('PostgresService', () => {
-  let service: PostgresService;
+describe('PostgresQueryService', () => {
+  let service: PostgresQueryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PostgresService],
+      providers: [PostgresQueryService],
     }).compile();
 
-    service = module.get<PostgresService>(PostgresService);
+    service = module.get<PostgresQueryService>(PostgresQueryService);
   });
 
   it('should be defined', () => {

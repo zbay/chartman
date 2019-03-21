@@ -6,25 +6,20 @@ import { Pool, QueryResult } from 'pg';
 
 import { AwsService } from '@shared/services/aws/aws.service';
 import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
-import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
-import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { JwtPayload } from '@accounts/interfaces/jwt-payload';
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { TokenService } from '@accounts/services/token/token.service';
 import { User } from '@accounts/interfaces/user';
 
 @Injectable()
 export class UserService {
-    private config: ChartmanAppConfig;
     private pool: Pool;
     constructor(private readonly awsService: AwsService,
-                private readonly configService: ConfigService,
                 private readonly tokenService: TokenService,
-                private readonly postgresService: PostgresService) {
+                private readonly postgresService: PostgresConnectionService) {
         this.pool = this.postgresService.pool;
-        this.config = this.configService.config;
     }
 
     firstRow(data: QueryResult): any {

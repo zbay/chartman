@@ -6,7 +6,7 @@ import { ConfigService } from '../config/config.service';
 import { PostgresConnectionConfig } from '@shared/interfaces/postgres-connection-config';
 
 @Injectable()
-export class PostgresService {
+export class PostgresConnectionService {
     private _postgresConfig: PostgresConnectionConfig;
     private _pool: Pool;
 

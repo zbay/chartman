@@ -8,7 +8,7 @@ import { ALPHAVANTAGE_PREFIX, IEX_PROD_PREFIX, IEX_SANDBOX_PREFIX } from '@commo
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 import { StockChartData } from '@stocks/interfaces/stock-chart-data.interface';
 import { TechnicalsCalculationService } from '@technicals/services/technicals-calculation/technicals-calculation.service';
@@ -25,7 +25,7 @@ export class StockDataService {
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
-                private readonly postgresService: PostgresService,
+                private readonly postgresService: PostgresConnectionService,
                 private readonly technicalsCalculationService: TechnicalsCalculationService) {
         this.config = this.configService.config;
         this.pool = this.postgresService.pool;

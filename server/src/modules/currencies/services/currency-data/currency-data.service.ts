@@ -11,7 +11,7 @@ import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairChartData } from '@currencies/interfaces/currency-pair-chart-data.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { TechnicalsCalculationService } from '@technicals/services/technicals-calculation/technicals-calculation.service';
 import { TechnicalDataPoint } from '@technicals/interfaces/technical-data-point';
 import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
@@ -23,7 +23,7 @@ export class CurrencyDataService {
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
-                private readonly postgresService: PostgresService,
+                private readonly postgresService: PostgresConnectionService,
                 private readonly technicalsCalculationService: TechnicalsCalculationService) {
         this.config = this.configService.config;
         this.pool = this.postgresService.pool;

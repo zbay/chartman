@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 
-import { PostgresService } from '@shared/services/postgres/postgres.service';
+import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { LoggedErrorDto } from '@errors/dto/logged-error.dto';
 
 @Injectable()
 export class ErrorLoggingService {
     private _pool: Pool;
-    constructor(private readonly postgresService: PostgresService) {
+    constructor(private readonly postgresService: PostgresConnectionService) {
         this._pool = this.postgresService.pool;
     }
 
