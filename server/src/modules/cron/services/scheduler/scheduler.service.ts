@@ -8,15 +8,15 @@ import { AwsService } from '@shared/services/aws/aws.service';
 export class SchedulerService {
     constructor(private readonly awsService: AwsService) {}
 
-    saveSesNotifications() {
+    pingSQS() {
         // Three asterisks: once per day
-        cron.schedule(`* * *`, () => {
+        cron.schedule('* * * 01 00', () => {
             this.awsService.saveBounces();
             this.awsService.saveComplaints();
         });
     }
 
     runAllCronJobs() {
-        this.saveSesNotifications();
+        this.pingSQS();
     }
 }
