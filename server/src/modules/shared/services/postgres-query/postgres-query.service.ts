@@ -9,7 +9,7 @@ interface PostgresQueryOptions {
     function: string;
     errMsg?: string;
     errCode?: HttpStatus;
-    isArray?: true;
+    isArray?: boolean;
     params?: any[];
     rowName?: string;
     schema?: string;
@@ -27,12 +27,13 @@ export class PostgresQueryService {
         const params = options.params || [];
         const schema = options.schema || `public`;
         const rowName = options.rowName || `nameless`;
+        const isArray = options.isArray || false;
         const query = `
             SELECT ${schema}.${options.function}(
                 ${params.map((v, i) => '$' + (i + 1)).join(', ')}) AS ${rowName}`;
         return this.pool.query(query, params)
         .then((result: QueryResult) => {
-            if (!options.isArray) {
+            if (!isArray) {
                 return result.rows[0][rowName];
             } else {
                 return result.rows.map((row) => {
@@ -43,7 +44,7 @@ export class PostgresQueryService {
         .catch((err: Error) => {
             throw new CustomException({
                 name: `${options.function} error`,
-                message: options.errMsg || `Unspecified postgres function query error!`,
+                message: options.errMsg || err.message || `Unspecified postgres function query error!`,
                 stack: err.stack
             },
             options.errCode || HttpStatus.INTERNAL_SERVER_ERROR);

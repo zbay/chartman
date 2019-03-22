@@ -84,6 +84,11 @@ module.exports = {
         {
             op: `build`,
             type: `function`,
+            name: `account/fn_get_user_by_id`
+        },
+        {
+            op: `build`,
+            type: `function`,
             name: `stock/fn_add_stock_tracker`
         },
         {
