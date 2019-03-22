@@ -2,7 +2,6 @@ import { Injectable, HttpService, HttpStatus } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
 import { map, catchError } from 'rxjs/operators';
-import { Pool, QueryResult } from 'pg';
 
 import { CRYPTOCOMPARE_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
@@ -11,7 +10,7 @@ import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairChartData } from '@currencies/interfaces/currency-pair-chart-data.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
+import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { TechnicalsCalculationService } from '@technicals/services/technicals-calculation/technicals-calculation.service';
 import { TechnicalDataPoint } from '@technicals/interfaces/technical-data-point';
 import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
@@ -19,31 +18,20 @@ import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
 @Injectable()
 export class CurrencyDataService {
     private config: ChartmanAppConfig;
-    private pool: Pool;
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
-                private readonly postgresService: PostgresConnectionService,
+                private readonly postgresQueryService: PostgresQueryService,
                 private readonly technicalsCalculationService: TechnicalsCalculationService) {
         this.config = this.configService.config;
-        this.pool = this.postgresService.pool;
     }
 
     async getChartData(query: CurrencyPairIdsDTO): Promise<CurrencyPairChartData> {
-        const rowName = `pair`;
-        const pair: CurrencyPair = await this.pool.query(`SELECT * FROM public.fn_get_currency_pair($1, $2) AS ${rowName}`
-        , [query.fromID, query.toID])
-        .then((result: QueryResult) => {
-            return result.rows[0][rowName];
-        })
-        .catch((err: Error) => {
-            return new CustomException({
-                name: err.name,
-                message: `Could not retrieve the data for this currency pair.`,
-                stack: err.stack
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+        const pair: CurrencyPair = await this.postgresQueryService.queryFunction({
+            function: `fn_get_currency`,
+            params: [query.fromID, query.toID],
+            errMsg: `Could not retrieve the data for this currency pair.`
         });
-
         const from = pair.from;
         const to = pair.to;
         const requestURL
