@@ -2,8 +2,8 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 
 import { Pool, QueryResult } from 'pg';
 
-import { PostgresConnectionService } from '../postgres-connection/postgres.connection.service';
 import { CustomException } from '@common/exceptions/custom.exception';
+import { PostgresConnectionService } from '../postgres-connection/postgres.connection.service';
 
 interface PostgresQueryOptions {
     function: string;
@@ -13,6 +13,7 @@ interface PostgresQueryOptions {
     params?: any[];
     rowName?: string;
     schema?: string;
+    swallowError?: boolean;
 }
 
 @Injectable()
@@ -42,12 +43,17 @@ export class PostgresQueryService {
             }
         })
         .catch((err: Error) => {
-            throw new CustomException({
-                name: `${options.function} error`,
-                message: options.errMsg || err.message || `Unspecified postgres function query error!`,
-                stack: err.stack
-            },
-            options.errCode || HttpStatus.INTERNAL_SERVER_ERROR);
+            if (options.swallowError) {
+                // tslint:disable-next-line:no-console
+                console.log(err);
+            } else {
+                throw new CustomException({
+                    name: `${options.function} error`,
+                    message: options.errMsg || err.message || `Unspecified postgres function query error!`,
+                    stack: err.stack
+                },
+                options.errCode || HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         });
     }
 

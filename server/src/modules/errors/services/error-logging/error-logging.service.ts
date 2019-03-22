@@ -1,23 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Pool } from 'pg';
 
-import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { LoggedErrorDto } from '@errors/dto/logged-error.dto';
+import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 
+// TODO: figure out why JWT is required for this service
 @Injectable()
 export class ErrorLoggingService {
-    private _pool: Pool;
-    constructor(private readonly postgresService: PostgresConnectionService) {
-        this._pool = this.postgresService.pool;
-    }
+    constructor(private readonly postgresQueryService: PostgresQueryService) {}
 
     async logError(errorDTO: LoggedErrorDto): Promise<any> {
         const err: Error = errorDTO.error;
-        return this._pool.query(`SELECT public.fn_log_error($1, $2, $3, $4)`,
-                [errorDTO.userID, errorDTO.url, err.message, err.stack])
-            .catch((log_error) => {
-                // tslint:disable-next-line:no-console
-                console.log(log_error);
-            });
+        return this.postgresQueryService.queryFunction({
+            function: `fn_log_error`,
+            params: [errorDTO.userID, errorDTO.url, err.message, err.stack],
+            swallowError: true
+        });
     }
 }
