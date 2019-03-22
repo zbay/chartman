@@ -1,14 +1,13 @@
 import { Injectable, HttpStatus, HttpService } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
-import { Pool, QueryResult } from 'pg';
 import { map, catchError } from 'rxjs/operators';
 
 import { ALPHAVANTAGE_PREFIX, IEX_PROD_PREFIX, IEX_SANDBOX_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
+import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 import { StockChartData } from '@stocks/interfaces/stock-chart-data.interface';
 import { TechnicalsCalculationService } from '@technicals/services/technicals-calculation/technicals-calculation.service';
@@ -18,36 +17,29 @@ import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
 export class StockDataService {
     private readonly config: ChartmanAppConfig;
     private readonly IEX_PREFIX: string;
-    private readonly pool: Pool;
 
     // TODO: start using IEX and balance the load between it and AlphaVantage.
     // Wait until they've got OHLC data in their new Cloud API, first though
 
     constructor(private readonly configService: ConfigService,
                 private readonly httpService: HttpService,
-                private readonly postgresService: PostgresConnectionService,
+                private readonly postgresQueryService: PostgresQueryService,
                 private readonly technicalsCalculationService: TechnicalsCalculationService) {
         this.config = this.configService.config;
-        this.pool = this.postgresService.pool;
         this.IEX_PREFIX = this.config.env === `prod` ? IEX_PROD_PREFIX : IEX_SANDBOX_PREFIX;
     }
 
     async getChartData(symbolID: number): Promise<StockChartData> {
-        const rowName = `stock`;
-        const stock: Stock = await this.pool.query(`SELECT * from public.fn_get_stock($1) AS ${rowName}`
-            , [symbolID])
-            .then((data: QueryResult) => {
-                const returnedStock = data.rows[0][rowName];
-                returnedStock.id = symbolID;
-                return returnedStock;
-            })
-            .catch((err: Error) => {
-                throw new CustomException({
-                    stack: err.stack,
-                    message: `Could not retrieve the data for this tracker.`,
-                    name: err.message
-                }, HttpStatus.INTERNAL_SERVER_ERROR);
-            });
+        const stock: Stock = await this.postgresQueryService.queryFunction({
+            function: `fn_get_stock`,
+            params: [symbolID],
+            errMsg: `Could not retrieve the data for this tracker.`
+        })
+        .then((returnedStock) => {
+            // todo: change fn_get_stock to return Stock type
+            returnedStock.id = symbolID;
+            return returnedStock;
+        });
         const requestURL
             = `${ALPHAVANTAGE_PREFIX}function=TIME_SERIES_DAILY&symbol=${stock.symbol}&outputSize=compact&apikey=${this.config.alphaVantageApiKey}`;
         return this.httpService.get(requestURL)

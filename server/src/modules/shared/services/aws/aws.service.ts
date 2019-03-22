@@ -1,15 +1,14 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 
-import { Pool } from 'pg';
-
 // There needs to be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables
 import { config as AWS_CONFIG, SES, SQS, AWSError } from 'aws-sdk';
+
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
-import { PostgresConnectionService } from '@shared/services/postgres-connection/postgres.connection.service';
 import { ReceiveMessageResult, Message } from 'aws-sdk/clients/sqs';
+import { PostgresQueryService } from '../postgres-query/postgres-query.service';
 
 AWS_CONFIG.update({region: 'us-east-1'});
 
@@ -18,14 +17,12 @@ const HELP_EMAIL = `chartman.help@gmail.com`;
 @Injectable()
 export class AwsService {
     private chartmanConfig: ChartmanAppConfig;
-    private pool: Pool;
     private sqs: SQS;
 
     constructor(private readonly configService: ConfigService,
                 private readonly errorLoggingService: ErrorLoggingService,
-                private readonly postgresService: PostgresConnectionService) {
+                private readonly postgresQueryService: PostgresQueryService) {
         this.chartmanConfig = this.configService.config;
-        this.pool = this.postgresService.pool;
         this.sqs = new SQS();
     }
 
@@ -68,12 +65,15 @@ export class AwsService {
                         } else {
                             Promise.all(
                                 bounce.bouncedRecipients.map((recipient) => {
-                                    return this.pool.query(`SELECT public.fn_save_bounce($1)`, [{
-                                        bounce_type: bounce.bounceType,
-                                        bounce_subtype: bounce.bounceSubType,
-                                        timestamp: bounce.timestamp,
-                                        bounce_recipient: recipient.emailAddress
-                                    }]);
+                                    return this.postgresQueryService.queryFunction({
+                                        function: `fn_save_bounce`,
+                                        params: [{
+                                            bounce_type: bounce.bounceType,
+                                            bounce_subtype: bounce.bounceSubType,
+                                            timestamp: bounce.timestamp,
+                                            bounce_recipient: recipient.emailAddress
+                                        }]
+                                    });
                                 }))
                                 .then(() => {
                                     this.sqs.deleteMessage(deleteParams, (delErr) => {
@@ -84,7 +84,7 @@ export class AwsService {
                                 })
                                 .catch((error: Error) => {
                                     this.errorLoggingService.logError({
-                                        error: err,
+                                        error,
                                         userID: null,
                                         url: bounceQueueURL
                                     });
@@ -133,11 +133,14 @@ export class AwsService {
                             const complaint = content.complaint;
                             Promise.all(
                                 complaint.complainedRecipients.map((recipient) => {
-                                    return this.pool.query(`SELECT public.fn_save_complaint($1)`, [{
-                                        timestamp: complaint.timestamp,
-                                        message_id: content.mail.messageId,
-                                        complained_recipient: recipient.emailAddress
-                                    }]);
+                                    return this.postgresQueryService.queryFunction({
+                                        function: `fn_save_complaint`,
+                                        params: [{
+                                            timestamp: complaint.timestamp,
+                                            message_id: content.mail.messageId,
+                                            complained_recipient: recipient.emailAddress
+                                        }]
+                                    });
                                 }))
                                 .then(() => {
                                     this.sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
