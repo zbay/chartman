@@ -31,7 +31,7 @@ export class StockDataService {
 
     async getChartData(symbol_id: number): Promise<StockChartData> {
         const stock: Stock = await this.postgres_query_service.queryFunction({
-            function: `fn_get_stocks`,
+            function: `fn_get_stock`,
             params: [symbol_id],
             err_msg: `Could not retrieve the data for this tracker.`
         })

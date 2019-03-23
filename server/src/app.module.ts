@@ -6,14 +6,16 @@ import { AccountsModule } from './modules/accounts/accounts.module';
 import { ConfigService } from '@shared/services/config/config.service';
 import { CronModule } from 'modules/cron/cron.module';
 import { CurrenciesModule } from '@currencies/currencies.module';
+import { DbMigrationModule } from '@migration/db-migration.module';
 import { ErrorsModule } from '@errors/errors.module';
+import { MigrationService } from '@migration/services/migration/migration.service';
 import { SchedulerService } from 'modules/cron/services/scheduler/scheduler.service';
 import { SharedModule } from '@shared/shared.module';
 import { StocksModule } from '@stocks/stocks.module';
 import { TechnicalsModule } from '@technicals/technicals.module';
 
 @Module({
-  imports: [AccountsModule, CronModule, CurrenciesModule, ErrorsModule, SharedModule, StocksModule, TechnicalsModule],
+  imports: [AccountsModule, CronModule, CurrenciesModule, DbMigrationModule, ErrorsModule, SharedModule, StocksModule, TechnicalsModule],
   controllers: [],
   providers: [
     {
@@ -26,11 +28,13 @@ export class AppModule {
   static host: string;
   static env: string;
 
-  constructor(private readonly configService: ConfigService,
-              private readonly schedulerService: SchedulerService) {
-    AppModule.port = this.configService.get(`port`);
-    AppModule.host = this.configService.get(`host`);
-    AppModule.env = this.configService.get(`env`);
-    this.schedulerService.runAllCronJobs();
+  constructor(private readonly config_service: ConfigService,
+              private readonly migration_service: MigrationService,
+              private readonly scheduler_service: SchedulerService) {
+    AppModule.port = this.config_service.get(`port`);
+    AppModule.host = this.config_service.get(`host`);
+    AppModule.env = this.config_service.get(`env`);
+    this.migration_service.migratePostgresSchema();
+    this.scheduler_service.runAllCronJobs();
   }
 }

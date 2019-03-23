@@ -47,10 +47,10 @@ export class NewCurrencyPairTrackerComponent implements OnInit {
      // text input change waits 0.3 sec, while the crypto checkbox takes effect immediately
      return combineLatest(
       currencyGroup.get('user_input').valueChanges
-        .pipe<string, string, string>(
+        .pipe(
           filter((val) => typeof val === 'string'),
           tap(() => {
-            this.search_filter_group.setValue({search_filter: this.search_filter_group.getRawValue().searchFilter});
+            this.search_filter_group.setValue({search_filter: this.search_filter_group.getRawValue().search_filter});
           }),
           debounceTime(300)
         ),

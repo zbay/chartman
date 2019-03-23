@@ -19,14 +19,17 @@
       "@currencies/*": [
         "modules/currencies/*"
       ],
+      "@errors/*": [
+        "modules/errors/*"
+      ],
+      "@migration/*": [
+        "modules/db-migration/*"
+      ],
       "@shared/*": [
         "modules/shared/*"
       ],
       "@stocks/*": [
         "modules/stocks/*"
-      ],
-      "@errors/*": [
-        "modules/errors/*"
       ],
       "@technicals/*": [
         "modules/technicals/*"

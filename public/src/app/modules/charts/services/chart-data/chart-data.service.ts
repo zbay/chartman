@@ -17,23 +17,11 @@ export class ChartDataService {
 
   getStockData(stock_id: number): Observable<StockChartData> {
     return this.http.get(`${environment.api_endpoint}/stocks/chart-data?stock_id=${stock_id}`)
-      .pipe(map((response: any) => response.data),
-        map((results: StockChartData) => {
-        return {
-          stock: results.stock,
-          series: results.series
-        };
-      }));
+      .pipe(map((response: any) => response.data));
   }
 
   getCurrencyPairData(from_id: number, to_id: number): Observable<CurrencyPairChartData> {
     return this.http.get(`${environment.api_endpoint}/currencies/chart-data?from_id=${from_id}&to_id=${to_id}`)
-      .pipe(map((response: any) => response.data),
-        map((results: CurrencyPairChartData) => {
-        return {
-          currencyPair: results.currencyPair,
-          series: results.series
-        };
-      }));
+      .pipe(map((response: any) => response.data));
   }
 }

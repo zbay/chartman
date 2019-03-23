@@ -18,17 +18,6 @@ services:
     #   POSTGRES_PORT: 5432
     #   POSTGRES_DATABASE: 'example'
   
-  db_migrator:
-    image: zbayindustries/chartman_db_migrator
-    depends_on:
-      - postgres
-    ports:
-      - 2999:2999
-    environment:
-      - ENV
-    env_file:
-      - db/.env.${ENV}
-  
   nest:
     image: zbayindustries/chartman_nest
     ports: 

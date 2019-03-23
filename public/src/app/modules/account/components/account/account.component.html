@@ -26,7 +26,7 @@
   </button>
   </div>
 </mat-card>
-<mat-card [formGroup]="accountGroup"
+<mat-card [formGroup]="account_group"
     fxLayout="column"
     fxLayoutAlign="start center"
     class="background-box mat-elevation-z4 seventy-wide ninety-thin">
@@ -77,7 +77,7 @@
       fxLayout="column"
       fxLayoutAlign="start center"
       class="background-box mat-elevation-z4"
-      [disabled]="accountGroup.invalid"
+      [disabled]="account_group.invalid"
       (click)="attemptEdit()">
       Save changes
     </button>
