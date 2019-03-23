@@ -7,25 +7,25 @@ import { UserService } from '@accounts/services/user/user.service';
 @Controller('accounts/reset-password')
 export class ResetPasswordController {
 
-    constructor(private readonly userService: UserService) {
+    constructor(private readonly user_service: UserService) {
     }
 
     @Post('request-password-change')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async requestPasswordChange(@Body() simpleEmailDto: SimpleEmailDTO): Promise<any> {
-        return this.userService.requestPasswordChange(simpleEmailDto.email);
+    async requestPasswordChange(@Body() simple_email_dto: SimpleEmailDTO): Promise<any> {
+        return this.user_service.requestPasswordChange(simple_email_dto.email);
     }
 
     @Get('validate-change-request/:route')
     @HttpCode(HttpStatus.OK)
     async validatePasswordChangeRequest(@Param('route') route: string): Promise<boolean> {
-        return this.userService.isValidPasswordChangeRequest(route);
+        return this.user_service.isValidPasswordChangeRequest(route);
     }
 
-    @Post('change-password/:passwordChangeID')
+    @Post('change-password/:password_change_id')
     @HttpCode(HttpStatus.NO_CONTENT)
-    changePassword(@Body() changePasswordDto: ChangePasswordUserDTO, @Param('passwordChangeID') passwordChangeID: string): Promise<void> {
-        return this.userService.changePassword(passwordChangeID, changePasswordDto);
+    changePassword(@Body() change_password_dto: ChangePasswordUserDTO, @Param('password_change_id') password_change_id: string): Promise<void> {
+        return this.user_service.changePassword(password_change_id, change_password_dto);
     }
 
 }

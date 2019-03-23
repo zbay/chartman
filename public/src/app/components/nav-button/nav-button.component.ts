@@ -28,13 +28,13 @@ export class NavButtonComponent extends SubscribingComponent implements OnInit, 
   @Input() requireLoggedOut: boolean;
   @Input() equivalentLink: string;
 
-  constructor(private readonly authService: AuthService,
-      private readonly cdRef: ChangeDetectorRef,
-      private readonly navigationService: NavigationService) {
+  constructor(private readonly auth_service: AuthService,
+      private readonly cd_ref: ChangeDetectorRef,
+      private readonly navigation_service: NavigationService) {
         super();
-        this.navbarHasLoaded$ = this.navigationService.navbarHasLoaded$;
-        this.loggedIn$ = this.authService.isLoggedIn$;
-        this.currentUrl$ = this.navigationService.currentUrl$;
+        this.navbarHasLoaded$ = this.navigation_service.navbarHasLoaded$;
+        this.loggedIn$ = this.auth_service.is_logged_in$;
+        this.currentUrl$ = this.navigation_service.currentUrl$;
    }
 
   ngOnInit() {}
@@ -43,11 +43,11 @@ export class NavButtonComponent extends SubscribingComponent implements OnInit, 
     this.navbarHasLoaded$
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => {
-      this.cdRef.detectChanges();
+      this.cd_ref.detectChanges();
     });
   }
 
   closeNavBar() {
-    this.navigationService.closeNavBar();
+    this.navigation_service.closeNavBar();
   }
 }

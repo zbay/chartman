@@ -1,6 +1,6 @@
 <mat-card 
   class="background-box near-max-width mat-elevation-z4 padded" 
-  [formGroup]="stockGroup">
+  [formGroup]="stock_group">
   <h2>Save a stock</h2>
     <div fxLayout.gt-sm="row"
          fxLayout.lt-md="column"
@@ -10,18 +10,18 @@
           #searchBox
           placeholder="Stock" 
           matInput 
-          formControlName="userInput" 
+          formControlName="user_input" 
           [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
           panelWidth="{{ searchBox.style.width }}">
-          <mat-option *ngFor="let stock of (filteredStocks$ | async)" [value]="stock"
+          <mat-option *ngFor="let stock of (filtered_stocks$ | async)" [value]="stock"
             (click)="setNewStock(stock)">
             <span>{{ stock.name }}</span>
             <small> | {{stock.symbol}}</small>
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <button mat-button (click)="addStock()" [disabled]="stockGroup.invalid || !newStock" style="display:inline">
+      <button mat-button (click)="addStock()" [disabled]="stock_group.invalid || !new_stock" style="display:inline">
         <mat-icon>add_circle</mat-icon>
       </button>
     </div>

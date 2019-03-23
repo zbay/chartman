@@ -18,40 +18,40 @@ import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
   animations: [Animations.fadeInOut]
 })
 export class ResetPasswordComponent extends ExitAnimatingComponent implements OnInit {
-  routeID: string;
+  route_id: string;
   fb = new FormBuilder();
   resetGroup: FormGroup = this.fb.group({
     email: [ '', [Validators.required, Validators.email] ],
     password: [ '', [Validators.required, Validators.minLength(5)] ],
-    confirmPassword: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
+    confirm_password: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
   });
 
-  constructor(private readonly accountService: AccountService,
-    private readonly errorService: ErrorService,
+  constructor(private readonly account_service: AccountService,
+    private readonly error_service: ErrorService,
     private route: ActivatedRoute,
     private router: Router,
-    private readonly snackbarService: SnackBarService) {
+    private readonly snackbar_service: SnackBarService) {
       super();
    }
 
   ngOnInit() {
     this.route.paramMap.pipe(
-      map((params) => params.get('routeID')),
+      map((params) => params.get('route_id')),
       distinctUntilChanged()
     )
-    .subscribe((routeID) => {
-      this.routeID = routeID;
+    .subscribe((route_id) => {
+      this.route_id = route_id;
     });
   }
 
   changePassword() {
-    this.accountService.changePassword({routeID: this.routeID, user: this.resetGroup.value})
+    this.account_service.changePassword({route_id: this.route_id, user: this.resetGroup.value})
     .subscribe(() => {
-      this.snackbarService.openSnackBar(`Changed password!`);
+      this.snackbar_service.openSnackBar(`Changed password!`);
       this.router.navigate([`/`]);
     },
     (res) => {
-      this.errorService.openErrorDialog(res.error);
+      this.error_service.openErrorDialog(res.error);
     });
   }
 

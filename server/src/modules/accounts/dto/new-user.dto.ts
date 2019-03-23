@@ -12,7 +12,7 @@ export class NewUserDTO {
     @MaxLength(100, {
         message: `First name is too long!`
     })
-    readonly firstName: string;
+    readonly first_name: string;
 
     @ApiModelProperty({ example: `McPerson` })
     @IsString()
@@ -21,7 +21,7 @@ export class NewUserDTO {
     @MaxLength(100, {
         message: `Last name is too long!`
     })
-    readonly lastName: string;
+    readonly last_name: string;
 
     @ApiModelProperty({ example: `person@gmail.com` })
     @IsEmail({}, {message: `Invalid email address!`})
@@ -40,5 +40,5 @@ export class NewUserDTO {
     @ApiModelProperty({ example: `thisismypassword1` })
     @IsString()
     @IsNotEmpty()
-    readonly confirmPassword: string;
+    readonly confirm_password: string;
   }

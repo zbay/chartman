@@ -1,9 +1,9 @@
--- select public.fn_add_user('{"firstName": "Zach", "lastName": "Williams", "email": "z@abc.com", "password": "12345"}'::json);
+-- select public.fn_add_user('{"first_name": "Zach", "last_Name": "Williams", "email": "z@abc.com", "password": "12345"}'::json);
 create or replace function fn_add_user(user_obj json) RETURNS json AS $$
 		declare just_created_user record;
         BEGIN
                insert into users (first_name, last_name, email, "password", permissions)
-               	values (user_obj->>'firstName', user_obj->>'lastName', user_obj->>'email', user_obj->>'password',
+               	values (user_obj->>'first_name', user_obj->>'last_name', user_obj->>'email', user_obj->>'password',
                		'{''free''}');
               select user_id, email, permissions from users where email = user_obj->>'email' into just_created_user;
               insert into user_permissions (user_id, permission_id)

@@ -1,8 +1,8 @@
 export interface PasswordChangeCredentials {
-    routeID: string;
+    route_id: string;
     user: {
       email: string;
       password: string;
-      confirmPassword: string;
+      confirm_password: string;
     };
   }

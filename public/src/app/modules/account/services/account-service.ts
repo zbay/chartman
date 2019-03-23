@@ -9,7 +9,7 @@ import { environment } from '@env/environment';
 import { NewCredentials } from '@common/models/new-credentials';
 import { PasswordChangeCredentials } from '@account/models/password-change-credentials';
 
-const accountsUrl = `${environment.apiEndpoint}/accounts`;
+const accounts_url = `${environment.api_endpoint}/accounts`;
 
 @Injectable({
   providedIn: 'root'
@@ -23,24 +23,24 @@ export class AccountService {
   }
 
   changePassword (creds: PasswordChangeCredentials): Observable<any> {
-    return this.http.post(`${accountsUrl}/reset-password/change-password/${creds.routeID}`, creds.user);
+    return this.http.post(`${accounts_url}/reset-password/change-password/${creds.route_id}`, creds.user);
   }
 
-  checkValidPasswordChangeRequest (routeID: string): Observable<any> {
-    return this.http.get(`${accountsUrl}/reset-password/validate-change-request/${routeID}`);
+  checkValidPasswordChangeRequest (route_id: string): Observable<any> {
+    return this.http.get(`${accounts_url}/reset-password/validate-change-request/${route_id}`);
   }
 
   getLoggedInUser (): Observable<BasicProfile> {
-    return this.http.get(`${accountsUrl}/user`)
+    return this.http.get(`${accounts_url}/user`)
       .pipe(map((res: any) => res.data));
   }
 
   requestPasswordChange (email: string): Observable<any> {
-    return this.http.post(`${accountsUrl}/reset-password/request-password-change`, {email: email});
+    return this.http.post(`${accounts_url}/reset-password/request-password-change`, {email: email});
   }
 
   saveEdit (user: NewCredentials): Observable<any> {
-    return this.http.patch(`${accountsUrl}/user`, user);
+    return this.http.patch(`${accounts_url}/user`, user);
   }
 
 }

@@ -25,7 +25,7 @@ const routes: Routes = [
     component: AccountComponent,
     canDeactivate: [ExitAnimationGuard] },
   {
-    path: 'reset-password/:routeID',
+    path: 'reset-password/:route_id',
     canActivate: [PasswordResetGuard],
     component: ResetPasswordComponent,
     canDeactivate: [ExitAnimationGuard]

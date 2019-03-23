@@ -7,12 +7,12 @@ import { PostgresConnectionConfig } from '@shared/interfaces/postgres-connection
 
 @Injectable()
 export class PostgresConnectionService {
-    private _postgresConfig: PostgresConnectionConfig;
+    private _postgres_config: PostgresConnectionConfig;
     private _pool: Pool;
 
-    constructor(private readonly configService: ConfigService) {
-        this._postgresConfig = this.configService.get(`postgresConfig`);
-        this._pool = new Pool(this._postgresConfig);
+    constructor(private readonly config_service: ConfigService) {
+        this._postgres_config = this.config_service.get(`postgres_config`);
+        this._pool = new Pool(this._postgres_config);
     }
 
     get pool(): Pool {

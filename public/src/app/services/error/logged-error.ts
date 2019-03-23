@@ -1,5 +1,5 @@
 export interface LoggedError {
     error: Error;
     url: string;
-    userID?: number;
+    user_id?: number;
 }

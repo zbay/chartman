@@ -8,6 +8,6 @@ export class SimpleStockIdDTO {
     @ApiModelProperty({ example: 1})
     @ToInt()
     @IsNotEmpty()
-    readonly stockID: number;
+    readonly stock_id: number;
 
   }

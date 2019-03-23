@@ -14,8 +14,8 @@ create or replace function public.fn_update_user(user_obj jsonb, update_user_id 
 	         end if;
 	          
 	          update public.users 
-	          set first_name = user_obj->>'firstName',
-	          	last_name = user_obj->>'lastName',
+	          set first_name = user_obj->>'first_name',
+	          	last_name = user_obj->>'last_name',
 	          	email = user_obj->>'email',
 	          	"password" = user_obj->>'password'
 	          where user_id = update_user_id;

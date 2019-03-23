@@ -22,5 +22,5 @@ export class ChangePasswordUserDTO {
     @ApiModelProperty({ example: `thisismypassword1` })
     @IsString()
     @IsNotEmpty()
-    readonly confirmPassword: string;
+    readonly confirm_password: string;
   }

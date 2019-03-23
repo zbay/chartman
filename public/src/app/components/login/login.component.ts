@@ -17,41 +17,41 @@ import { MatchingPasswordsValidator } from '@app/validators/matching-passwords';
 })
 export class LoginComponent extends ExitAnimatingComponent implements OnInit {
   fb = new FormBuilder();
-  loginGroup: FormGroup = this.fb.group({
+  login_group: FormGroup = this.fb.group({
     email: [ '', [Validators.required, Validators.email] ],
     password: [ '', [Validators.required, Validators.minLength(8)] ]
   });
-  returnUrl: string;
-  signupGroup: FormGroup = this.fb.group({
-    firstName: [ '', [Validators.required, Validators.maxLength(100)]],
-    lastName: [ '', [Validators.required, Validators.maxLength(100)]],
+  return_url: string;
+  signup_group: FormGroup = this.fb.group({
+    first_name: [ '', [Validators.required, Validators.maxLength(100)]],
+    last_name: [ '', [Validators.required, Validators.maxLength(100)]],
     email: [ '', [Validators.required, Validators.email] ],
     password: [ '', [Validators.required, Validators.minLength(8)] ],
-    confirmPassword: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
+    confirm_password: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
   });
 
-  constructor(private readonly authService: AuthService,
+  constructor(private readonly auth_service: AuthService,
               private readonly route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
     this.route.queryParams.pipe(
-      map((params) => params.returnUrl),
+      map((params) => params.return_url),
       distinctUntilChanged()
     )
-    .subscribe((returnUrl) => {
-      this.returnUrl = returnUrl;
-      this.authService.attemptAutoLogin(returnUrl);
+    .subscribe((return_url) => {
+      this.return_url = return_url;
+      this.auth_service.attemptAutoLogin(return_url);
     });
   }
 
   loginAttempt() {
-    this.authService.login(this.loginGroup.value, this.returnUrl);
+    this.auth_service.login(this.login_group.value, this.return_url);
   }
 
   signupAttempt() {
-    this.authService.signup(this.signupGroup.value, this.returnUrl);
+    this.auth_service.signup(this.signup_group.value, this.return_url);
   }
 
 }

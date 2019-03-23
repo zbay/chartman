@@ -16,7 +16,7 @@ export class PasswordResetGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      return this.accountService.checkValidPasswordChangeRequest(next.params.routeID)
+      return this.accountService.checkValidPasswordChangeRequest(next.params.route_id)
       .pipe(map((response: any) => response.data),
         map((isValid: boolean) => {
           if (isValid) {

@@ -7,13 +7,13 @@ import { LoginService } from '@accounts/services/login/login.service';
 @Controller('accounts/login')
 export class LoginController {
 
-    constructor(private readonly loginService: LoginService) {
+    constructor(private readonly login_service: LoginService) {
     }
 
     @Post()
     @HttpCode(HttpStatus.OK)
     async login(@Body() credentials: LoginDTO): Promise<string> {
-        return await this.loginService.login(credentials);
+        return await this.login_service.login(credentials);
 
     }
 

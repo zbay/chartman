@@ -1,15 +1,15 @@
 import { PostgresConnectionConfig } from './postgres-connection-config';
 
 export interface ChartmanAppConfig {
-    alphaVantageApiKey: string;
-    cryptoCompareApiKey: string;
+    alphavantage_api_key: string;
+    cryptocompare_api_key: string;
     env: string;
     host: string;
-    iexApiPublicToken: string;
-    iexApiSecretToken: string;
-    jwtSecret: string;
+    iex_api_public_token: string;
+    iex_api_secret_token: string;
+    jwt_secret: string;
     port: number;
-    postgresConfig: PostgresConnectionConfig;
-    sesBounceQueueURL: string;
-    sesComplaintQueueURL: string;
+    postgres_config: PostgresConnectionConfig;
+    ses_bounce_queue_url: string;
+    ses_complaint_queue_url: string;
 }

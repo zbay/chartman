@@ -134,11 +134,6 @@ module.exports = {
         {
             op: `build`,
             type: `function`,
-            name: `account/fn_validate_password_change_request`
-        },
-        {
-            op: `build`,
-            type: `function`,
             name: `account/fn_change_password`
         },
         {

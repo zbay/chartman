@@ -12,23 +12,23 @@ export class ConfigService {
         customEnv.env(process.env.NODE_ENV);
         const env = process.env;
         this._config = {
-            alphaVantageApiKey: env.ALPHAVANTAGE_API_KEY,
-            cryptoCompareApiKey: env.CRYPTOCOMPARE_API_KEY,
+            alphavantage_api_key: env.ALPHAVANTAGE_API_KEY,
+            cryptocompare_api_key: env.CRYPTOCOMPARE_API_KEY,
             env: env.APP_ENV,
             host: env.HOST,
-            iexApiPublicToken: env.IEX_PUBLIC_TOKEN,
-            iexApiSecretToken: env.IEX_SECRET_TOKEN,
-            jwtSecret: env.JWT_SECRET,
+            iex_api_public_token: env.IEX_PUBLIC_TOKEN,
+            iex_api_secret_token: env.IEX_SECRET_TOKEN,
+            jwt_secret: env.JWT_SECRET,
             port: Number(env.PORT),
-            postgresConfig: {
+            postgres_config: {
                 host: env.POSTGRES_HOST,
                 user: env.POSTGRES_USER,
                 password: env.POSTGRES_PASSWORD,
                 port: Number(env.POSTGRES_PORT),
                 database: env.POSTGRES_DATABASE
             },
-            sesBounceQueueURL: env.SES_BOUNCE_QUEUE_URL,
-            sesComplaintQueueURL: env.SES_COMPLAINT_QUEUE_URL
+            ses_bounce_queue_url: env.SES_BOUNCE_QUEUE_URL,
+            ses_complaint_queue_url: env.SES_COMPLAINT_QUEUE_URL
         };
     }
 

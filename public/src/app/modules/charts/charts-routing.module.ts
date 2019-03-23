@@ -16,7 +16,7 @@ const routes: Routes = [
     component: TechnicalsChartComponent,
     canDeactivate: [ExitAnimationGuard]
   },
-  { path: 'stocks/chart/:stockID',
+  { path: 'stocks/chart/:stock_id',
     pathMatch: 'full',
     component: TechnicalsChartComponent,
     canDeactivate: [ExitAnimationGuard]

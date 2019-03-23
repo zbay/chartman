@@ -8,6 +8,6 @@ export class SimpleSearchQueryDTO {
     @ApiModelProperty({ example: `Finan` })
     @IsString()
     @Trim()
-    readonly searchQuery: string;
+    readonly search_query: string;
 
   }

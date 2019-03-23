@@ -21,36 +21,36 @@ import { CurrencyTrackerService } from '@currencies/services/currency-tracker/cu
 
 @Controller('currencies')
 export class CurrenciesController {
-    constructor(private readonly currencyDataService: CurrencyDataService,
-                private readonly currencyTrackerService: CurrencyTrackerService) {}
+    constructor(private readonly currency_data_service: CurrencyDataService,
+                private readonly currency_tracker_service: CurrencyTrackerService) {}
 
     @Get('chart-data')
     @HttpCode(HttpStatus.OK)
     getStockChartData(@Query() query: CurrencyPairIdsDTO): Promise<CurrencyPairChartData> {
-        return this.currencyDataService.getChartData(query);
+        return this.currency_data_service.getChartData(query);
     }
 
     @Get('my-currency-pairs')
     @HttpCode(HttpStatus.OK)
     getMyCurrencyPairs(@Req() req): Promise<CurrencyPair[]> {
-        return this.currencyTrackerService.getMyCurrencyPairs(req.payload.sub);
+        return this.currency_tracker_service.getMyCurrencyPairs(req.payload.sub);
     }
 
     @Post('autocomplete')
     @HttpCode(HttpStatus.OK)
-    autocompleteCurrencies(@Body() searchQueryDTO: CurrencySearchQueryDTO): Promise<Currency[]> {
-        return this.currencyTrackerService.autocompleteCurrencies(searchQueryDTO);
+    autocompleteCurrencies(@Body() search_query_dto: CurrencySearchQueryDTO): Promise<Currency[]> {
+        return this.currency_tracker_service.autocompleteCurrencies(search_query_dto);
     }
 
     @Post()
     @HttpCode(HttpStatus.NO_CONTENT)
-    addCurrencyPair(@Req() req, @Body() currencyPair: CreateCurrencyPairTrackerDTO): Promise<any> {
-        return this.currencyTrackerService.addCurrencyPairTracker(req.payload.sub, currencyPair);
+    addCurrencyPair(@Req() req, @Body() currency_pair: CreateCurrencyPairTrackerDTO): Promise<any> {
+        return this.currency_tracker_service.addCurrencyPairTracker(req.payload.sub, currency_pair);
     }
 
     @Delete()
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteCurrencyPair(@Req() req, @Query() query: CurrencyPairIdsDTO): Promise<any> {
-        return this.currencyTrackerService.deleteCurrencyPair(req.payload.sub, query);
+        return this.currency_tracker_service.deleteCurrencyPair(req.payload.sub, query);
     }
 }

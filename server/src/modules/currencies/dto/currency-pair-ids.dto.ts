@@ -8,11 +8,11 @@ export class CurrencyPairIdsDTO {
     @ApiModelProperty({ example: 1 })
     @ToInt()
     @IsNotEmpty()
-    readonly fromID: number;
+    readonly from_id: number;
 
     @ApiModelProperty({ example: 2 })
     @ToInt()
     @IsNotEmpty()
-    readonly toID: number;
+    readonly to_id: number;
 
   }

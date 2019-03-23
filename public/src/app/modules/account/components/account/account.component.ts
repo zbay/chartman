@@ -20,21 +20,21 @@ const HOME_URL = `/charting/stocks`;
 })
 export class AccountComponent extends ExitAnimatingComponent implements OnInit {
   fb = new FormBuilder();
-  accountGroup: FormGroup = this.fb.group({
-    firstName: [ '', [Validators.required, Validators.maxLength(100)]],
-    lastName: [ '', [Validators.required, Validators.maxLength(100)]],
+  account_group: FormGroup = this.fb.group({
+    first_name: [ '', [Validators.required, Validators.maxLength(100)]],
+    last_name: [ '', [Validators.required, Validators.maxLength(100)]],
     email: [ '', [Validators.required, Validators.email] ],
     password: [ '', [Validators.required, Validators.minLength(8)] ],
-    confirmPassword: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
+    confirm_password: [ '', [Validators.required, MatchingPasswordsValidator('password')] ]
   });
-  activationGroup: FormGroup = this.fb.group({
-    membershipCode: [ '', [Validators.required]],
+  activation_group: FormGroup = this.fb.group({
+    membership_code: [ '', [Validators.required]],
   });
 
-  constructor(private readonly accountService: AccountService,
-    private readonly errorService: ErrorService,
-    private readonly navigationService: NavigationService,
-    private readonly snackbarService: SnackBarService) {
+  constructor(private readonly account_service: AccountService,
+    private readonly error_service: ErrorService,
+    private readonly navigation_service: NavigationService,
+    private readonly snackbar_service: SnackBarService) {
       super();
      }
 
@@ -43,13 +43,13 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
   }
 
   activationAttempt(): void {
-    this.accountService
+    this.account_service
       .attemptActivation()
       .subscribe((response) => {
         // TODO
     },
     (err: Error) => {
-      this.errorService.openErrorDialog({
+      this.error_service.openErrorDialog({
         message: err.message || 'Premium memberships are not yet available!',
         name: err.name,
         stack: err.stack
@@ -58,13 +58,13 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
   }
 
   attemptEdit(): void {
-    const user = this.accountGroup.value;
-    this.accountService.saveEdit(user).subscribe((response) => {
-        this.snackbarService.openSnackBar(`Account changes saved!`);
-        this.navigationService.navigate(HOME_URL);
+    const user = this.account_group.value;
+    this.account_service.saveEdit(user).subscribe((response) => {
+        this.snackbar_service.openSnackBar(`Account changes saved!`);
+        this.navigation_service.navigate(HOME_URL);
     },
     (res) => {
-      this.errorService.openErrorDialog({
+      this.error_service.openErrorDialog({
         message: res.error.message || 'Could not save the changes to your account!',
         name: res.error.name,
         stack: res.error.error
@@ -73,16 +73,16 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
   }
 
   loadCurrentProfile(): void {
-    this.accountService.getLoggedInUser()
+    this.account_service.getLoggedInUser()
     .subscribe((profile: BasicProfile) => {
-        this.accountGroup.patchValue(
-          { firstName: profile.first_name,
-            lastName: profile.last_name,
+        this.account_group.patchValue(
+          { first_name: profile.first_name,
+            last_name: profile.last_name,
             email: profile.email
           });
       },
     (res) => {
-        this.errorService.openErrorDialog({
+        this.error_service.openErrorDialog({
           message: res.error.message || 'Could not load your account details!',
           name: res.error.name,
           stack: res.error.stack

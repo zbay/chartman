@@ -8,11 +8,11 @@ export class CurrencySearchQueryDTO {
     @ApiModelProperty({ example: `Dollar` })
     @IsString()
     @Trim()
-    readonly searchQuery: string;
+    readonly search_query: string;
 
     @ApiModelProperty({ example: `Fiat,Crypto` })
     @IsString()
     @Trim()
-    readonly searchFilter: string;
+    readonly search_filter: string;
 
   }

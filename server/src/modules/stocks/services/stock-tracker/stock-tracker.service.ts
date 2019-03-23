@@ -14,35 +14,35 @@ import { Stock } from '@stocks/interfaces/stock.interface';
 export class StockTrackerService {
     private config: ChartmanAppConfig;
 
-    constructor(private readonly configService: ConfigService,
-                private readonly httpService: HttpService,
-                private readonly postgresQueryService: PostgresQueryService) {
-        this.config = this.configService.config;
+    constructor(private readonly config_service: ConfigService,
+                private readonly http_service: HttpService,
+                private readonly postgres_query_service: PostgresQueryService) {
+        this.config = this.config_service.config;
     }
 
-    async autocompleteStocks(searchQuery: string): Promise<Stock[]> {
-        return this.postgresQueryService.queryFunction({
+    async autocompleteStocks(search_query: string): Promise<Stock[]> {
+        return this.postgres_query_service.queryFunction<Stock[]>({
             function: `fn_auto_complete_stock`,
-            params: [searchQuery],
-            isArray: true,
-            errMsg: `Auto-complete failed!`
+            params: [search_query],
+            returns_array: true,
+            err_msg: `Auto-complete failed!`
         });
     }
 
-    async getMyStocks(userID: number): Promise<Stock[]> {
-        return this.postgresQueryService.queryFunction({
+    async getMyStocks(user_id: number): Promise<Stock[]> {
+        return this.postgres_query_service.queryFunction<Stock[]>({
             function: `fn_get_my_stocks`,
-            params: [userID],
-            errMsg: `Could not retrieve your stock trackers.`,
-            isArray: true
+            params: [user_id],
+            err_msg: `Could not retrieve your stock trackers.`,
+            returns_array: true
         });
     }
 
-    async addStockTracker(userID: number, symbol: string, stockID: number): Promise<any> {
-        const requestURL =
-            `${ALPHAVANTAGE_PREFIX}function=TIME_SERIES_DAILY&symbol=${symbol}&outputSize=compact&apikey=${this.config.alphaVantageApiKey}`;
+    async addStockTracker(user_id: number, symbol: string, stock_id: number): Promise<any> {
+        const request_url =
+            `${ALPHAVANTAGE_PREFIX}function=TIME_SERIES_DAILY&symbol=${symbol}&outputSize=compact&apikey=${this.config.alphavantage_api_key}`;
         const DEFAULT_ERROR_MSG = `Could not create tracker for "${symbol}"!`;
-        await this.httpService.get(requestURL)
+        await this.http_service.get(request_url)
             .pipe(tap((response: AxiosResponse) => {
                 if (response.data['Error Message']) {
                     throw new CustomException({
@@ -60,19 +60,19 @@ export class StockTrackerService {
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             })).toPromise();
 
-        return this.postgresQueryService.queryFunction({
+        return this.postgres_query_service.queryFunction({
             function: `fn_add_stock_tracker`,
-            params: [userID, stockID],
-            errMsg: DEFAULT_ERROR_MSG
+            params: [user_id, stock_id],
+            err_msg: DEFAULT_ERROR_MSG
         });
 
     }
 
-async deleteStockTracker(userID: number, stockID: number): Promise<any> {
-    return this.postgresQueryService.queryFunction({
+async deleteStockTracker(user_id: number, stock_id: number): Promise<any> {
+    return this.postgres_query_service.queryFunction({
         function: `fn_delete_stock_tracker`,
-        params: [userID, stockID],
-        errMsg: `Could not delete stock!`
+        params: [user_id, stock_id],
+        err_msg: `Could not delete stock!`
     });
 }
 }

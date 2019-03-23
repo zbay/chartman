@@ -7,52 +7,52 @@ import { PostgresConnectionService } from '../postgres-connection/postgres.conne
 
 interface PostgresQueryOptions {
     function: string;
-    errMsg?: string;
-    errCode?: HttpStatus;
-    isArray?: boolean;
+    err_msg?: string;
+    err_code?: HttpStatus;
+    returns_array?: boolean;
     params?: any[];
-    rowName?: string;
+    row_name?: string;
     schema?: string;
-    swallowError?: boolean;
+    swallow_error?: boolean;
 }
 
 @Injectable()
 export class PostgresQueryService {
     private pool: Pool;
 
-    constructor(private readonly postgresConnectionService: PostgresConnectionService) {
-        this.pool = this.postgresConnectionService.pool;
+    constructor(private readonly postgres_connection_service: PostgresConnectionService) {
+        this.pool = this.postgres_connection_service.pool;
     }
 
-    queryFunction(options: PostgresQueryOptions): Promise<any> {
+    queryFunction<T = any>(options: PostgresQueryOptions): Promise<T> {
         const params = options.params || [];
         const schema = options.schema || `public`;
-        const rowName = options.rowName || `nameless`;
-        const isArray = options.isArray || false;
+        const row_name = options.row_name || `nameless`;
+        const returns_array = options.returns_array || false;
         const query = `
             SELECT ${schema}.${options.function}(
-                ${params.map((v, i) => '$' + (i + 1)).join(', ')}) AS ${rowName}`;
+                ${params.map((v, i) => '$' + (i + 1)).join(', ')}) AS ${row_name}`;
         return this.pool.query(query, params)
         .then((result: QueryResult) => {
-            if (!isArray) {
-                return result.rows[0][rowName];
+            if (!returns_array) {
+                return result.rows[0][row_name];
             } else {
                 return result.rows.map((row) => {
-                    return row[rowName];
+                    return row[row_name];
                 });
             }
         })
         .catch((err: Error) => {
-            if (options.swallowError) {
+            if (options.swallow_error) {
                 // tslint:disable-next-line:no-console
                 console.log(err);
             } else {
                 throw new CustomException({
                     name: `${options.function} error`,
-                    message: options.errMsg || err.message || `Unspecified postgres function query error!`,
+                    message: options.err_msg || err.message || `Unspecified postgres function query error!`,
                     stack: err.stack
                 },
-                options.errCode || HttpStatus.INTERNAL_SERVER_ERROR);
+                options.err_code || HttpStatus.INTERNAL_SERVER_ERROR);
             }
         });
     }

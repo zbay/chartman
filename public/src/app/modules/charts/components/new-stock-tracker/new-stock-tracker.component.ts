@@ -16,41 +16,41 @@ import { StockService } from '@charts/services/stock/stock.service';
 })
 export class NewStockTrackerComponent implements OnInit {
   fb = new FormBuilder();
-  stockGroup: FormGroup = this.fb.group({
-    userInput: ['', [Validators.required]]
-    // when a symbolID is chosen, need to save the symbol and name for immediate front-end use
+  stock_group: FormGroup = this.fb.group({
+    user_input: ['', [Validators.required]]
+    // when a symbol_id is chosen, need to save the symbol and name for immediate front-end use
   });
-  filteredStocks$: Observable<Stock[]>;
-  newStock: Stock;
+  filtered_stocks$: Observable<Stock[]>;
+  new_stock: Stock;
 
-  constructor(private readonly errorService: ErrorService,
-              private readonly snackbarService: SnackBarService,
-              private readonly stockService: StockService) { }
+  constructor(private readonly error_service: ErrorService,
+              private readonly snackbar_service: SnackBarService,
+              private readonly stock_service: StockService) { }
 
   ngOnInit() {
-    this.filteredStocks$ = this.stockGroup
-      .get('userInput')
+    this.filtered_stocks$ = this.stock_group
+      .get('user_input')
       .valueChanges
       .pipe<any, string, Stock[], Stock[]>(
         filter((val) => typeof val === 'string'),
         debounceTime(300),
         switchMap((value) => {
-          return this.stockService.getStocksForAutoComplete(value);
+          return this.stock_service.getStocksForAutoComplete(value);
         }),
-        this.errorService.standardSubscriptionErrorHandler([])
+        this.error_service.standardSubscriptionErrorHandler([])
       );
   }
 
   addStock() {
-    this.stockService.addStock(this.newStock)
+    this.stock_service.addStock(this.new_stock)
       .pipe(first())
       .subscribe(() => {
-        this.snackbarService.openSnackBar(`${this.newStock.symbol} stock tracker saved!`);
-        this.stockService.emitLatestStock(this.newStock);
-        this.stockGroup.reset();
-        this.newStock = null;
+        this.snackbar_service.openSnackBar(`${this.new_stock.symbol} stock tracker saved!`);
+        this.stock_service.emitLatestStock(this.new_stock);
+        this.stock_group.reset();
+        this.new_stock = null;
     }, (res) => {
-      this.errorService.openErrorDialog({
+      this.error_service.openErrorDialog({
         message: res.error.message,
         name: `Error`,
         stack: res.error.stack
@@ -63,6 +63,6 @@ export class NewStockTrackerComponent implements OnInit {
   }
 
   setNewStock(stock: Stock) {
-    this.newStock = stock;
+    this.new_stock = stock;
   }
 }

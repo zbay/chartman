@@ -5,8 +5,8 @@
         fxLayoutAlign="space-around center">
         <label class="radio-label">Search by: </label>
         <br />
-        <div [formGroup]="searchFilterGroup">
-            <mat-radio-group formControlName="searchFilter"
+        <div [formGroup]="search_filter_group">
+            <mat-radio-group formControlName="search_filter"
               fxLayout="row wrap" fxLayoutAlign="space-between center">
               <mat-radio-button value="Fiat,Crypto">
                 All currencies
@@ -19,33 +19,33 @@
               </mat-radio-button>
             </mat-radio-group>
         </div>
-            <mat-form-field style="width:90%;" [formGroup]="currencyGroup1">
+            <mat-form-field style="width:90%;" [formGroup]="currency_group_1">
               <input type="text" 
                 #searchBox1
                 placeholder="Currency 1" 
                 matInput 
-                formControlName="userInput" 
+                formControlName="user_input" 
                 [matAutocomplete]="auto1">
               <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayFn"
                 panelWidth="{{ searchBox1.style.width }}"
                 class="mat-elevation-z12">
-                <mat-option *ngFor="let currency of (filteredCurrencies1$ | async)" [value]="currency"
+                <mat-option *ngFor="let currency of (filtered_currencies_1$ | async)" [value]="currency"
                   (click)="setNewCurrency(currency, 0)">
                   <span>{{ currency.name }}</span>
                   <small> | {{currency.code}}</small>
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-      <mat-form-field [formGroup]="currencyGroup2" style="width:90%;">
+      <mat-form-field [formGroup]="currency_group_2" style="width:90%;">
         <input type="text" 
           #searchBox2
           placeholder="Currency 2" 
           matInput 
-          formControlName="userInput" 
+          formControlName="user_input" 
           [matAutocomplete]="auto2">
         <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn"
           panelWidth="{{ searchBox2.style.width }}">
-          <mat-option *ngFor="let currency of (filteredCurrencies2$ | async)" [value]="currency"
+          <mat-option *ngFor="let currency of (filtered_currencies_2$ | async)" [value]="currency"
             (click)="setNewCurrency(currency, 1)">
             <span>{{ currency.name }}</span>
             <small> | {{currency.code}}</small>
@@ -53,7 +53,7 @@
         </mat-autocomplete>
       </mat-form-field>
     <button mat-button (click)="saveNewCurrencyPair()" 
-        [disabled]="currencyGroup1.invalid || currencyGroup2.invalid || !newCurrencyPair.from || !newCurrencyPair.to" style="display:inline">
+        [disabled]="currency_group_1.invalid || currency_group_2.invalid || !new_currency_pair.from || !new_currency_pair.to" style="display:inline">
       <mat-icon>add_circle</mat-icon>
   </button>
   </div>

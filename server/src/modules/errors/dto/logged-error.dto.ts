@@ -1,6 +1,7 @@
-import { ToInt } from 'class-sanitizer';
-import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+
+import { IsNotEmpty, IsString } from 'class-validator';
+import { ToInt } from 'class-sanitizer';
 
 export class LoggedErrorDto {
 
@@ -10,7 +11,7 @@ export class LoggedErrorDto {
 
     @ApiModelProperty({ example: 1})
     @ToInt()
-    readonly userID: number;
+    readonly user_id: number;
 
     @ApiModelProperty({ example: `https://chartman.zbay.xyz/login`})
     @IsNotEmpty()

@@ -9,17 +9,17 @@ import { ThirdPartyApi } from '../enums/third-party-api.enum';
 @Injectable()
 export class TechnicalsCalculationService {
 
-    standardizeSeriesWithTechnicals(api: ThirdPartyApi, seriesData: any): TechnicalSeriesContainer {
-        return this.standardizeOutput(this.standardizeInput(api, seriesData));
+    standardizeSeriesWithTechnicals(api: ThirdPartyApi, series_data: any): TechnicalSeriesContainer {
+        return this.standardizeOutput(this.standardizeInput(api, series_data));
     }
 
     private standardizeInput(api: ThirdPartyApi, data: any): TechnicalSeriesContainer {
         if (api === ThirdPartyApi.ALPHA_VANTAGE) {
             const series = data['Time Series (Daily)'];
-            const chartKeys = [...Object.keys(series)];
-            data.series = chartKeys.map((dateKey) => {
-              const day = series[dateKey];
-              day.time = Number(new Date(dateKey));
+            const chart_keys = [...Object.keys(series)];
+            data.series = chart_keys.map((date_key) => {
+              const day = series[date_key];
+              day.time = Number(new Date(date_key));
               day.open = Number(day['1. open']).toFixed(2);
               delete day['1. open'];
               day.close = Number(day['4. close']).toFixed(2);
@@ -48,59 +48,59 @@ export class TechnicalsCalculationService {
     }
 
     standardizeOutput(data): TechnicalSeriesContainer {
-        const slowWindow = 26;
-        const fastWindow = 12;
+        const slow_window = 26;
+        const fast_window = 12;
         const highLowWindow = 14;
         const movingAvgWindow = 3;
-        const chartData: any[] = data.series;
-        chartData[chartData.length - (slowWindow * 2)].SEMA = chartData[chartData.length - (slowWindow * 2)].close;
-        chartData[chartData.length - (slowWindow + fastWindow)].FEMA = chartData[chartData.length - (slowWindow + fastWindow)].close;
-        for (let i = chartData.length - (slowWindow * 2) + 1; i < chartData.length; i++) {
-          chartData[i].SEMA = chartData[i].close * (2 / (slowWindow + 1)) + chartData[i - 1].SEMA * (1 - (2 / (slowWindow + 1)));
+        const chart_data: any[] = data.series;
+        chart_data[chart_data.length - (slow_window * 2)].SEMA = chart_data[chart_data.length - (slow_window * 2)].close;
+        chart_data[chart_data.length - (slow_window + fast_window)].FEMA = chart_data[chart_data.length - (slow_window + fast_window)].close;
+        for (let i = chart_data.length - (slow_window * 2) + 1; i < chart_data.length; i++) {
+          chart_data[i].SEMA = chart_data[i].close * (2 / (slow_window + 1)) + chart_data[i - 1].SEMA * (1 - (2 / (slow_window + 1)));
         }
-        for (let i = chartData.length - (slowWindow + fastWindow) + 1; i < chartData.length; i++) {
-          chartData[i].FEMA = chartData[i].close * (2 / (fastWindow + 1)) + chartData[i - 1].FEMA * (1 - (2 / (fastWindow + 1)));
+        for (let i = chart_data.length - (slow_window + fast_window) + 1; i < chart_data.length; i++) {
+          chart_data[i].FEMA = chart_data[i].close * (2 / (fast_window + 1)) + chart_data[i - 1].FEMA * (1 - (2 / (fast_window + 1)));
         }
-        for (let i = chartData.length - slowWindow; i < chartData.length; i++) {
-          const stdDev = standardDeviation(chartData.slice(i - slowWindow, i));
-          chartData[i].resistance = (2 * stdDev) + (+chartData[i].close);
-          chartData[i].support = +chartData[i].close - (2 * stdDev);
+        for (let i = chart_data.length - slow_window; i < chart_data.length; i++) {
+          const stdDev = standardDeviation(chart_data.slice(i - slow_window, i));
+          chart_data[i].resistance = (2 * stdDev) + (+chart_data[i].close);
+          chart_data[i].support = +chart_data[i].close - (2 * stdDev);
         }
 
         // oscillators processing
-        for (let i = chartData.length - (highLowWindow * 3); i < chartData.length; i++) {
-          chartData[i].diff = chartData[i].close - chartData[i - 1].close;
+        for (let i = chart_data.length - (highLowWindow * 3); i < chart_data.length; i++) {
+          chart_data[i].diff = chart_data[i].close - chart_data[i - 1].close;
         }
-        for (let i = chartData.length - (highLowWindow * 2 + movingAvgWindow - 1); i < chartData.length; i++) {
-          chartData[i].H14 = high14(chartData, i);
-          chartData[i].L14 = low14(chartData, i);
-          chartData[i].PER_K = (chartData[i].close - chartData[i].L14) / (chartData[i].H14 - chartData[i].L14) * 100;
+        for (let i = chart_data.length - (highLowWindow * 2 + movingAvgWindow - 1); i < chart_data.length; i++) {
+          chart_data[i].H14 = high14(chart_data, i);
+          chart_data[i].L14 = low14(chart_data, i);
+          chart_data[i].PER_K = (chart_data[i].close - chart_data[i].L14) / (chart_data[i].H14 - chart_data[i].L14) * 100;
         }
-        for (let i = chartData.length - (highLowWindow * 2); i < chartData.length; i++) {
-          chartData[i].PER_D = ((chartData[i - 2].PER_K + chartData[i - 1].PER_K + chartData[i].PER_K) / 3);
-          let numGains = 0;
-          let sumGains = 0;
-          let numLosses = 0;
-          let sumLosses = 0;
+        for (let i = chart_data.length - (highLowWindow * 2); i < chart_data.length; i++) {
+          chart_data[i].PER_D = ((chart_data[i - 2].PER_K + chart_data[i - 1].PER_K + chart_data[i].PER_K) / 3);
+          let num_gains = 0;
+          let sum_gains = 0;
+          let num_losses = 0;
+          let sum_losses = 0;
           for (let j = i - highLowWindow + 1; j <= i; j++) {
-            if (chartData[j].diff > 0) {
-              numGains++;
-              sumGains += chartData[j].diff;
+            if (chart_data[j].diff > 0) {
+              num_gains++;
+              sum_gains += chart_data[j].diff;
             }
-            if (chartData[j].diff < 0) {
-              numLosses++;
-              sumLosses -= chartData[j].diff;
+            if (chart_data[j].diff < 0) {
+              num_losses++;
+              sum_losses -= chart_data[j].diff;
             }
           }
-          numGains = numGains || 1;
-          numLosses = numLosses || 1;
-          chartData[i].RS = (sumGains / numGains) / (sumLosses / numLosses);
-          chartData[i].RSI = 100 - (100 / (1 + chartData[i].RS));
-          if (chartData[i].RSI > 100) {
-            chartData[i].RSI = 100;
+          num_gains = num_gains || 1;
+          num_losses = num_losses || 1;
+          chart_data[i].RS = (sum_gains / num_gains) / (sum_losses / num_losses);
+          chart_data[i].RSI = 100 - (100 / (1 + chart_data[i].RS));
+          if (chart_data[i].RSI > 100) {
+            chart_data[i].RSI = 100;
           }
         }
-        data.series = chartData.slice(-26);
+        data.series = chart_data.slice(-26);
         return data;
     }
 }

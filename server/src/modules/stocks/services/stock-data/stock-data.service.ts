@@ -21,28 +21,28 @@ export class StockDataService {
     // TODO: start using IEX and balance the load between it and AlphaVantage.
     // Wait until they've got OHLC data in their new Cloud API, first though
 
-    constructor(private readonly configService: ConfigService,
-                private readonly httpService: HttpService,
-                private readonly postgresQueryService: PostgresQueryService,
-                private readonly technicalsCalculationService: TechnicalsCalculationService) {
-        this.config = this.configService.config;
+    constructor(private readonly config_service: ConfigService,
+                private readonly http_service: HttpService,
+                private readonly postgres_query_service: PostgresQueryService,
+                private readonly technicals_calculation_service: TechnicalsCalculationService) {
+        this.config = this.config_service.config;
         this.IEX_PREFIX = this.config.env === `prod` ? IEX_PROD_PREFIX : IEX_SANDBOX_PREFIX;
     }
 
-    async getChartData(symbolID: number): Promise<StockChartData> {
-        const stock: Stock = await this.postgresQueryService.queryFunction({
-            function: `fn_get_stock`,
-            params: [symbolID],
-            errMsg: `Could not retrieve the data for this tracker.`
+    async getChartData(symbol_id: number): Promise<StockChartData> {
+        const stock: Stock = await this.postgres_query_service.queryFunction({
+            function: `fn_get_stocks`,
+            params: [symbol_id],
+            err_msg: `Could not retrieve the data for this tracker.`
         })
-        .then((returnedStock) => {
+        .then((returned_stock) => {
             // todo: change fn_get_stock to return Stock type
-            returnedStock.id = symbolID;
-            return returnedStock;
+            returned_stock.id = symbol_id;
+            return returned_stock;
         });
-        const requestURL
-            = `${ALPHAVANTAGE_PREFIX}function=TIME_SERIES_DAILY&symbol=${stock.symbol}&outputSize=compact&apikey=${this.config.alphaVantageApiKey}`;
-        return this.httpService.get(requestURL)
+        const request_url
+            = `${ALPHAVANTAGE_PREFIX}function=TIME_SERIES_DAILY&symbol=${stock.symbol}&outputSize=compact&apikey=${this.config.alphavantage_api_key}`;
+        return this.http_service.get(request_url)
             .pipe(map((response: AxiosResponse) => {
                 if (response.data['Error Message']) {
                     throw new CustomException({
@@ -51,7 +51,7 @@ export class StockDataService {
                         stack: response.data['Error Message']
                     }, HttpStatus.FORBIDDEN);
                 }
-                const series = this.technicalsCalculationService.standardizeSeriesWithTechnicals(ThirdPartyApi.ALPHA_VANTAGE, response.data).series;
+                const series = this.technicals_calculation_service.standardizeSeriesWithTechnicals(ThirdPartyApi.ALPHA_VANTAGE, response.data).series;
                 return { stock, series };
             }),
             catchError((err: Error) => {

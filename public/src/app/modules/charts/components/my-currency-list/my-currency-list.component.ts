@@ -50,7 +50,7 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
        });
 
 
-    this.currencyService.newCurrencyPair$.pipe(takeUntil(this.destroy$))
+    this.currencyService.new_currency_pair$.pipe(takeUntil(this.destroy$))
       .subscribe((currencyPair: CurrencyPair) => {
         this.currencyPairs.unshift(currencyPair);
         this.updateTable();

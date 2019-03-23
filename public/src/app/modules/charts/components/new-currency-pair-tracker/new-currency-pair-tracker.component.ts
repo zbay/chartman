@@ -16,65 +16,65 @@ import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
   styleUrls: ['./new-currency-pair-tracker.component.scss']
 })
 export class NewCurrencyPairTrackerComponent implements OnInit {
-  formBuilder = new FormBuilder();
-  currencyGroup1 = NewCurrencyPairTrackerComponent.makeCurrencyFormGroup();
-  currencyGroup2 = NewCurrencyPairTrackerComponent.makeCurrencyFormGroup();
-  searchFilterGroup = this.formBuilder.group({
-      searchFilter: ['Fiat,Crypto']
+  form_builder = new FormBuilder();
+  currency_group_1 = NewCurrencyPairTrackerComponent.makeCurrencyFormGroup();
+  currency_group_2 = NewCurrencyPairTrackerComponent.makeCurrencyFormGroup();
+  search_filter_group = this.form_builder.group({
+      search_filter: ['Fiat,Crypto']
   });
-  filteredCurrencies1$: Observable<Currency[]>;
-  filteredCurrencies2$: Observable<Currency[]>;
+  filtered_currencies_1$: Observable<Currency[]>;
+  filtered_currencies_2$: Observable<Currency[]>;
 
-  newCurrencyPair: CurrencyPair = { from: null, to: null, sortID: null };
+  new_currency_pair: CurrencyPair = { from: null, to: null, sort_id: null };
 
   static makeCurrencyFormGroup(): FormGroup {
     const fb = new FormBuilder();
     return fb.group({
-      userInput: ['', [Validators.required]]
+      user_input: ['', [Validators.required]]
     });
   }
 
-  constructor(private readonly currencyService: CurrencyService,
-              private readonly errorService: ErrorService,
-              private readonly snackbarService: SnackBarService) { }
+  constructor(private readonly currency_service: CurrencyService,
+              private readonly error_service: ErrorService,
+              private readonly snackbar_service: SnackBarService) { }
 
   ngOnInit() {
-    this.filteredCurrencies1$ = this.listenForCurrencies(this.currencyGroup1);
-    this.filteredCurrencies2$ = this.listenForCurrencies(this.currencyGroup2);
+    this.filtered_currencies_1$ = this.listenForCurrencies(this.currency_group_1);
+    this.filtered_currencies_2$ = this.listenForCurrencies(this.currency_group_2);
   }
 
   listenForCurrencies(currencyGroup: FormGroup): Observable<Currency[]> {
      // text input change waits 0.3 sec, while the crypto checkbox takes effect immediately
      return combineLatest(
-      currencyGroup.get('userInput').valueChanges
+      currencyGroup.get('user_input').valueChanges
         .pipe<string, string, string>(
           filter((val) => typeof val === 'string'),
           tap(() => {
-            this.searchFilterGroup.setValue({searchFilter: this.searchFilterGroup.getRawValue().searchFilter});
+            this.search_filter_group.setValue({search_filter: this.search_filter_group.getRawValue().searchFilter});
           }),
           debounceTime(300)
         ),
-      this.searchFilterGroup.get('searchFilter').valueChanges
+      this.search_filter_group.get('search_filter').valueChanges
     )
     .pipe(switchMap((vals: string[]) => {
-      const userInput = vals[0];
-      const searchFilter = vals[1];
-      return this.currencyService.getCurrenciesForAutoComplete(userInput, searchFilter);
+      const user_input = vals[0];
+      const search_filter = vals[1];
+      return this.currency_service.getCurrenciesForAutoComplete(user_input, search_filter);
     }),
-    this.errorService.standardSubscriptionErrorHandler([]));
+    this.error_service.standardSubscriptionErrorHandler([]));
   }
 
   saveNewCurrencyPair(): void {
-    if (this.newCurrencyPair.from && this.newCurrencyPair.to) {
-      this.currencyService.addCurrencyPair(this.newCurrencyPair)
+    if (this.new_currency_pair.from && this.new_currency_pair.to) {
+      this.currency_service.addCurrencyPair(this.new_currency_pair)
       .subscribe(() => {
-        this.snackbarService.openSnackBar(`New currency pair tracker saved!`);
-        this.currencyService.emitLatestCurrencyPair(this.newCurrencyPair);
-        this.currencyGroup1.reset();
-        this.currencyGroup2.reset();
-        this.newCurrencyPair = { from: null, to: null, sortID: null };
+        this.snackbar_service.openSnackBar(`New currency pair tracker saved!`);
+        this.currency_service.emitLatestCurrencyPair(this.new_currency_pair);
+        this.currency_group_1.reset();
+        this.currency_group_2.reset();
+        this.new_currency_pair = { from: null, to: null, sort_id: null };
     }, (res) => {
-      this.errorService.openErrorDialog(res.error);
+      this.error_service.openErrorDialog(res.error);
     });
     }
   }
@@ -85,12 +85,12 @@ export class NewCurrencyPairTrackerComponent implements OnInit {
 
   setNewCurrency(currency: Currency, idx: number): void {
     if (idx > 0) {
-      this.newCurrencyPair.to = currency;
+      this.new_currency_pair.to = currency;
     } else {
-      this.newCurrencyPair.from = currency;
+      this.new_currency_pair.from = currency;
     }
-    if (this.newCurrencyPair.from && this.newCurrencyPair.to) {
-      this.newCurrencyPair.sortID = `${this.newCurrencyPair.from.code}v${this.newCurrencyPair.to.code}`;
+    if (this.new_currency_pair.from && this.new_currency_pair.to) {
+      this.new_currency_pair.sort_id = `${this.new_currency_pair.from.code}v${this.new_currency_pair.to.code}`;
     }
   }
 

@@ -4,28 +4,28 @@ import * as bcrypt from 'bcrypt';
 
 import { CustomException } from '@common/exceptions/custom.exception';
 import { LoginDTO } from '@accounts/dto/login.dto';
-import { TokenService } from '@accounts/services/token/token.service';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
+import { TokenService } from '@accounts/services/token/token.service';
 
 @Injectable()
 export class LoginService {
 
-    constructor(private readonly postgresQueryService: PostgresQueryService,
-                private readonly tokenService: TokenService) {
+    constructor(private readonly postgres_query_service: PostgresQueryService,
+                private readonly token_service: TokenService) {
     }
 
     async login(credentials: LoginDTO): Promise<string> {
-        const user = await this.postgresQueryService.queryFunction({
+        const user = await this.postgres_query_service.queryFunction({
             function: `fn_retrieve_user_for_login`,
             params: [credentials.email],
-            errMsg: `Could not login. Please try again later.`
+            err_msg: `Could not login. Please try again later.`
         });
         if (!user || !user.password) {
             throw new CustomException({name: `Invalid Credentials`
             , message: `Invalid Credentials`}
             , HttpStatus.FORBIDDEN);
         }
-        const correctPassword = await bcrypt.compare(credentials.password, user.password)
+        const correct_password = await bcrypt.compare(credentials.password, user.password)
             .catch((err: Error) => {
                 throw new CustomException({
                     name: `Bcrypt comparison failure`,
@@ -33,16 +33,16 @@ export class LoginService {
                     stack: err.stack
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             });
-        if (!correctPassword) {
+        if (!correct_password) {
             throw new CustomException({name: `Invalid Credentials`
             , message: `Invalid Credentials`}
             , HttpStatus.FORBIDDEN);
         } else {
-            await this.postgresQueryService.queryFunction({
+            await this.postgres_query_service.queryFunction({
                 function: `fn_reset_user_strikes`,
                 params: [credentials.email]
             });
-            return this.tokenService.getToken(user.user_id, user.permissions);
+            return this.token_service.getToken(user.user_id, user.permissions);
         }
     }
 }

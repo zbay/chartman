@@ -6,37 +6,37 @@ import { environment } from '@env/environment';
 import { Stock } from '@charts/models/stock';
 import { map } from 'rxjs/operators';
 
-const stocksURL = `${environment.apiEndpoint}/stocks`;
+const stocks_url = `${environment.api_endpoint}/stocks`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class StockService {
 
-  private newStock: Subject<Stock> = new Subject();
-  newStock$ = this.newStock.asObservable();
+  private new_stock: Subject<Stock> = new Subject();
+  new_stock$ = this.new_stock.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  addStock(newStock: Stock): Observable<any> {
-    return this.http.post(stocksURL, newStock);
+  addStock(new_stock: Stock): Observable<any> {
+    return this.http.post(stocks_url, new_stock);
   }
 
-  deleteStock(stockId: number): Observable<any> {
-    return this.http.delete(`${stocksURL}?stockID=${stockId}`);
+  deleteStock(stock_id: number): Observable<any> {
+    return this.http.delete(`${stocks_url}?stock_id=${stock_id}`);
   }
 
   emitLatestStock(stock: Stock): void {
-    this.newStock.next(stock);
+    this.new_stock.next(stock);
   }
 
-  getStocksForAutoComplete(searchQuery: string): Observable<Stock[]> {
-    return this.http.post<Stock[]>(`${stocksURL}/autocomplete`, {searchQuery: searchQuery})
+  getStocksForAutoComplete(search_query: string): Observable<Stock[]> {
+    return this.http.post<Stock[]>(`${stocks_url}/autocomplete`, {search_query})
       .pipe(map((res: any) => res.data));
   }
 
   getMyStocks(): Observable<Stock[]> {
-    return this.http.get<Stock[]>(`${stocksURL}/my-stocks`)
+    return this.http.get<Stock[]>(`${stocks_url}/my-stocks`)
       .pipe(map((res: any) => res.data));
   }
 }

@@ -18,16 +18,17 @@ import { PostgresQueryService } from '@shared/services/postgres-query/postgres-q
 export class CurrencyTrackerService {
     private config: ChartmanAppConfig;
 
-    constructor(private readonly configService: ConfigService,
-                private readonly httpService: HttpService,
-                private readonly postgresQueryService: PostgresQueryService) {
-        this.config = this.configService.config;
+    constructor(private readonly config_service: ConfigService,
+                private readonly http_service: HttpService,
+                private readonly postgres_query_service: PostgresQueryService) {
+        this.config = this.config_service.config;
     }
 
-    async addCurrencyPairTracker(userID: number, currencyPair: CreateCurrencyPairTrackerDTO): Promise<any> {
-        const requestURL
-            = `${CRYPTOCOMPARE_PREFIX}fsym=${currencyPair.from.code}&tsym=${currencyPair.to.code}&limit=1&api_key=${this.config.cryptoCompareApiKey}`;
-        await this.httpService.get(requestURL)
+    async addCurrencyPairTracker(user_id: number, currency_pair: CreateCurrencyPairTrackerDTO): Promise<any> {
+        const request_url
+            = `${CRYPTOCOMPARE_PREFIX}fsym=${currency_pair.from.code}&tsym=${currency_pair.to.code}&limit=1
+            &api_key=${this.config.cryptocompare_api_key}`;
+        await this.http_service.get(request_url)
             .pipe(map((response: AxiosResponse) => {
                 if (response.data[`Response`] === `Error`) {
                     throw new CustomException({
@@ -38,35 +39,36 @@ export class CurrencyTrackerService {
                 }
             }))
             .toPromise();
-        return this.postgresQueryService.queryFunction({
+        return this.postgres_query_service.queryFunction({
             function: `fn_add_currency_pair`,
-            params: [userID, currencyPair.from.id, currencyPair.to.id],
-            errMsg: `Failed to add currency pair!`
+            params: [user_id, currency_pair.from.id, currency_pair.to.id],
+            err_msg: `Failed to add currency pair!`
         });
     }
 
     async autocompleteCurrencies(query: CurrencySearchQueryDTO): Promise<Currency[]> {
-        return this.postgresQueryService.queryFunction({
+        return this.postgres_query_service.queryFunction({
             function: `fn_auto_complete_currency`,
-            params: [query.searchQuery, query.searchFilter],
-            errMsg: `Auto-complete failed!`
+            params: [query.search_query, query.search_filter],
+            err_msg: `Auto-complete failed!`,
+            returns_array: true
         });
     }
 
-    async deleteCurrencyPair(userID: number, pair: CurrencyPairIdsDTO): Promise<any> {
-        return this.postgresQueryService.queryFunction({
+    async deleteCurrencyPair(user_id: number, pair: CurrencyPairIdsDTO): Promise<any> {
+        return this.postgres_query_service.queryFunction({
             function: `fn_delete_currency_pair`,
-            params: [userID, pair.fromID, pair.toID],
-            errMsg: `Could not delete currency pair!`
+            params: [user_id, pair.from_id, pair.to_id],
+            err_msg: `Could not delete currency pair!`
         });
     }
 
-    async getMyCurrencyPairs(userID: number): Promise<CurrencyPair[]> {
-       return this.postgresQueryService.queryFunction({
+    async getMyCurrencyPairs(user_id: number): Promise<CurrencyPair[]> {
+       return this.postgres_query_service.queryFunction({
            function: `fn_get_my_currency_pairs`,
-           params: [userID],
-           errMsg: `Failed to retrieve your currency pairs!`
+           params: [user_id],
+           err_msg: `Failed to retrieve your currency pairs!`,
+           returns_array: true
        });
     }
-
 }

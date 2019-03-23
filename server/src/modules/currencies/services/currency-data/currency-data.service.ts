@@ -19,24 +19,24 @@ import { ThirdPartyApi } from '@technicals/services/enums/third-party-api.enum';
 export class CurrencyDataService {
     private config: ChartmanAppConfig;
 
-    constructor(private readonly configService: ConfigService,
-                private readonly httpService: HttpService,
-                private readonly postgresQueryService: PostgresQueryService,
-                private readonly technicalsCalculationService: TechnicalsCalculationService) {
-        this.config = this.configService.config;
+    constructor(private readonly config_service: ConfigService,
+                private readonly http_service: HttpService,
+                private readonly postgres_query_service: PostgresQueryService,
+                private readonly technicals_calculation_service: TechnicalsCalculationService) {
+        this.config = this.config_service.config;
     }
 
     async getChartData(query: CurrencyPairIdsDTO): Promise<CurrencyPairChartData> {
-        const pair: CurrencyPair = await this.postgresQueryService.queryFunction({
-            function: `fn_get_currency`,
-            params: [query.fromID, query.toID],
-            errMsg: `Could not retrieve the data for this currency pair.`
+        const pair: CurrencyPair = await this.postgres_query_service.queryFunction({
+            function: `fn_get_currency_pair`,
+            params: [query.from_id, query.to_id],
+            err_msg: `Could not retrieve the data for this currency pair.`
         });
         const from = pair.from;
         const to = pair.to;
         const requestURL
-            = `${CRYPTOCOMPARE_PREFIX}fsym=${from.code}&tsym=${to.code}&limit=52&api_key=${this.config.cryptoCompareApiKey}`;
-        return this.httpService.get(requestURL)
+            = `${CRYPTOCOMPARE_PREFIX}fsym=${from.code}&tsym=${to.code}&limit=52&api_key=${this.config.cryptocompare_api_key}`;
+        return this.http_service.get(requestURL)
             .pipe(map((response: AxiosResponse) => {
                 if (response.data[`Response`] === `Error`) {
                     throw new CustomException({
@@ -46,7 +46,7 @@ export class CurrencyDataService {
                     }, HttpStatus.FORBIDDEN);
                 }
                 const series: TechnicalDataPoint[]
-                    = this.technicalsCalculationService.standardizeSeriesWithTechnicals(ThirdPartyApi.CRYPTO_COMPARE, response.data).series;
+                    = this.technicals_calculation_service.standardizeSeriesWithTechnicals(ThirdPartyApi.CRYPTO_COMPARE, response.data).series;
                 return { currencyPair: pair, series };
             }),
             catchError((err: Error) => {

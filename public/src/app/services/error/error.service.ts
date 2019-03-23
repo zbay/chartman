@@ -38,15 +38,15 @@ export class ErrorService {
   }
 
   sendErrorToDB(error: Error): void {
-    const userID = jwtDecode(localStorage.getItem('access_token')).sub;
+    const user_id = jwtDecode(localStorage.getItem('access_token')).sub;
     const url = window.location.href;
-    const loggedError: LoggedError = { error: error, userID: userID, url: url };
-    this.http.post(`${environment.apiEndpoint}/error`, loggedError).subscribe();
+    const logged_error: LoggedError = { error: error, user_id, url };
+    this.http.post(`${environment.api_endpoint}/error`, logged_error).subscribe();
   }
 
-  serverSideErrorMessageDisplayHandler(error: Error, defaultMessage: string = `Unknown error`, userID: number = null) {
-    const sentError = error || { message: defaultMessage, name: `Error`, stack: null };
-    this.openErrorDialog(sentError);
+  serverSideErrorMessageDisplayHandler(error: Error, default_message: string = `Unknown error`) {
+    const sent_error = error || { message: default_message, name: `Error`, stack: null };
+    this.openErrorDialog(sent_error);
   }
 
   standardSubscriptionErrorHandler(output: any): OperatorFunction<{}, any> {

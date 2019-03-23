@@ -16,56 +16,56 @@ const HELP_EMAIL = `chartman.help@gmail.com`;
 
 @Injectable()
 export class AwsService {
-    private chartmanConfig: ChartmanAppConfig;
+    private chartman_config: ChartmanAppConfig;
     private sqs: SQS;
 
-    constructor(private readonly configService: ConfigService,
-                private readonly errorLoggingService: ErrorLoggingService,
-                private readonly postgresQueryService: PostgresQueryService) {
-        this.chartmanConfig = this.configService.config;
+    constructor(private readonly config_service: ConfigService,
+                private readonly error_logging_service: ErrorLoggingService,
+                private readonly postgres_query_service: PostgresQueryService) {
+        this.chartman_config = this.config_service.config;
         this.sqs = new SQS();
     }
 
     private logAwsError(err: AWSError, url: string): void {
-        this.errorLoggingService.logError({
+        this.error_logging_service.logError({
             error: {
                 message: err.message,
                 stack: err.stack,
                 name: err.name
             },
             url,
-            userID: null,
+            user_id: null,
         });
     }
 
     saveBounces(): void {
-        const bounceQueueURL = this.chartmanConfig.sesBounceQueueURL;
-        const bounceParams = {
-            QueueUrl: bounceQueueURL,
+        const bounce_queue_url = this.chartman_config.ses_bounce_queue_url;
+        const bounce_params = {
+            QueueUrl: bounce_queue_url,
             MaxNumberOfMessages: 10
         };
-        this.sqs.receiveMessage(bounceParams, (err: AWSError, data: ReceiveMessageResult) => {
+        this.sqs.receiveMessage(bounce_params, (err: AWSError, data: ReceiveMessageResult) => {
             if (err) {
-                this.logAwsError(err, bounceQueueURL);
+                this.logAwsError(err, bounce_queue_url);
             } else {
                 if (data.Messages) {
                     data.Messages.forEach((msg: Message) => {
-                        const deleteParams = {
-                            QueueUrl: bounceQueueURL,
+                        const delete_params = {
+                            QueueUrl: bounce_queue_url,
                             ReceiptHandle: msg.ReceiptHandle
                         };
                         const body = JSON.parse(msg.Body);
                         const bounce = body.bounce;
                         if (!bounce) {
-                            this.sqs.deleteMessage(deleteParams, (delErr) => {
-                                if (delErr) {
-                                    this.logAwsError(delErr, bounceQueueURL);
+                            this.sqs.deleteMessage(delete_params, (del_err) => {
+                                if (del_err) {
+                                    this.logAwsError(del_err, bounce_queue_url);
                                 }
                             });
                         } else {
                             Promise.all(
                                 bounce.bouncedRecipients.map((recipient) => {
-                                    return this.postgresQueryService.queryFunction({
+                                    return this.postgres_query_service.queryFunction({
                                         function: `fn_save_bounce`,
                                         params: [{
                                             bounce_type: bounce.bounceType,
@@ -76,17 +76,17 @@ export class AwsService {
                                     });
                                 }))
                                 .then(() => {
-                                    this.sqs.deleteMessage(deleteParams, (delErr) => {
-                                        if (delErr) {
-                                            this.logAwsError(delErr, bounceQueueURL);
+                                    this.sqs.deleteMessage(delete_params, (del_err) => {
+                                        if (del_err) {
+                                            this.logAwsError(del_err, bounce_queue_url);
                                         }
                                     });
                                 })
                                 .catch((error: Error) => {
-                                    this.errorLoggingService.logError({
+                                    this.error_logging_service.logError({
                                         error,
-                                        userID: null,
-                                        url: bounceQueueURL
+                                        user_id: null,
+                                        url: bounce_queue_url
                                     });
                                 });
                         }
@@ -96,44 +96,44 @@ export class AwsService {
         });
     }
     saveComplaints(): void {
-        const complaintQueueURL = this.chartmanConfig.sesComplaintQueueURL;
+        const complaint_queue_url = this.chartman_config.ses_complaint_queue_url;
 
-        const complaintParams = {
-                QueueUrl: complaintQueueURL,
+        const complaint_params = {
+                QueueUrl: complaint_queue_url,
                 MaxNumberOfMessages: 10
         };
 
-        this.sqs.receiveMessage(complaintParams, (err: Error, data: ReceiveMessageResult) => {
+        this.sqs.receiveMessage(complaint_params, (err: Error, data: ReceiveMessageResult) => {
             if (err) {
-                this.errorLoggingService.logError({
+                this.error_logging_service.logError({
                     error: {
                         message: err.message,
                         stack: err.stack,
                          name: err.name
                      },
-                    userID: null,
-                    url: complaintQueueURL
+                     user_id: null,
+                    url: complaint_queue_url
                 });
             } else {
                 if (data.Messages) {
                     data.Messages.forEach((msg: Message) => {
-                        const deleteParams = {
-                            QueueUrl: complaintQueueURL,
+                        const delete_params = {
+                            QueueUrl: complaint_queue_url,
                             ReceiptHandle: msg.ReceiptHandle
                         };
                         const body = JSON.parse(msg.Body);
                         const content = JSON.parse(body.Message);
                         if (!content || !content.complaint) {
-                            this.sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
+                            this.sqs.deleteMessage(delete_params, (del_err: AWSError) => {
                                 if (err) {
-                                    this.logAwsError(delErr, complaintQueueURL);
+                                    this.logAwsError(del_err, complaint_queue_url);
                                 }
                             });
                         } else {
                             const complaint = content.complaint;
                             Promise.all(
                                 complaint.complainedRecipients.map((recipient) => {
-                                    return this.postgresQueryService.queryFunction({
+                                    return this.postgres_query_service.queryFunction({
                                         function: `fn_save_complaint`,
                                         params: [{
                                             timestamp: complaint.timestamp,
@@ -143,17 +143,17 @@ export class AwsService {
                                     });
                                 }))
                                 .then(() => {
-                                    this.sqs.deleteMessage(deleteParams, (delErr: AWSError) => {
-                                        if (delErr) {
-                                            this.logAwsError(delErr, complaintQueueURL);
+                                    this.sqs.deleteMessage(delete_params, (del_err: AWSError) => {
+                                        if (del_err) {
+                                            this.logAwsError(del_err, complaint_queue_url);
                                         }
                                     });
                                 })
                                 .catch((error: Error) => {
-                                    this.errorLoggingService.logError({
+                                    this.error_logging_service.logError({
                                         error,
-                                        userID: null,
-                                        url: complaintQueueURL
+                                        user_id: null,
+                                        url: complaint_queue_url
                                     });
                                 });
                         }
@@ -164,7 +164,7 @@ export class AwsService {
     }
 
     async sendPasswordResetEmail(email: string, randomRoute: string) {
-        const emailParams = {
+        const email_params = {
             Destination: { ToAddresses: [email] },
             Message: {
               Body: {
@@ -172,7 +172,7 @@ export class AwsService {
                  Charset: `UTF-8`,
                  Data: `<p>Hello,</p>
                          <p>You've requested a password change for your Chartman account.
-                              Please visit <a href="${this.chartmanConfig.host}/account/reset-password/${randomRoute}">this link</a> to reset it.</p>
+                              Please visit <a href="${this.chartman_config.host}/account/reset-password/${randomRoute}">this link</a> to reset it.</p>
                           <p>Best,</p>
                           <p>Your friends at Chartman</p>`
                 }
@@ -187,7 +187,7 @@ export class AwsService {
           };
 
         return new SES({apiVersion: `2010-12-01`})
-            .sendEmail(emailParams)
+            .sendEmail(email_params)
             .promise()
             .catch((err: Error) => {
                 throw new CustomException({

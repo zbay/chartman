@@ -8,38 +8,38 @@ import { CurrencyPair } from '@charts/models/currency-pair';
 import { environment } from '@env/environment';
 import { map } from 'rxjs/operators';
 
-const currenciesURL = `${environment.apiEndpoint}/currencies`;
+const currencies_url = `${environment.api_endpoint}/currencies`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrencyService {
 
-  private newCurrencyPair: Subject<CurrencyPair> = new Subject();
-  newCurrencyPair$ = this.newCurrencyPair.asObservable();
+  private new_currency_pair: Subject<CurrencyPair> = new Subject();
+  new_currency_pair$ = this.new_currency_pair.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  addCurrencyPair(newCurrencyPair: CurrencyPair): Observable<any> {
-    return this.http.post(currenciesURL, newCurrencyPair);
+  addCurrencyPair(new_currency_pair: CurrencyPair): Observable<any> {
+    return this.http.post(currencies_url, new_currency_pair);
   }
 
-  deleteCurrencyPair(fromID: number, toID: number): Observable<any> {
-    return this.http.delete(`${currenciesURL}?fromID=${fromID}&toID=${toID}`);
+  deleteCurrencyPair(from_id: number, to_id: number): Observable<any> {
+    return this.http.delete(`${currencies_url}?from_id=${from_id}&to_id=${to_id}`);
   }
 
-  emitLatestCurrencyPair(currencyPair: CurrencyPair): void {
-    this.newCurrencyPair.next(currencyPair);
+  emitLatestCurrencyPair(currency_pair: CurrencyPair): void {
+    this.new_currency_pair.next(currency_pair);
   }
 
-  getCurrenciesForAutoComplete(searchQuery: string, searchFilter: string): Observable<Currency[]> {
-    return this.http.post<Currency[]>(`${currenciesURL}/autocomplete`
-      , { searchQuery: searchQuery, searchFilter: searchFilter })
+  getCurrenciesForAutoComplete(search_query: string, search_filter: string): Observable<Currency[]> {
+    return this.http.post<Currency[]>(`${currencies_url}/autocomplete`
+      , { search_query, search_filter })
       .pipe(map((res: any) => res.data));
   }
 
   getMyCurrencyPairs(): Observable<CurrencyPair[]> {
-    return this.http.get<CurrencyPair[]>(`${currenciesURL}/my-currency-pairs`)
+    return this.http.get<CurrencyPair[]>(`${currencies_url}/my-currency-pairs`)
     .pipe(map((res: any) => res.data));
   }
 }

@@ -53,21 +53,21 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
 
   ngOnInit() {
     // Begin: loading currency data
-    const fromID$ = this.route.queryParamMap.pipe(
+    const from_id$ = this.route.queryParamMap.pipe(
       map((params) => Number(params.get(`from`))),
       filter((num) => num > 0),
       distinctUntilChanged()
     );
-    const toID$ = this.route.queryParamMap.pipe(
+    const to_id$ = this.route.queryParamMap.pipe(
       map((params) => Number(params.get(`to`))),
       filter((num) => num > 0),
       distinctUntilChanged()
     );
 
-    combineLatest(fromID$, toID$).subscribe((value: number[]) => {
-        const fromID = Number(value[0]);
-        const toID = Number(value[1]);
-        this.chartDataService.getCurrencyPairData(fromID, toID)
+    combineLatest(from_id$, to_id$).subscribe((value: number[]) => {
+        const from_id = Number(value[0]);
+        const to_id = Number(value[1]);
+        this.chartDataService.getCurrencyPairData(from_id, to_id)
           .subscribe((data: CurrencyPairChartData) => {
             this.chartData = data.series;
             this.abbreviatedLabel = `${data.currencyPair.from.code} / ${data.currencyPair.to.code}`;
@@ -83,11 +83,11 @@ export class TechnicalsChartComponent extends ExitAnimatingComponent implements 
 
     // Begin: stock loading
     this.route.paramMap.pipe(
-      map((params) => Number(params.get(`stockID`))),
+      map((params) => Number(params.get(`stock_id`))),
       filter((num) => num > 0),
       distinctUntilChanged()
-    ).subscribe((stockID: number) => {
-        this.chartDataService.getStockData(stockID)
+    ).subscribe((stock_id: number) => {
+        this.chartDataService.getStockData(stock_id)
           .subscribe((data: StockChartData) => {
             this.chartData = data.series;
             this.abbreviatedLabel = data.stock.symbol;

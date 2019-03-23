@@ -10,7 +10,7 @@ export function MatchingPasswordsValidator(passwordKey: string) {
 
     if (control.value !== password1) {
       return {
-        mismatchedPasswords: true
+        mismatched_passwords: true
       };
     }
   };

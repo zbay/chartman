@@ -13,15 +13,15 @@ import { ErrorService } from '../error/error.service';
 import { NewCredentials } from '@common/models/new-credentials';
 import { SnackBarService } from '../snack-bar/snack-bar.service';
 
-const accountsURL = `${environment.apiEndpoint}/accounts`;
+const accounts_url = `${environment.api_endpoint}/accounts`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private _isLoggedIn  = new BehaviorSubject<boolean>(false);
-  isLoggedIn$ = this._isLoggedIn.asObservable();
+  private _is_logged_in  = new BehaviorSubject<boolean>(false);
+  is_logged_in$ = this._is_logged_in.asObservable();
 
   static decodeUrlForRouter(url: string): string[] {
     return decodeURI(url).split('/');
@@ -41,29 +41,29 @@ export class AuthService {
   }
 
   constructor(
-    private readonly errorService: ErrorService,
+    private readonly error_service: ErrorService,
     private http: HttpClient,
     private router: Router,
-    private readonly snackbarService: SnackBarService) {}
+    private readonly snackbar_service: SnackBarService) {}
 
   isLoggedIn(): boolean {
-    const loggedIn = !localStorage.getItem('access_token') ? false : AuthService.tokenNotExpired();
-    this._isLoggedIn.next(loggedIn);
-    return loggedIn;
+    const logged_in = !localStorage.getItem('access_token') ? false : AuthService.tokenNotExpired();
+    this._is_logged_in.next(logged_in);
+    return logged_in;
   }
 
-  attemptAutoLogin(returnUrl: string): void {
+  attemptAutoLogin(return_url: string): void {
     if (this.isLoggedIn()) {
-      this.navigateIn(returnUrl);
+      this.navigateIn(return_url);
     }
   }
 
-  login(credentials: Credentials, returnUrl: string): void {
-    this.http.post(`${accountsURL}/login`, credentials)
+  login(credentials: Credentials, return_url: string): void {
+    this.http.post(`${accounts_url}/login`, credentials)
       .pipe(map((res: any) => res.data))
       .subscribe((token: string) => {
         this.setToken(token);
-        this.navigateIn(returnUrl);
+        this.navigateIn(return_url);
       },
       (res) => {
         this.setLoggedIn(false);
@@ -73,28 +73,28 @@ export class AuthService {
           errorOptions.name = res.error.name;
           errorOptions.stack = res.error.stack;
         }
-        this.errorService.openErrorDialog(errorOptions);
+        this.error_service.openErrorDialog(errorOptions);
       });
   }
 
-  signup(credentials: NewCredentials, returnUrl: string): void {
-    this.http.post(`${accountsURL}/user`, credentials)
+  signup(credentials: NewCredentials, return_url: string): void {
+    this.http.post(`${accounts_url}/user`, credentials)
       .pipe(map((res: any) => res.data))
       .subscribe((token: string) => {
         this.setToken(token);
-        this.snackbarService.openSnackBar('Account created! Welcome.');
-        this.navigateIn(returnUrl);
+        this.snackbar_service.openSnackBar('Account created! Welcome.');
+        this.navigateIn(return_url);
       },
       (res) => {
         this.setLoggedIn(false);
-        this.errorService.serverSideErrorMessageDisplayHandler(res.error, `Signup failed!`);
+        this.error_service.serverSideErrorMessageDisplayHandler(res.error, `Signup failed!`);
       });
   }
 
     // take the newly logged in user into the site. To their return URL, if specified. Otherwise, the tracker list.
-    private navigateIn(returnUrl?: string): void {
-      returnUrl
-        ? this.router.navigate(AuthService.decodeUrlForRouter(returnUrl))
+    private navigateIn(return_url?: string): void {
+      return_url
+        ? this.router.navigate(AuthService.decodeUrlForRouter(return_url))
         : this.router.navigate(['charting/stocks']);
     }
 
@@ -114,12 +114,12 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('access_token');
-    this._isLoggedIn.next(false);
+    this._is_logged_in.next(false);
     this.router.navigate(['/']);
   }
 
-  setLoggedIn(loggedIn: boolean): void {
-    this._isLoggedIn.next(loggedIn);
+  setLoggedIn(logged_in: boolean): void {
+    this._is_logged_in.next(logged_in);
   }
 
   setToken(token: string): void {

@@ -1,5 +1,5 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-around stretch" [@fadeInOut]>
-  <mat-card [formGroup]="loginGroup" fxFlex="45%"
+  <mat-card [formGroup]="login_group" fxFlex="45%"
        fxFlex.lt-md="90%" fxLayout="column"
        fxLayoutAlign="start center" class="background-box mat-elevation-z4">
     <h2>Log in</h2>
@@ -14,21 +14,21 @@
     </mat-form-field>
     <button mat-button color="accent"
           class="background-box mat-elevation-z4"
-          [disabled]="loginGroup.invalid" (click)="loginAttempt()">
+          [disabled]="login_group.invalid" (click)="loginAttempt()">
       Log in
     </button>
     <a routerLink="/account/forgot-password" class="forgot-pw">Forgot password?</a>
   </mat-card>
-  <mat-card [formGroup]="signupGroup" fxFlex="45%"
+  <mat-card [formGroup]="signup_group" fxFlex="45%"
        fxFlex.lt-md="90%" fxLayout="column"
        fxLayoutAlign="start center" class="background-box mat-elevation-z4">
     <h2>Sign up</h2>
       <mat-form-field>
-        <input matInput placeholder="First name" formControlName="firstName"/>
+        <input matInput placeholder="First name" formControlName="first_name"/>
         <mat-error>First name is required</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput placeholder="Last name" formControlName="lastName"/>
+        <input matInput placeholder="Last name" formControlName="last_name"/>
         <mat-error>Last name is required</mat-error>
       </mat-form-field>
     <mat-form-field>
@@ -44,16 +44,16 @@
     </mat-form-field>
     <mat-form-field>
       <input matInput type="password"
-             placeholder="Confirm password" formControlName="confirmPassword"/>
+             placeholder="Confirm password" formControlName="confirm_password"/>
       <mat-error>
         Password does not match!
       </mat-error>
     </mat-form-field>
-    <mat-error *ngIf="signupGroup?.controls?.confirmPassword?.dirty && signupGroup?.errors?.mismatchedPasswords" class="error">
+    <mat-error *ngIf="signup_group?.controls?.confirm_password?.dirty && signup_group?.errors?.mismatched_passwords" class="error">
       Passwords do not match
     </mat-error>
     <button mat-button class="background-box mat-elevation-z4"
-            color="accent" [disabled]="signupGroup.invalid"
+            color="accent" [disabled]="signup_group.invalid"
             (click)="signupAttempt()">
       Sign up
     </button>

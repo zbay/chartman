@@ -1,4 +1,4 @@
 export const environment = {
-  apiEndpoint: `https://chartman.zbay.xyz/api`,
+  api_endpoint: `https://chartman.zbay.xyz/api`,
   production: true
 };

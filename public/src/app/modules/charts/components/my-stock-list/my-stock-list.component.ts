@@ -50,7 +50,7 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
        });
 
 
-    this.stockService.newStock$.pipe(takeUntil(this.destroy$))
+    this.stockService.new_stock$.pipe(takeUntil(this.destroy$))
       .subscribe((stock: Stock) => {
         this.stocks.unshift(stock);
         this.updateTable();
