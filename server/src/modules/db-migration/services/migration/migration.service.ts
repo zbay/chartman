@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { Pool } from 'pg';
 
-import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
 import { Migration } from '@migration/interfaces/migration.interface';
 import { MigrationType } from '@migration/enums/migration-type.enum';
 import { MigrationVerb } from '@migration/enums/migration-verb.enum';
@@ -34,8 +33,7 @@ const oppositeOperations = {
 export class MigrationService {
     private pool: Pool;
 
-    constructor(private readonly error_logging_service: ErrorLoggingService,
-                private readonly postgres_connection_service: PostgresConnectionService) {
+    constructor(private readonly postgres_connection_service: PostgresConnectionService) {
         this.pool = this.postgres_connection_service.pool;
     }
 
@@ -45,7 +43,7 @@ export class MigrationService {
         return this.runMigration(migration, filename, true);
     }
 
-    async forwardPostgresSchemaMigration() {
+    async forwardPostgresSchemaMigration(): Promise<any> {
         const migrationsTableExistsResult = await this.pool.query(
                 `SELECT EXISTS (
                     SELECT 1
@@ -62,23 +60,13 @@ export class MigrationService {
                 );
                  // tslint:disable-next-line:no-console
                 console.log(`Built migration-related tables`);
-                this.processMigrations();
+                return await this.processMigrations();
             } catch (e) {
-                this.logError(e);
+                return Promise.reject(e);
             }
         } else {
-            this.processMigrations();
+            return await this.processMigrations();
         }
-    }
-
-    private logError(error: Error) {
-        // tslint:disable-next-line:no-console
-        console.log(error);
-        this.error_logging_service.logError({
-            error,
-            user_id: null,
-            url: `Migration`
-        });
     }
 
     private async runMigration(migration: Migration, filename: string, isReversal: boolean): Promise<any> {
@@ -100,11 +88,8 @@ export class MigrationService {
                 }
             }
         } catch (e) {
-            errorWasThrown = true;
-            this.logError(e);
-            return Promise.reject();
+            return Promise.reject(e);
         }
-
         for (const op of migration.operations) {
             try {
                 if (!op.v || op.v < 0) {
@@ -119,30 +104,26 @@ export class MigrationService {
 
                 const doPath = `${paths[op.type + 's']}/${op.name}/v${op.v}/${op.verb}.sql`;
                 const undoPath = `${paths[op.type + 's']}/${op.name}/v${op.v}/${oppositeOperations[op.verb]}.sql`;
-
-                if (!errorWasThrown) {
-                    // tslint:disable-next-line:no-console
-                    console.log(`Running: ${doPath}`);
-                    await this.pool.query(fs.readFileSync(doPath).toString());
-                    reversals.unshift(undoPath);
-                }
-
+                // tslint:disable-next-line:no-console
+                console.log(`Running: ${doPath}`);
+                const doQuery = fs.readFileSync(doPath).toString();
+                await this.pool.query(doQuery);
+                reversals.unshift(undoPath);
             } catch (e) {
                 // tslint:disable-next-line:no-console
                 console.log(`ERROR! Undoing changes`);
-                this.logError(e);
                 errorWasThrown = true;
                 for (const revertScript of reversals) {
                     // tslint:disable-next-line:no-console
                     console.log(`Running: ${revertScript}`);
                     try {
-                        await this.pool.query(fs.readFileSync(revertScript).toString());
+                        const reverseQuery = fs.readFileSync(revertScript).toString();
+                        await this.pool.query(reverseQuery);
                     } catch (e) {
-                        this.logError(e);
-                        return Promise.reject();
+                        return Promise.reject(e);
                     }
                 }
-
+                return Promise.reject(e);
         }
     }
         // mark migration as completed
@@ -161,73 +142,66 @@ export class MigrationService {
             } catch (e) {
                 // tslint:disable-next-line:no-console
                 console.log(`Failed to save migration change!`);
-                this.logError(e);
-                return Promise.reject();
+                // this.logError(e);
+                return Promise.reject(e);
             }
         }
     }
 
     private async processMigrations(): Promise<any> {
-        let errorWasThrown = false;
-        fs.readdir(paths.migrations, async (err, files) => {
-            // console.log(files);
-            if (!files || files.length === 0) {
-                // tslint:disable-next-line:no-console
-                console.log(`No migrations to make.`);
-                return Promise.resolve();
-            }
-            // step 1: sort files alphabetically
-            files.sort((file1, file2) => {
-                if (file1 < file2) { return -1; }
-                if (file1 > file2) { return 1; }
-                return 0;
-            });
-            // step 2, retrieve latest migration and curtail array to only include the ones after
-            let latestMigrationResult;
-            try {
-                latestMigrationResult =
-                    await this.pool.query(`select filename, last_migration from (
-                        select filename, MAX(ran) as last_migration
-                        from public.migrations
-                        group by filename, ran
-                        order by filename desc
-                        limit 1
-                    ) q;`
-                );
-                } catch (e) {
-                    errorWasThrown = true;
-                    this.logError(e);
-                    return Promise.reject();
+        return new Promise((resolve, reject) => {
+            fs.readdir(paths.migrations, async (err, files) => {
+                if (!files || files.length === 0) {
+                    // tslint:disable-next-line:no-console
+                    console.log(`No migrations to make.`);
+                    return resolve();
                 }
-            if (latestMigrationResult.rows
-                        && latestMigrationResult.rows[0]
-                        && latestMigrationResult.rows[0].filename) {
-                    const latestMigration = latestMigrationResult.rows[0].filename;
-                    if (latestMigration) {
-                        files = files.slice((files.indexOf(latestMigration) || 0) + 1);
+                // step 1: sort files alphabetically
+                files.sort((file1, file2) => {
+                    if (file1 < file2) { return -1; }
+                    if (file1 > file2) { return 1; }
+                    return 0;
+                });
+                // step 2, retrieve latest migration and curtail array to only include the ones after
+                let latestMigrationResult;
+                try {
+                    latestMigrationResult =
+                        await this.pool.query(`select filename, last_migration from (
+                            select filename, MAX(ran) as last_migration
+                            from public.migrations
+                            group by filename, ran
+                            order by filename desc
+                            limit 1
+                        ) q;`
+                    );
+                    } catch (e) {
+                        return reject(e);
                     }
-                }
-
-            if (files.length === 0) {
-                // tslint:disable-next-line:no-console
-                console.log(`No new migrations to make!`);
-            } else {
-                // Step 3: process each relevant migration file
-                for (const file of files) {
-                    if (!errorWasThrown) {
+                if (latestMigrationResult.rows
+                            && latestMigrationResult.rows[0]
+                            && latestMigrationResult.rows[0].filename) {
+                        const latestMigration = latestMigrationResult.rows[0].filename;
+                        if (latestMigration) {
+                            files = files.slice((files.indexOf(latestMigration) || 0) + 1);
+                        }
+                    }
+                if (files.length === 0) {
+                    // tslint:disable-next-line:no-console
+                    console.log(`No new migrations to make!`);
+                    return resolve();
+                } else {
+                    // Step 3: process each relevant migration file
+                    for (const file of files) {
                         const migration = require(`${paths.migrations}/${file}`);
                         try {
                             await this.runMigration(migration, file, false);
                         } catch (e) {
-                            errorWasThrown = true;
-                            this.logError(e);
-                            return Promise.reject();
+                            return reject(e);
                         }
                     }
+                    return resolve();
                 }
-                return Promise.resolve();
-            }
-
+            });
         });
     }
 
