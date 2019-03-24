@@ -34,7 +34,9 @@ export class AppModule {
     AppModule.port = this.config_service.get(`port`);
     AppModule.host = this.config_service.get(`host`);
     AppModule.env = this.config_service.get(`env`);
-    this.migration_service.migratePostgresSchema();
-    this.scheduler_service.runAllCronJobs();
+    this.migration_service.forwardPostgresSchemaMigration()
+      .then(() => {
+        this.scheduler_service.runAllCronJobs();
+      });
   }
 }

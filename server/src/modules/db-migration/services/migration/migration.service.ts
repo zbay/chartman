@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { Pool } from 'pg';
 
+import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
 import { Migration } from '@migration/interfaces/migration.interface';
 import { MigrationType } from '@migration/enums/migration-type.enum';
 import { MigrationVerb } from '@migration/enums/migration-verb.enum';
@@ -28,21 +29,23 @@ const oppositeOperations = {
 };
 
 // Assumes that chartman db already exists, from Docker startup script or from manual creation locally
+// TODO: log errors
 @Injectable()
 export class MigrationService {
     private pool: Pool;
 
-    constructor(private readonly postgres_connection_service: PostgresConnectionService) {
+    constructor(private readonly error_logging_service: ErrorLoggingService,
+                private readonly postgres_connection_service: PostgresConnectionService) {
         this.pool = this.postgres_connection_service.pool;
     }
 
-    reversePostgresMigration(filename: string) {
+    async reversePostgresSchemaMigration(filename: string): Promise<any> {
         const migration = require(`${paths.migrations}/${filename}`);
         migration.operations.reverse();
-        this.runMigration(migration, filename, true);
+        return this.runMigration(migration, filename, true);
     }
 
-    async migratePostgresSchema() {
+    async forwardPostgresSchemaMigration() {
         const migrationsTableExistsResult = await this.pool.query(
                 `SELECT EXISTS (
                     SELECT 1
@@ -61,30 +64,45 @@ export class MigrationService {
                 console.log(`Built migration-related tables`);
                 this.processMigrations();
             } catch (e) {
-                // tslint:disable-next-line:no-console
-                console.log(e);
+                this.logError(e);
             }
         } else {
             this.processMigrations();
         }
     }
 
-    private async runMigration(migration: Migration, filename: string, isReversal: boolean) {
+    private logError(error: Error) {
+        // tslint:disable-next-line:no-console
+        console.log(error);
+        this.error_logging_service.logError({
+            error,
+            user_id: null,
+            url: `Migration`
+        });
+    }
+
+    private async runMigration(migration: Migration, filename: string, isReversal: boolean): Promise<any> {
         const reversals = [];
         let errorWasThrown = false;
-        for (let i = 0; i < migration.operations.length; i++) {
-            const op = migration.operations[i];
-            // allow for the 'replace' shorthand, that tears down the previous version before building the specified one
-            if (op.verb === MigrationVerb.REPLACE) {
-                op.verb = MigrationVerb.BUILD;
-                migration.operations.splice(isReversal ? i + 1 : i - 1, 0, {
-                    verb: MigrationVerb.TEARDOWN,
-                    type: op.type,
-                    name: op.name,
-                    v: op.v - 1
-                });
-                i += 1;
+        try {
+            for (let i = 0; i < migration.operations.length; i++) {
+                const op = migration.operations[i];
+                // allow for the 'replace' shorthand, that tears down the previous version before building the specified one
+                if (op.verb === MigrationVerb.REPLACE) {
+                    op.verb = MigrationVerb.BUILD;
+                    migration.operations.splice(isReversal ? i + 1 : i - 1, 0, {
+                        verb: MigrationVerb.TEARDOWN,
+                        type: op.type,
+                        name: op.name,
+                        v: op.v - 1
+                    });
+                    i += 1;
+                }
             }
+        } catch (e) {
+            errorWasThrown = true;
+            this.logError(e);
+            return Promise.reject();
         }
 
         for (const op of migration.operations) {
@@ -112,8 +130,7 @@ export class MigrationService {
             } catch (e) {
                 // tslint:disable-next-line:no-console
                 console.log(`ERROR! Undoing changes`);
-                // tslint:disable-next-line:no-console
-                console.log(e);
+                this.logError(e);
                 errorWasThrown = true;
                 for (const revertScript of reversals) {
                     // tslint:disable-next-line:no-console
@@ -121,9 +138,8 @@ export class MigrationService {
                     try {
                         await this.pool.query(fs.readFileSync(revertScript).toString());
                     } catch (e) {
-                        // tslint:disable-next-line:no-console
-                        console.error(`Failed to revert!`);
-                        process.exit(1);
+                        this.logError(e);
+                        return Promise.reject();
                     }
                 }
 
@@ -141,21 +157,24 @@ export class MigrationService {
                    await this.pool.query(`INSERT INTO public.migrations (filename)
                         VALUES ($1)`, [filename]);
                 }
+                return Promise.resolve();
             } catch (e) {
                 // tslint:disable-next-line:no-console
                 console.log(`Failed to save migration change!`);
+                this.logError(e);
+                return Promise.reject();
             }
         }
     }
 
-    private async processMigrations() {
+    private async processMigrations(): Promise<any> {
         let errorWasThrown = false;
         fs.readdir(paths.migrations, async (err, files) => {
             // console.log(files);
             if (!files || files.length === 0) {
                 // tslint:disable-next-line:no-console
                 console.log(`No migrations to make.`);
-                return;
+                return Promise.resolve();
             }
             // step 1: sort files alphabetically
             files.sort((file1, file2) => {
@@ -176,9 +195,9 @@ export class MigrationService {
                     ) q;`
                 );
                 } catch (e) {
-                    // tslint:disable-next-line:no-console
-                    console.error(`Failed to get last migration. Exiting.`);
-                    process.exit(1);
+                    errorWasThrown = true;
+                    this.logError(e);
+                    return Promise.reject();
                 }
             if (latestMigrationResult.rows
                         && latestMigrationResult.rows[0]
@@ -198,14 +217,15 @@ export class MigrationService {
                     if (!errorWasThrown) {
                         const migration = require(`${paths.migrations}/${file}`);
                         try {
-                            this.runMigration(migration, file, false);
+                            await this.runMigration(migration, file, false);
                         } catch (e) {
                             errorWasThrown = true;
+                            this.logError(e);
+                            return Promise.reject();
                         }
                     }
-                    // tslint:disable-next-line:no-console
-                    console.log(`Migration succeeded: ${file}`);
                 }
+                return Promise.resolve();
             }
 
         });
