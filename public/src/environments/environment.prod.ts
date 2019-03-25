@@ -1,4 +1,4 @@
 export const environment = {
-  api_endpoint: `https://chartman.zbay.xyz/api`,
+  api_endpoint: window.location.hostname === `localhost` ? `https://localhost/api` : `https://chartman.zbay.xyz/api`,
   production: true
 };

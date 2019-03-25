@@ -25,7 +25,7 @@ export class ConfigService {
                 user: env.POSTGRES_USER,
                 password: env.POSTGRES_PASSWORD,
                 port: Number(env.POSTGRES_PORT),
-                database: env.POSTGRES_DATABASE
+                database: env.POSTGRES_DB
             },
             ses_bounce_queue_url: env.SES_BOUNCE_QUEUE_URL,
             ses_complaint_queue_url: env.SES_COMPLAINT_QUEUE_URL

@@ -10,13 +10,13 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     env_file:
-      - db/.env.${ENV}
+      - server/.env.${ENV}
     # environment:
     #   POSTGRES_HOST: 'example'
     #   POSTGRES_USER: 'example'
     #   POSTGRES_PASSWORD: 'example'
     #   POSTGRES_PORT: 5432
-    #   POSTGRES_DATABASE: 'example'
+    #   POSTGRES_DB: 'example'
   
   nest:
     image: zbayindustries/chartman_nest
@@ -24,7 +24,7 @@ services:
       - 3000:3000
     restart: always
     depends_on:
-      - db_migrator
+      - postgres
     environment:
       - ENV=${ENV}
     env_file:
@@ -45,7 +45,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/cors.conf:/etc/nginx/cors.conf
       - /var/log/nginx/:/var/log/nginx
-      - ./ng-env/environment.${ENV}.ts:/usr/src/app/src/environments/environment.prod.ts
-
+      
 volumes: 
   db-data: {}

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import * as jwtDecode from 'jwt-decode';
+import * as jwt_decode from 'jwt-decode';
 
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   static getDecodedToken(): any {
-    return jwtDecode(AuthService.getToken());
+    return jwt_decode(AuthService.getToken());
   }
 
   static getToken(): string {
@@ -105,11 +105,11 @@ export class AuthService {
   //
   //
   isAdmin(): boolean {
-    return jwtDecode(AuthService.getToken()).scope.indexOf('admin') > -1;
+    return jwt_decode(AuthService.getToken()).scope.indexOf('admin') > -1;
   }
 
   isPremium(): boolean {
-    return jwtDecode(AuthService.getToken()).scope.indexOf('premium') > -1;
+    return jwt_decode(AuthService.getToken()).scope.indexOf('premium') > -1;
   }
 
   logout(): void {
