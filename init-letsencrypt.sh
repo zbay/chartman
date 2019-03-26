@@ -2,11 +2,11 @@
 
 # source: https://raw.githubusercontent.com/wmnnd/nginx-certbot/master/init-letsencrypt.sh
 
-domains=(chartman.zbay.xyz www.chartman.zbay.xyz)
+domains=(chartman.zbay.xyz)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="$EMAIL" # Adding a valid address is strongly recommended
-staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
+staging=1 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 if [ -d "$data_path" ]; then
   read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
@@ -36,7 +36,7 @@ echo
 
 
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d nginx
+docker-compose up --force-recreate -d zbayindustries/chartman_frontend
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
@@ -74,4 +74,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec nginx nginx -s reload
+docker-compose exec zbayindustries/chartman_frontend nginx -s reload
