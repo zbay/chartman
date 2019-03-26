@@ -25,8 +25,8 @@ async function bootstrap() {
 
   if (ENV !== `dev`) {
     app.use(rateLimit({
-      windowMs: 60 * 1000, // > 30 requests per minute per IP address is prohibited
-      max: 30
+      windowMs: 60 * 1000, // > 60 requests per minute per IP address is prohibited
+      max: 60
     }));
   }
 

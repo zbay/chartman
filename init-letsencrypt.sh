@@ -36,7 +36,7 @@ echo
 
 
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d zbayindustries/chartman_frontend
+docker-compose up --force-recreate -d frontend
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
@@ -74,4 +74,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec zbayindustries/chartman_frontend nginx -s reload
+docker-compose exec frontend nginx -s reload
