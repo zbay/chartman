@@ -24,7 +24,7 @@ import { UserService } from '@accounts/services/user/user.service';
 export class AccountsModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
-          .apply(hasJWT)
+          .apply(hasJWT())
           .exclude(
             { path: 'accounts/user', method: RequestMethod.POST }
           )

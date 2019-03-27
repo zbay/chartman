@@ -15,7 +15,7 @@ import { SharedModule } from '@shared/shared.module';
 export class StocksModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
-          .apply(hasJWT)
+          .apply(hasJWT())
           .forRoutes(StocksController);
       }
 }

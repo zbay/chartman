@@ -12,7 +12,7 @@ import { TechnicalsModule } from '@technicals/technicals.module';
 export class CurrenciesModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
-          .apply(hasJWT)
+          .apply(hasJWT())
           .forRoutes(CurrenciesController);
       }
 }
