@@ -1,8 +1,7 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import * as bcrypt from 'bcrypt';
 
-import { CustomException } from '@common/exceptions/custom.exception';
 import { LoginDTO } from '@accounts/dto/login.dto';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { TokenService } from '@accounts/services/token/token.service';
@@ -21,20 +20,20 @@ export class LoginService {
             err_msg: `Could not login. Please try again later.`
         });
         if (!user || !user.password) {
-            throw new CustomException({name: `Invalid Credentials`
+            throw new HttpException({name: `Invalid Credentials`
             , message: `Invalid Credentials`}
             , HttpStatus.FORBIDDEN);
         }
         const correct_password = await bcrypt.compare(credentials.password, user.password)
             .catch((err: Error) => {
-                throw new CustomException({
+                throw new HttpException({
                     name: `Bcrypt comparison failure`,
                     message: `Failed to validate password`,
                     stack: err.stack
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             });
         if (!correct_password) {
-            throw new CustomException({name: `Invalid Credentials`
+            throw new HttpException({name: `Invalid Credentials`
             , message: `Invalid Credentials`}
             , HttpStatus.FORBIDDEN);
         } else {

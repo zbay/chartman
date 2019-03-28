@@ -1,4 +1,4 @@
-import { Injectable, HttpService, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpService, HttpStatus, HttpException } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
 import { map, catchError } from 'rxjs/operators';
@@ -9,7 +9,6 @@ import { ConfigService } from '@shared/services/config/config.service';
 import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairChartData } from '@currencies/interfaces/currency-pair-chart-data.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
-import { CustomException } from '@common/exceptions/custom.exception';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { TechnicalsCalculationService } from '@technicals/services/technicals-calculation/technicals-calculation.service';
 import { TechnicalDataPoint } from '@technicals/interfaces/technical-data-point';
@@ -39,7 +38,7 @@ export class CurrencyDataService {
         return this.http_service.get(requestURL)
             .pipe(map((response: AxiosResponse) => {
                 if (response.data[`Response`] === `Error`) {
-                    throw new CustomException({
+                    throw new HttpException({
                         name: `CryptoCompare Retrieval Error`,
                         message: `Could not retrieve the data for this currency pair.`,
                         stack: response.data[`Message`]
@@ -50,7 +49,7 @@ export class CurrencyDataService {
                 return { currencyPair: pair, series };
             }),
             catchError((err: Error) => {
-                throw new CustomException({
+                throw new HttpException({
                     name: err.name,
                     message: `Failed to load chart data from 3rd party API!`,
                     stack: err.stack

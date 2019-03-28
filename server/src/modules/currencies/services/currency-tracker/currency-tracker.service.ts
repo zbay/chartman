@@ -1,4 +1,4 @@
-import { Injectable, HttpService, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpService, HttpStatus, HttpException } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
 import { map } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { Currency } from '@currencies/interfaces/currency.interface';
 import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CurrencySearchQueryDTO } from '@currencies/dto/currency-search-query.dto';
-import { CustomException } from '@common/exceptions/custom.exception';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 
 @Injectable()
@@ -31,7 +30,7 @@ export class CurrencyTrackerService {
         await this.http_service.get(request_url)
             .pipe(map((response: AxiosResponse) => {
                 if (response.data[`Response`] === `Error`) {
-                    throw new CustomException({
+                    throw new HttpException({
                         name: `CryptoCompare API Error`,
                         message: `Failed to add currency pair!`,
                         stack: response.data['Error Message']

@@ -1,16 +1,19 @@
 import 'reflect-metadata';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
+import express = require('express');
 import { join, resolve } from 'path';
 import * as rateLimit from 'express-rate-limit';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(express()));
 
   const ENV = AppModule.env;
   const hostDomain = `${AppModule.host}:${AppModule.port}`;
@@ -32,7 +35,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
-  app.useStaticAssets(join(__dirname, '../../', 'public/dist'));
+  app.getHttpAdapter().useStaticAssets(join(__dirname, '../../', 'public/dist'));
 
   const swaggerOptions = new DocumentBuilder()
     .setTitle(`Chartman`)

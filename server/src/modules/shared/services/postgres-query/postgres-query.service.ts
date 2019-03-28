@@ -1,8 +1,7 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { Pool, QueryResult } from 'pg';
 
-import { CustomException } from '@common/exceptions/custom.exception';
 import { PostgresConnectionService } from '../postgres-connection/postgres.connection.service';
 
 interface PostgresQueryOptions {
@@ -47,7 +46,7 @@ export class PostgresQueryService {
                 // tslint:disable-next-line:no-console
                 console.log(err);
             } else {
-                throw new CustomException({
+                throw new HttpException({
                     name: `${options.function} error`,
                     message: options.err_msg || err.message || `Unspecified postgres function query error!`,
                     stack: err.stack

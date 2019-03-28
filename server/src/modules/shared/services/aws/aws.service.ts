@@ -1,11 +1,10 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 // There needs to be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables
 import { config as AWS_CONFIG, SES, SQS, AWSError } from 'aws-sdk';
 
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
-import { CustomException } from '@common/exceptions/custom.exception';
 import { ErrorLoggingService } from '@errors/services/error-logging/error-logging.service';
 import { ReceiveMessageResult, Message } from 'aws-sdk/clients/sqs';
 import { PostgresQueryService } from '../postgres-query/postgres-query.service';
@@ -218,7 +217,7 @@ export class AwsService {
             .sendEmail(email_params)
             .promise()
             .catch((err: Error) => {
-                throw new CustomException({
+                throw new HttpException({
                     message: `Failed to send the password reset email to your inbox!`,
                     name: `Password Reset Email Failure`,
                     stack: err.stack

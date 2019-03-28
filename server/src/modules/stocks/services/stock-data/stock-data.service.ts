@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, HttpService } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpService, HttpException } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
 import { map, catchError } from 'rxjs/operators';
@@ -6,7 +6,6 @@ import { map, catchError } from 'rxjs/operators';
 import { ALPHAVANTAGE_PREFIX, IEX_PROD_PREFIX, IEX_SANDBOX_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
-import { CustomException } from '@common/exceptions/custom.exception';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 import { StockChartData } from '@stocks/interfaces/stock-chart-data.interface';
@@ -45,7 +44,7 @@ export class StockDataService {
         return this.http_service.get(request_url)
             .pipe(map((response: AxiosResponse) => {
                 if (response.data['Error Message']) {
-                    throw new CustomException({
+                    throw new HttpException({
                         name: `Stock Data Retrieval Error`,
                         message: `No data exists for symbol ${stock.symbol}!`,
                         stack: response.data['Error Message']
@@ -55,7 +54,7 @@ export class StockDataService {
                 return { stock, series };
             }),
             catchError((err: Error) => {
-                throw new CustomException({
+                throw new HttpException({
                     name: err.name,
                     message: `Failed to load chart data from 3rd party API!`,
                     stack: err.stack

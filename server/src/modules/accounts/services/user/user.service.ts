@@ -1,11 +1,10 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { hash as bcryptHash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 
 import { AwsService } from '@shared/services/aws/aws.service';
 import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
-import { CustomException } from '@common/exceptions/custom.exception';
 import { JwtPayload } from '@accounts/interfaces/jwt-payload';
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
@@ -20,7 +19,7 @@ export class UserService {
 
     async changePassword(password_change_id: string, user: ChangePasswordUserDTO): Promise<void> {
         if (!this.passwordsDoMatch(user)) {
-            throw new CustomException({name: `Password Mismatch`
+            throw new HttpException({name: `Password Mismatch`
                 , message: `Password mismatch! Could not create user.`}
                 , HttpStatus.BAD_REQUEST);
         }
@@ -31,7 +30,7 @@ export class UserService {
         })
         .then((pwChangeSuccess: boolean) => {
             if (!pwChangeSuccess) {
-                throw new CustomException({
+                throw new HttpException({
                     name: `Password Change Request Expiration Error`,
                     message: `Could not save new password. Check that you input the correct email, and that this link has not expired.`
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,7 +42,7 @@ export class UserService {
 
     async createUser(newUser: NewUserDTO): Promise<string> {
         if (!this.passwordsDoMatch(newUser)) {
-            throw new CustomException({name: `Password Mismatch`
+            throw new HttpException({name: `Password Mismatch`
                 , message: `Password mismatch! Could not create user.`}
                 , HttpStatus.BAD_REQUEST);
         }
@@ -58,7 +57,7 @@ export class UserService {
 
     async editUser(user: NewUserDTO, user_id: number): Promise<boolean> {
         if (!this.passwordsDoMatch(user)) {
-            throw new CustomException({name: `Password Mismatch`
+            throw new HttpException({name: `Password Mismatch`
                 , message: `Password mismatch! Could not save changes to user.`}
                 , HttpStatus.BAD_REQUEST);
         }

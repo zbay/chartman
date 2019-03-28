@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, HttpService } from '@nestjs/common';
+import { HttpStatus, HttpService, HttpException, Injectable } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
 import { catchError, tap } from 'rxjs/operators';
@@ -6,7 +6,6 @@ import { catchError, tap } from 'rxjs/operators';
 import { ALPHAVANTAGE_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
-import { CustomException } from '@common/exceptions/custom.exception';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 
@@ -45,7 +44,7 @@ export class StockTrackerService {
         await this.http_service.get(request_url)
             .pipe(tap((response: AxiosResponse) => {
                 if (response.data['Error Message']) {
-                    throw new CustomException({
+                    throw new HttpException({
                         name: `Bad Stock Symbol Error`,
                         message: `No data exists for symbol ${symbol}!`,
                         stack: response.data['Error Message']
@@ -53,7 +52,7 @@ export class StockTrackerService {
                 }
             }),
             catchError((err: Error) => {
-                throw new CustomException({
+                throw new HttpException({
                     name: err.name,
                     message: DEFAULT_ERROR_MSG,
                     stack: err.stack

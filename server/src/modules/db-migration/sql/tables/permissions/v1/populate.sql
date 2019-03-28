@@ -1,6 +1,10 @@
-insert into public.exchanges ("name")
-values ('NASDAQ');
-insert into public.exchanges ("name")
-values ('NYSE');
-insert into public.exchanges ("name")
-values ('NYSE American');
+insert into public.permissions ("name")
+values ('free');
+insert into public.permissions ("name")
+values ('admin');
+insert into public.permissions ("name")
+values ('premium_stocks');
+insert into public.permissions ("name")
+values ('premium_currencies');
+insert into public.permissions ("name")
+values ('premium_gambling');
