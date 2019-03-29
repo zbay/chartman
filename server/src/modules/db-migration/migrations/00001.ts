@@ -137,6 +137,16 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.FUNCTION,
+            name: `account/fn_add_permission`
+        },
+        {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
+            name: `account/fn_remove_permission`
+        },
+        {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
             name: `account/fn_change_password`
         },
         {
@@ -177,10 +187,6 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.POPULATE, // populate op is implied to be a table
             name: `exchanges`
-        },
-        {
-            verb: MigrationVerb.POPULATE,
-            name: `permissions`
         },
         {
             verb: MigrationVerb.POPULATE,

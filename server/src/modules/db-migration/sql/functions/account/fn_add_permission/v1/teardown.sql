@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.fn_add_permission(int, text, timestamptz);
