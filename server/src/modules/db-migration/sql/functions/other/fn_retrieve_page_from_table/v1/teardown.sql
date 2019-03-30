@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.fn_retrieve_page_from_table(jsonb);
