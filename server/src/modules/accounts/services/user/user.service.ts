@@ -52,7 +52,7 @@ export class UserService {
             params: [newUser],
             err_msg: `Failed to save new user! Try another email address, or try again later.`
         })
-        .then(async (user) => await this.token_service.getToken(user.user_id, user.permissions));
+        .then(async (user) => await this.token_service.getToken(user.user_id, user.roles));
     }
 
     async editUser(user: NewUserDTO, user_id: number): Promise<boolean> {

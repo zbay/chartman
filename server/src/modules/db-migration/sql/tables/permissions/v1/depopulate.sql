@@ -1,1 +1,0 @@
-TRUNCATE public.permissions CASCADE;

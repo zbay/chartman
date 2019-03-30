@@ -49,9 +49,9 @@ Thumbs.db
 
 db/node_modules
 
-.env.dev
-.env.prod
-.env.test
+*.env.dev
+*.env.prod
+*.env.test
 server/dist
 server/node_modules
 bfg-1.13.0.jar

@@ -11,6 +11,7 @@ import { Credentials } from '@common/models/credentials';
 import { environment } from '@env/environment';
 import { ErrorService } from '../error/error.service';
 import { NewCredentials } from '@common/models/new-credentials';
+import { Role } from '@app/common/enums/role.enum';
 import { SnackBarService } from '../snack-bar/snack-bar.service';
 
 const accounts_url = `${environment.api_endpoint}/accounts`;
@@ -21,7 +22,9 @@ const accounts_url = `${environment.api_endpoint}/accounts`;
 export class AuthService {
 
   private _is_logged_in  = new BehaviorSubject<boolean>(false);
+  private _roles = new BehaviorSubject<Role[]>([]);
   is_logged_in$ = this._is_logged_in.asObservable();
+  roles$ = this._roles.asObservable();
 
   static decodeUrlForRouter(url: string): string[] {
     return decodeURI(url).split('/');
@@ -42,9 +45,18 @@ export class AuthService {
 
   constructor(
     private readonly error_service: ErrorService,
-    private http: HttpClient,
-    private router: Router,
+    private readonly http: HttpClient,
+    private readonly router: Router,
     private readonly snackbar_service: SnackBarService) {}
+
+  hasAnyRole(roles: Role[] = [Role.FREE]): boolean {
+    const token = AuthService.getDecodedToken();
+    return token.scope.some((token_role) => { // test if there is any overlap between token role and required role sets
+      return roles.some((role) => {
+        return role === token_role;
+      });
+    });
+  }
 
   isLoggedIn(): boolean {
     const logged_in = !localStorage.getItem('access_token') ? false : AuthService.tokenNotExpired();
@@ -115,6 +127,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('access_token');
     this._is_logged_in.next(false);
+    this.setRoles(false);
     this.router.navigate(['/']);
   }
 
@@ -122,8 +135,17 @@ export class AuthService {
     this._is_logged_in.next(logged_in);
   }
 
+  setRoles(has_token: boolean): void {
+    if (has_token) {
+      this._roles.next(AuthService.getDecodedToken().scope);
+    } else {
+      this._roles.next([]);
+    }
+  }
+
   setToken(token: string): void {
     localStorage.setItem('access_token', token);
     this.setLoggedIn(true);
+    this.setRoles(true);
   }
 }

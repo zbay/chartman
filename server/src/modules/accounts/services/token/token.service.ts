@@ -9,8 +9,8 @@ export class TokenService {
         private readonly jwtService: JwtService
       ) {}
 
-      async getToken(user_id: number, permissions: string): Promise<string> {
-        const userToken: JwtPayload = { sub: user_id, scope: permissions };
+      async getToken(user_id: number, roles: string): Promise<string> {
+        const userToken: JwtPayload = { sub: user_id, scope: roles };
         return this.jwtService.sign(userToken);
       }
 }

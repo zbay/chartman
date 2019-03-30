@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit } from '@angular/core';
 
 import { NavigationService } from '@app/services/navigation/navigation.service';
-import { Orientation } from '@common/enums/orientation';
+import { Orientation } from '@app/common/enums/orientation.enum';
+import { Role } from '@app/common/enums/role.enum';
 
 @Component({
   selector: 'app-navbar',
@@ -10,18 +11,20 @@ import { Orientation } from '@common/enums/orientation';
   encapsulation: ViewEncapsulation.None
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
-  loggedIn = false;
-  currentUrl: string;
+  logged_in = false;
+  current_url: string;
+  readonly logged_in_role: Role.FREE;
   readonly Orientation = Orientation;
+  readonly Role = Role;
 
   @Input() orientation: Orientation;
 
-  constructor(private readonly navigationService: NavigationService) {}
+  constructor(private readonly navigation_service: NavigationService) {}
 
   ngOnInit() {}
 
   ngAfterViewInit() {
-    this.navigationService.navbarHasLoaded$.next(true);
+    this.navigation_service.navbarHasLoaded$.next(true);
   }
 
 }

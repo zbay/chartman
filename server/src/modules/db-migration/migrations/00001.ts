@@ -17,12 +17,12 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.TABLE,
-            name: `permissions`
+            name: `roles`
         },
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.TABLE,
-            name: `user_permissions`
+            name: `user_roles`
         },
         {
             verb: MigrationVerb.BUILD,
@@ -137,12 +137,12 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.FUNCTION,
-            name: `account/fn_add_permission`
+            name: `account/fn_add_role`
         },
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.FUNCTION,
-            name: `account/fn_remove_permission`
+            name: `account/fn_remove_role`
         },
         {
             verb: MigrationVerb.BUILD,
@@ -191,6 +191,10 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.POPULATE,
             name: `currencies`
+        },
+        {
+            verb: MigrationVerb.POPULATE,
+            name: `roles`
         },
         {
             verb: MigrationVerb.POPULATE,

@@ -21,6 +21,9 @@
       "@account/*": [
         "./src/app/modules/account/*"
       ],
+      "@admin/*": [
+        "./src/app/modules/admin/*"
+      ],
       "@charts/*": [
         "./src/app/modules/charts/*"
       ],

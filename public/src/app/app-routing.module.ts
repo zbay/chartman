@@ -3,10 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AboutComponent } from '@app/components/about/about.component';
 import { AuthGuard } from '@app/guards/auth/auth.guard';
+import { ExitAnimationGuard } from '@shared/guards/exit-animation/exit-animation.guard';
 import { LoginComponent } from '@app/components/login/login.component';
 import { LogoutComponent } from '@app/components/logout/logout.component';
 import { NotFoundComponent } from '@app/modules/shared/components/not-found/not-found.component';
-import { ExitAnimationGuard } from './modules/shared/guards/exit-animation/exit-animation.guard';
+import { Role } from './common/enums/role.enum';
 
 const routes: Routes = [
   { path: '',
@@ -26,6 +27,12 @@ const routes: Routes = [
   },
   { path: 'account',
     loadChildren: '@account/account.module#AccountModule'
+  },
+  {
+    path: 'admin',
+    canActivate: [AuthGuard],
+    loadChildren: '@admin/admin.module#AdminModule',
+    data: { roles: [Role.ADMIN] }
   },
   { path: 'charting',
     canActivate: [AuthGuard],

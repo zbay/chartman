@@ -1,1 +1,0 @@
-DROP FUNCTION IF EXISTS public.fn_remove_permission(int, text);

@@ -1,4 +1,4 @@
-export enum Permission {
+export enum Role {
     ADMIN = 'admin',
     FREE = 'free',
     PREMIUM_CURRENCIES = 'premium_currencies',

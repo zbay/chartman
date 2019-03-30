@@ -4,7 +4,7 @@ create table public.users (
 	last_name varchar(100) not null,
 	email text unique not null,
 	"password" text not null,
-	permissions text[],
+	roles text[],
 	last_login_attempt timestamp,
 	strikes smallint default 0
 );

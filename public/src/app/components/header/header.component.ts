@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 
 import { takeUntil } from 'rxjs/operators';
 
-import { Animations } from '@common/animations/animations';
 import { combineLatest } from 'rxjs';
 
+import { Animations } from '@common/animations/animations';
 import { NavigationService } from '@app/services/navigation/navigation.service';
-import { Orientation } from '@common/enums/orientation';
+import { Orientation } from '@app/common/enums/orientation.enum';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 
 @Component({
