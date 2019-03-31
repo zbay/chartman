@@ -190,6 +190,11 @@ export const operations: MigrationOperation[] = [
             name: `other/fn_retrieve_page_from_table`
         },
         {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
+            name: `other/fn_retrieve_page_from_function`
+        },
+        {
             verb: MigrationVerb.POPULATE, // populate op is implied to be a table
             name: `exchanges`
         },

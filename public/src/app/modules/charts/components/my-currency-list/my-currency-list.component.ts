@@ -16,7 +16,7 @@ import { SubscribingComponent } from '@app/modules/shared/components/subscribing
 })
 export class MyCurrencyListComponent extends SubscribingComponent implements OnInit {
   dataSource = new MatTableDataSource([]);
-  displayedColumns = ['sortID', 'names', 'delete'];
+  displayedColumns = ['sort_id', 'names', 'delete'];
   isLoading = true;
   currencyPairs: CurrencyPair[] = [];
 
@@ -32,7 +32,7 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
   ngOnInit() {
         // table is sorted ascending by codes, to start
         this.sort.sort(<MatSortable>{
-          id: 'sortID',
+          id: 'sort_id',
           start: 'asc'
         }
       );

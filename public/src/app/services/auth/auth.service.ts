@@ -125,9 +125,9 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('access_token');
-    this._is_logged_in.next(false);
     this.setRoles(false);
+    this._is_logged_in.next(false);
+    localStorage.removeItem('access_token');
     this.router.navigate(['/']);
   }
 
@@ -136,6 +136,7 @@ export class AuthService {
   }
 
   setRoles(has_token: boolean): void {
+    console.log(AuthService.getDecodedToken().scope);
     if (has_token) {
       this._roles.next(AuthService.getDecodedToken().scope);
     } else {

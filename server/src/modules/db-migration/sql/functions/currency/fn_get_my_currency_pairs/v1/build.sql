@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION public.fn_get_my_currency_pairs(pair_user_id integer)
 AS $function$
 begin
 	-- select both currencies, with one the numerator and the other the denominator of a json object
-	return query select json_build_object('sortID', f.code || 'v' || t.code
+	return query select json_build_object('sort_id', f.code || 'v' || t.code
 		,'from'
 			, json_build_object('id', f.id, 'code',  f.code, 'name', f."name", 'is_crypto', f.is_crypto)
 		, 'to'

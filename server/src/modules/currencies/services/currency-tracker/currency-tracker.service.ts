@@ -61,13 +61,14 @@ export class CurrencyTrackerService {
             err_msg: `Could not delete currency pair!`
         });
     }
-
     async getMyCurrencyPairs(user_id: number): Promise<CurrencyPair[]> {
-       return this.postgres_query_service.queryFunction({
-           function: `fn_get_my_currency_pairs`,
-           params: [user_id],
-           err_msg: `Failed to retrieve your currency pairs!`,
-           returns_array: true
-       });
+        return this.postgres_query_service.queryFunctionWithPagination({
+            func: `fn_get_my_currency_pairs`,
+            func_params: [user_id],
+            err_msg: `Could not retrieve your currency pairs.`,
+            order_by_col: 'sort_id',
+            order_by_col_type: 'text',
+            cursor_point: `''`
+        });
     }
 }

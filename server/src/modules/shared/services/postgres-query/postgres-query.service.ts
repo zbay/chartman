@@ -3,17 +3,9 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { Pool, QueryResult } from 'pg';
 
 import { PostgresConnectionService } from '../postgres-connection/postgres.connection.service';
-
-interface PostgresQueryOptions {
-    function: string;
-    err_msg?: string;
-    err_code?: HttpStatus;
-    returns_array?: boolean;
-    params?: any[];
-    row_name?: string;
-    schema?: string;
-    swallow_error?: boolean;
-}
+import { PostgresFunctionQueryOptions } from '@shared/interfaces/postgres-query-options.interface';
+import { PostgresPaginatedFunctionOptions } from '@shared/interfaces/postgres-paginated-function-options.interface';
+import { PostgresPaginatedTableOptions } from '@shared/interfaces/postgres-paginated-table-options.interface';
 
 @Injectable()
 export class PostgresQueryService {
@@ -23,7 +15,7 @@ export class PostgresQueryService {
         this.pool = this.postgres_connection_service.pool;
     }
 
-    queryFunction<T = any>(options: PostgresQueryOptions): Promise<T> {
+    queryFunction<T = any>(options: PostgresFunctionQueryOptions): Promise<T> {
         const params = options.params || [];
         const schema = options.schema || `public`;
         const row_name = options.row_name || `nameless`;
@@ -54,6 +46,49 @@ export class PostgresQueryService {
                 options.err_code || HttpStatus.INTERNAL_SERVER_ERROR);
             }
         });
+    }
+
+    queryFunctionWithPagination(options: PostgresPaginatedFunctionOptions): Promise<any> {
+        if (options.func_params && Array.isArray(options.func_params)) {
+            options.func_params = options.func_params.join(`, `);
+        }
+        const row_name = `nameless`;
+        const query = `SELECT public.fn_retrieve_page_from_function($1) AS ${row_name}`;
+        return this.pool.query(query, [options])
+            .then((result: QueryResult) => {
+                // console.log(result);
+                return result.rows.map((row) => {
+                    return row[row_name];
+                });
+            })
+            .catch((err: Error) => {
+                // console.log(err);
+                throw new HttpException({
+                    name: `${options.func} paginated retrieval error`,
+                    message: options.err_msg || err.message || `Unspecified postgres paginated function retrieval error!`,
+                    stack: err.stack
+                },
+                HttpStatus.INTERNAL_SERVER_ERROR);
+            });
+    }
+
+    queryTableWithPagination(options: PostgresPaginatedTableOptions): Promise<any> {
+        const row_name = `nameless`;
+        const query = `SELECT public.fn_retrieve_page_from_table($1) AS ${row_name}`;
+        return this.pool.query(query, [options])
+            .then((result: QueryResult) => {
+                return result.rows.map((row) => {
+                    return row[row_name];
+                });
+            })
+            .catch((err: Error) => {
+                throw new HttpException({
+                    name: `${options.table} paginated retrieval error`,
+                    message: options.err_msg || err.message || `Unspecified postgres paginated table retrieval error!`,
+                    stack: err.stack
+                },
+                HttpStatus.INTERNAL_SERVER_ERROR);
+            });
     }
 
 }
