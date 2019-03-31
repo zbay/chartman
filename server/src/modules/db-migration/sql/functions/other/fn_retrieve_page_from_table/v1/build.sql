@@ -1,5 +1,4 @@
-
-create or replace function public.fn_retrieve_page_from_query(opts jsonb)
+create or replace function public.fn_retrieve_page_from_table(opts jsonb)
 returns setof json
 language plpgsql
 as $function$
@@ -15,8 +14,8 @@ declare
 begin
 	-- Use this function responsibly. Index any columns you end up searching on. Wrap any text cursor_point values in single quotes
 	-- Example usage
-    --	select * from public.fn_retrieve_page_from_table('{ "table": "currencies", "order_by_col": "code"
-    --		, "per_page": 5, "search_condition": "is_crypto", "cursor_point": "''ADT''" }'::jsonb);
+--	select * from public.fn_retrieve_page_from_table('{ "table": "currencies", "order_by_col": "code"
+--		, "per_page": 5, "search_condition": "is_crypto", "cursor_point": "''ADT''" }'::jsonb);
 
 	if opts->>'table' is null then
 		raise exception 'Pagination function requires a table name!';
@@ -25,7 +24,7 @@ begin
 	if opts->>'order_by_col' is not null then
 		order_by_col := opts->>'order_by_col';
 	end if;
-	if opts->>'order_direction' ILIKE 'DESC' then
+	if opts->>'order_direction' = 'DESC' then
 		comparison_operator := '<';
 		order_direction := 'DESC';
 	end if;
@@ -40,11 +39,16 @@ begin
 	end if;
 	retrieve_query := 'SELECT row_to_json(q) FROM (' ||
 		' SELECT *' ||  
-		' FROM public.' || query_table ||
-		' WHERE ' || order_by_col || ' ' || comparison_operator || ' ' || cursor_point ||
-		' AND ' || additional_where_condition ||
-		' ORDER BY ' || order_by_col || ' ' || order_direction ||
-		' LIMIT ' || per_page::text || ') q';
-	return query execute retrieve_query;
+		' FROM public.%I' ||
+		' WHERE %I %s %s' ||
+		' AND %s' ||
+		' ORDER BY %I %s ' 
+		' LIMIT %s) q';
+	return query execute format(retrieve_query
+	, query_table
+	, order_by_col, comparison_operator, cursor_point
+	, additional_where_condition
+	, order_by_col, order_direction
+	, per_page);
 end;
 $function$;
