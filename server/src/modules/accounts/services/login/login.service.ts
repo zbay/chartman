@@ -41,7 +41,7 @@ export class LoginService {
                 function: `fn_reset_user_strikes`,
                 params: [credentials.email]
             });
-            return this.token_service.getToken(user.user_id, user.roles);
+            return this.token_service.getToken(user.id, user.roles);
         }
     }
 }

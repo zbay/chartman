@@ -1,5 +1,5 @@
 create table public.currencies (
-	currency_id serial primary key,
+	id serial primary key,
 	code text not null,
 	"name" text not null,
 	is_crypto boolean default false

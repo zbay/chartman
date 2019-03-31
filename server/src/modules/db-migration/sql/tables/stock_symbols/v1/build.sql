@@ -1,5 +1,5 @@
 create table public.stock_symbols (
-	symbol_id serial primary key,
+	id serial primary key,
 	exchange_id int4 references exchanges(exchange_id),
 	symbol text not null,
 	"name" text not null

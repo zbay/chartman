@@ -4,23 +4,23 @@ create or replace function public.fn_update_user(user_obj jsonb, update_user_id 
 			email_taken boolean;
         begin
 	          email_taken = (
-	         	select count(*) 
-	         	from public.users 
-	         	where email = user_obj->>'email'
-	         	and update_user_id <> user_id) > 0;
+	         	select count(1) 
+	         	from public.users u
+	         	where u.email = user_obj->>'email'
+	         	and update_user_id <> u.id) > 0;
 	         	
 	         if email_taken then
 	         	raise exception 'This email address has already been taken. Try another one.';
 	         end if;
 	          
-	          update public.users 
+	          update public.users
 	          set first_name = user_obj->>'first_name',
 	          	last_name = user_obj->>'last_name',
 	          	email = user_obj->>'email',
 	          	"password" = user_obj->>'password'
-	          where user_id = update_user_id;
+	          where id = update_user_id;
 	         
-	         select user_id, email, roles from users where email = user_obj->>'email' into just_updated_user;
+	         select id, email, roles from users where email = user_obj->>'email' into just_updated_user;
 
              return row_to_json(just_updated_user);
         END;

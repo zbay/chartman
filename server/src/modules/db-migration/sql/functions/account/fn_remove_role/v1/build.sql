@@ -20,6 +20,6 @@ begin
 
 		update public.users u 
 		set roles = array_remove(u.roles, old_role)
-		where u.user_id = perm_user_id;
+		where u.id = perm_user_id;
 END;
 $function$;

@@ -17,7 +17,7 @@ create or replace function public.fn_auto_complete_currency(search_query text, c
 		return query
 		select row_to_json(q)
 		from (
-			SELECT currency_id as id, code, "name" as name
+			SELECT id, code, "name" as name
 			FROM public.currencies c
 			WHERE (c.code ilike search_query_start 
 			or c."name" ilike search_query_start

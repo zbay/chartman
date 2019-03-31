@@ -13,7 +13,7 @@ create or replace function public.fn_auto_complete_stock(search_query text) retu
 		return query 
 		select row_to_json(q)
 		from (
-			SELECT symbol_id as id, symbol as symbol, "name" as name
+			SELECT id, symbol as symbol, "name" as name
 			FROM public.stock_symbols
 			WHERE symbol ilike search_query_start 
 			or "name" ilike search_query_start

@@ -20,7 +20,7 @@ begin
 
 		update public.users u 
 		set roles = array_append(u.roles, new_role)
-		where u.user_id = new_user_id
+		where u.id = new_user_id
 		and not new_role = ANY(u.roles);
 END;
 $function$;

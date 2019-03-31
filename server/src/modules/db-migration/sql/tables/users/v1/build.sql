@@ -1,5 +1,5 @@
 create table public.users (
-	user_id serial primary key,
+	id serial primary key,
 	first_name varchar(100) not null,
 	last_name varchar(100) not null,
 	email text unique not null,

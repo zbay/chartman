@@ -1,7 +1,7 @@
 create or replace function fn_retrieve_user_for_login(user_email text) RETURNS json AS $$
 	declare retrieved_user record;
 	begin
-		SELECT user_id, password, roles, strikes, last_login_attempt
+		SELECT id, "password", roles, strikes, last_login_attempt
 		from public.users u
         WHERE u.email = user_email
         into retrieved_user;
