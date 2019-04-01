@@ -1,9 +1,8 @@
-import { OrderDirection } from '@shared/enums/order-direction.enum';
+import { OrderDirection } from '@common/enums/order-direction.enum';
 
-export interface PostgresPaginatedFunctionOptions {
+export interface PaginatedFunctionOptions {
     function: string;
     cursor_point?: string | number | boolean | Date;
-    err_msg?: string;
     function_params?: any[] | string;
     order_by_col?: string;
     order_by_col_type?: string;

@@ -49,8 +49,8 @@ export class PostgresQueryService {
     }
 
     queryFunctionWithPagination(options: PostgresPaginatedFunctionOptions): Promise<any> {
-        if (options.func_params && Array.isArray(options.func_params)) {
-            options.func_params = options.func_params.join(`, `);
+        if (options.function_params && Array.isArray(options.function_params)) {
+            options.function_params = options.function_params.join(`, `);
         }
         const row_name = `nameless`;
         const query = `SELECT public.fn_retrieve_page_from_function($1) AS ${row_name}`;
@@ -64,7 +64,7 @@ export class PostgresQueryService {
             .catch((err: Error) => {
                 // console.log(err);
                 throw new HttpException({
-                    name: `${options.func} paginated retrieval error`,
+                    name: `${options.function} paginated retrieval error`,
                     message: options.err_msg || err.message || `Unspecified postgres paginated function retrieval error!`,
                     stack: err.stack
                 },
