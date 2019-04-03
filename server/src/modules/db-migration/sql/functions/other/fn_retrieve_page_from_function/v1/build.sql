@@ -53,7 +53,7 @@ begin
 	end if;
 	retrieve_query := ' SELECT *' ||  
 		' FROM public.%I(%s) %s' ||
-		' WHERE (%s->>''%I'')::%s %s %s' ||
+		' WHERE (%s->>''%I'')::%s %s ''%s''::%s' ||
 		' AND %s' ||
 		' ORDER BY (%s->>''%I'')::%s %s ' 
 		' LIMIT %s';
@@ -65,7 +65,7 @@ begin
 --		, per_page);
 	return query execute format(retrieve_query
 	, query_function, function_params, alias
-	, alias, order_by_col, order_by_col_type, comparison_operator, cursor_point
+	, alias, order_by_col, order_by_col_type, comparison_operator, cursor_point, order_by_col_type
 	, additional_where_condition
 	, alias, order_by_col, order_by_col_type, order_direction
 	, per_page);
