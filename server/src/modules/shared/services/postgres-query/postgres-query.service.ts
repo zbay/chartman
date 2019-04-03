@@ -62,7 +62,7 @@ export class PostgresQueryService {
                 });
             })
             .catch((err: Error) => {
-                // console.log(err);
+                console.log(err);
                 throw new HttpException({
                     name: `${options.function} paginated retrieval error`,
                     message: options.err_msg || err.message || `Unspecified postgres paginated function retrieval error!`,

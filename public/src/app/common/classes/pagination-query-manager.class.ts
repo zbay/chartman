@@ -2,7 +2,7 @@ import { OrderDirection } from '@common/enums/order-direction.enum';
 import { PaginatedFunctionOptions } from '../interfaces/paginated-function-options.enum';
 import { PaginatedTableOptions } from '@common/interfaces/paginated-table-options.enum';
 
-export class PaginationManager {
+export class PaginationQueryManager {
     options: PaginatedFunctionOptions | PaginatedTableOptions;
 
     constructor(options: PaginatedFunctionOptions | PaginatedTableOptions) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatSortable, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatSort, MatSortable, Sort, PageEvent } from '@angular/material';
 
 import { finalize, takeUntil } from 'rxjs/operators';
 
@@ -8,6 +8,9 @@ import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
+import { OrderDirection } from '@app/common/enums/order-direction.enum';
+import { MyStockDataSource } from './my-stock-data-source.class';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-my-stock-list',
@@ -15,10 +18,9 @@ import { SubscribingComponent } from '@app/modules/shared/components/subscribing
   styleUrls: ['./my-stock-list.component.scss']
 })
 export class MyStockListComponent extends SubscribingComponent implements OnInit {
-  dataSource = new MatTableDataSource([]);
+  dataSource: MyStockDataSource;
   readonly displayedColumns = ['symbol', 'name', 'delete'];
-  isLoading = true;
-  stocks: Stock[] = [];
+  loading$: Observable<boolean>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -27,6 +29,8 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
               private readonly snackbarService: SnackBarService,
               private readonly stockService: StockService) {
     super();
+    this.dataSource = new MyStockDataSource(this.errorService, this.snackbarService, this.stockService);
+    this.loading$ = this.dataSource.loading$;
   }
 
   ngOnInit() {
@@ -37,58 +41,40 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
       }
     );
 
-    this.stockService.getMyStocks()
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.isLoading = false))
-      .subscribe((stocks: Stock[]) => {
-        this.stocks = stocks;
-        this.updateTable();
-       },
-       (err) => {
-            this.showError(err, 'Failed to retrieve your data');
+    this.sort.sortChange.subscribe((s: Sort) => {
+       // Change order_by_col, order_by_col_type, and order_direction
+       this.dataSource.updateQueryManager({
+         order_direction: s.direction === 'asc' ? OrderDirection.ASC : OrderDirection.DESC,
+         order_by_col: s.active
        });
+       this.dataSource.loadStocks();
+    });
 
+    this.paginator.page.subscribe((event: PageEvent) => {
+      this.dataSource.updateQueryManager({
+        per_page: event.pageSize
+      }, true);
+      this.dataSource.loadStocks();
+    });
+
+    this.dataSource.loadStocks();
 
     this.stockService.new_stock$.pipe(takeUntil(this.destroy$))
       .subscribe((stock: Stock) => {
-        this.stocks.unshift(stock);
-        this.updateTable();
+        this.dataSource.addStock(stock);
       });
   }
 
   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dataSource.filterStocks(filterValue.trim().toLowerCase());
   }
 
   deleteStock(deletedStock: Stock): void {
-    this.stockService.deleteStock(deletedStock.id)
-      .subscribe(() => {
-        this.stocks = this.stocks.filter((stock) => stock.id !== deletedStock.id);
-        this.snackbarService.openSnackBar(`Tracker for ${deletedStock.symbol} deleted!`);
-        this.updateTable();
-      }, (err) => {
-        this.showError(err, `Failed to delete tracker for ${deletedStock.symbol}`, true);
-      });
-  }
-
-  showError(err: Error, msg: string, customError: boolean = false): void {
-    const errMsg = customError ? msg : `Failed to retrieve your data`;
-    this.errorService.openErrorDialog({
-      message: errMsg,
-      name: err.name,
-      stack: err.stack
-    });
+    this.dataSource.deleteStock(deletedStock);
   }
 
   trackByFn(index: number, item: Stock) {
     return item.symbol;
-  }
-
-  updateTable() {
-    this.dataSource = new MatTableDataSource(this.stocks);
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
   }
 
 }

@@ -19,10 +19,12 @@ export class StocksController {
         return this.stock_data_service.getChartData(query.stock_id);
     }
 
-    @Get('my-stocks')
+    @Post('my-stocks')
     @HttpCode(HttpStatus.OK)
-    getMyStocks(@Req() req): Promise<Stock[]> {
-        return this.stock_tracker_service.getMyStocks(req.payload.sub);
+    getMyStocks(@Req() req, @Body() bod: any): Promise<Stock[]> {
+        // console.log(bod);
+        return this.stock_tracker_service.getMyStocks(req.payload.sub
+            , bod);
     }
 
     @Post('autocomplete')
