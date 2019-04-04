@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
-import { Stock } from '@charts/models/stock';
 import { PaginatedFunctionOptions } from '@app/common/interfaces/paginated-function-options.enum';
+import { Stock } from '@charts/models/stock';
 
 const stocks_url = `${environment.api_endpoint}/stocks`;
 
@@ -37,10 +37,12 @@ export class StockService {
       .pipe(map((res: any) => res.data));
   }
 
-  // TODO: GET with Http params
-  getMyStocks(options: PaginatedFunctionOptions): Observable<Stock[]> {
-  // getMyStocks(): Observable<Stock[]> {
-    return this.http.post<Stock[]>(`${stocks_url}/my-stocks`, options)
+  getMyStocks(options: any): Observable<Stock[]> {
+    // TODO: type options but convert to an untyped object before passing to params
+    Object.entries(options).forEach((option) => {
+      options[option[0]] = String(option[1]);
+    });
+    return this.http.get<Stock[]>(`${stocks_url}/my-stocks`, { params: options })
       .pipe(map((res: any) => res.data));
   }
 }

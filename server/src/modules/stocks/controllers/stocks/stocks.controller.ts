@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Post, Body, HttpCode, HttpStatus, Query, Delete } from '@nestjs/common';
+import { Controller, Get, Req, Post, Body, HttpCode, HttpStatus, Query, Delete, Param } from '@nestjs/common';
 
 import { CreateStockTrackerDTO } from '@stocks/dto/create-stock-tracker.dto';
 import { SimpleSearchQueryDTO } from '@common/dto/search-query.dto';
@@ -19,12 +19,11 @@ export class StocksController {
         return this.stock_data_service.getChartData(query.stock_id);
     }
 
-    @Post('my-stocks')
+    @Get('my-stocks')
     @HttpCode(HttpStatus.OK)
-    getMyStocks(@Req() req, @Body() bod: any): Promise<Stock[]> {
-        // console.log(bod);
+    getMyStocks(@Req() req, @Query() query: any): Promise<Stock[]> {
         return this.stock_tracker_service.getMyStocks(req.payload.sub
-            , bod);
+            , query);
     }
 
     @Post('autocomplete')

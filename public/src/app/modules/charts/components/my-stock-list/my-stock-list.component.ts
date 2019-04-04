@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatSortable, Sort, PageEvent } from '@angular/material';
 
-import { finalize, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
+import { MyStockDataSource } from './my-stock-data-source.class';
+import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
-import { OrderDirection } from '@app/common/enums/order-direction.enum';
-import { MyStockDataSource } from './my-stock-data-source.class';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-my-stock-list',

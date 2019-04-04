@@ -59,7 +59,7 @@ begin
 		' LIMIT %s';
 --	raise exception 'Query is: %s', format(retrieve_query
 --		, query_func, func_params, alias
---		, order_by_col, order_by_col_type, comparison_operator, cursor_point
+--		, order_by_col, order_by_col_type, comparison_operator, cursor_point, order_by_col_type
 --		, additional_where_condition
 --		, order_by_col, order_by_col_type, order_direction
 --		, per_page);
