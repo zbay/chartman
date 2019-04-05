@@ -38,17 +38,15 @@ export class NavButtonComponent extends SubscribingComponent implements OnInit, 
         this.navbar_has_loaded$ = this.navigation_service.navbarHasLoaded$;
         this.logged_in$ = this.auth_service.is_logged_in$;
         this.current_url$ = this.navigation_service.currentUrl$;
-        this.roles$ = this.auth_service.roles$;
    }
 
   ngOnInit() {
-    this.roles$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((roles) => {
-      this.has_required_role = roles.some((role) => {
-        return role === this.requireRole;
+    if (this.requireRole) {
+      this.current_url$.subscribe(() => {
+        this.has_required_role = this.auth_service.isLoggedIn() &&
+        this.auth_service.hasAnyRole([this.requireRole]);
       });
-    });
+    }
   }
 
   ngDoCheck() {

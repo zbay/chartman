@@ -120,33 +120,19 @@ export class AuthService {
     return jwt_decode(AuthService.getToken()).scope.indexOf('admin') > -1;
   }
 
-  isPremium(): boolean {
-    return jwt_decode(AuthService.getToken()).scope.indexOf('premium') > -1;
-  }
-
   logout(): void {
-    this.setRoles(false);
-    this._is_logged_in.next(false);
+    this.setLoggedIn(false);
     localStorage.removeItem('access_token');
     this.router.navigate(['/']);
   }
 
   setLoggedIn(logged_in: boolean): void {
     this._is_logged_in.next(logged_in);
-  }
-
-  setRoles(has_token: boolean): void {
-    console.log(AuthService.getDecodedToken().scope);
-    if (has_token) {
-      this._roles.next(AuthService.getDecodedToken().scope);
-    } else {
-      this._roles.next([]);
-    }
+    this._roles.next(logged_in ? AuthService.getDecodedToken().scope : []);
   }
 
   setToken(token: string): void {
     localStorage.setItem('access_token', token);
     this.setLoggedIn(true);
-    this.setRoles(true);
   }
 }
