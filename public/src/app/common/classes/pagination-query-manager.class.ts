@@ -19,9 +19,20 @@ export class PaginationQueryManager {
     }
 
     setNextCursor(data: any): void {
-        this.options.cursor_point = OrderDirection.ASC
-            ? Math.max(data.map((datum) => datum[this.options.order_by_col]))
-            : Math.min(data.map((datum) => datum[this.options.order_by_col]));
+        const order_by_col = this.options.order_by_col;
+        if (data.length) {
+            const maxReducer = (max, current) => {
+                const currentVal = current[order_by_col];
+                return (currentVal > max || !max) ? currentVal : max;
+            };
+            const minReducer = (min, current) => {
+                const currentVal = current[order_by_col];
+                return (currentVal < min || !min) ? currentVal : min;
+            };
+            this.options.cursor_point = (this.options.order_direction === OrderDirection.ASC)
+                ? data.reduce(maxReducer, data[0][order_by_col])
+                : data.reduce(minReducer, data[0][order_by_col]);
+        }
     }
 
     toggleOrderDirection() {

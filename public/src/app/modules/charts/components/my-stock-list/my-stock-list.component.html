@@ -6,7 +6,7 @@
   </mat-form-field>
   <table mat-table
            [trackBy]="trackByFn"
-           [dataSource]="dataSource"
+           [dataSource]="data_source"
            matSort
            class="mat-elevation-z8">
       <ng-container matColumnDef="symbol">
@@ -32,8 +32,8 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayed_columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayed_columns;"></tr>
     </table>
     <mat-paginator [pageSizeOptions]="[10, 25, 100]" [pageSize]="10"></mat-paginator>
 </mat-card>
