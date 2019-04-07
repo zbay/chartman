@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { MatPaginator, MatSort, MatSortable, Sort, PageEvent } from '@angular/material';
+import { MatSort, MatSortable, Sort } from '@angular/material';
 
 import { Observable } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
@@ -12,6 +12,8 @@ import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
+import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
+import { PageOperation } from '../../enums/page-operation.enum';
 
 @Component({
   selector: 'app-my-stock-list',
@@ -26,8 +28,8 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
   });
   loading$: Observable<boolean>;
   num_stocks$: Observable<number>;
-  page_num = 0;
-  // @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  @ViewChild(IndexlessPaginatorComponent) paginator: IndexlessPaginatorComponent;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private readonly error_service: ErrorService,
@@ -51,19 +53,22 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
        this.data_source.updateQueryManager({
          order_direction: s.direction === 'asc' ? OrderDirection.ASC : OrderDirection.DESC,
          order_by_col: s.active,
-         cursor_point: s.direction === `asc` ? `0` : `ZZZZZZZZZZZZZZZZZZZZZZZ`
-       });
+         cursor_point: s.direction === `asc` ? `0` : `zzzzzzzzzzzzzzzzzzzz`
+       }, PageOperation.NONE);
        this.data_source.loadStocks();
     });
 
-    // this.paginator.page.subscribe((event: PageEvent) => {
-    //   const go_to_next_page = this.page_num !== event.pageIndex;
-    //   this.data_source.updateQueryManager({
-    //     per_page: event.pageSize
-    //   }, go_to_next_page);
-    //   this.data_source.loadStocks();
-    //   this.page_num = event.pageIndex;
-    // });
+    this.paginator.page_change.subscribe((flip_forward: boolean) => {
+      this.data_source.updateQueryManager({}, flip_forward ? PageOperation.FORWARD : PageOperation.BACKWARD);
+      this.data_source.loadStocks();
+    });
+
+    this.paginator.per_page.subscribe((per_page: number) => {
+      this.data_source.updateQueryManager({
+        per_page: per_page
+      });
+      this.data_source.loadStocks();
+    });
 
     this.data_source.loadStocks();
 

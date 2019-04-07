@@ -10,13 +10,17 @@ import { PaginationQueryManager } from '@app/common/classes/pagination-query-man
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
+import { PageOperation } from '../../enums/page-operation.enum';
+
+const MIN_STRING = `0`;
+const MAX_STRING = `zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz`;
 
 export class MyStockDataSource implements DataSource<Stock> {
 
     private has_loaded_once = false;
-    private stocks$ = new BehaviorSubject<Stock[]>([]);
     private loading_subject = new BehaviorSubject<boolean>(false);
     private pagination_query_manager: PaginationQueryManager;
+    private stocks$ = new BehaviorSubject<Stock[]>([]);
     public num_stocks$: Observable<number> = this.stocks$.asObservable()
         .pipe(map((stocks: Stock[]) => stocks.length));
     public loading$ = this.loading_subject.asObservable();
@@ -48,12 +52,12 @@ export class MyStockDataSource implements DataSource<Stock> {
             this.has_loaded_once = true;
             this.loading_subject.next(true);
         }
-
+        console.log('loading stocks');
         this.stock_service.getMyStocks(this.pagination_query_manager.options).pipe(
             catchError(() => of([])),
             finalize(() => this.loading_subject.next(false))
         )
-        .subscribe(lessons => this.stocks$.next(lessons));
+        .subscribe(stocks => this.stocks$.next(stocks));
     }
 
     addStock(new_stock: Stock): void {
@@ -75,7 +79,7 @@ export class MyStockDataSource implements DataSource<Stock> {
         this.updateQueryManager({
             function_params: `'${filter_criteria}'`,
             cursor_point: this.pagination_query_manager.options.order_direction === OrderDirection.ASC
-                ? `0` : `ZZZZZZZZZZZZZZZZZZZZ`
+                ? MIN_STRING : MAX_STRING
         });
         this.loadStocks();
     }
@@ -100,11 +104,9 @@ export class MyStockDataSource implements DataSource<Stock> {
         });
       }
 
-    updateQueryManager(opts: any, update_cursor: boolean = false) {
+    updateQueryManager(opts: any, page_op: PageOperation = PageOperation.NONE) {
         Object.assign(this.pagination_query_manager.options, opts);
-        if (update_cursor) {
-            this.pagination_query_manager.setNextCursor(this.stocks$.getValue());
-        }
+        this.pagination_query_manager.setNextCursor(this.stocks$.getValue(), page_op);
       }
 
 }

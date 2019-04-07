@@ -1,7 +1,7 @@
 <div class="paginator-wrapper" fxFlex fxLayout.gt-xs="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between center">
   <div fxLayout="column" fxLayoutAlign="center"
     class="per-page-label">
-    Page {{ page_number }}
+    <span *ngIf="_per_page !== 99999">Page {{ _page_number }}</span>
   </div>
   <div fxLayout.gt-xs="row" fxLayout.lt-sm="column">
     <div fxLayout="row">
@@ -9,7 +9,7 @@
         <label><span>Per page:</span> </label>
       </div>
       <mat-form-field class="per-page-selector">
-        <mat-select [(value)]="selected">
+        <mat-select [(value)]="_per_page" (selectionChange)="changePerPage($event)">
           <mat-option [value]="10">10</mat-option>
           <mat-option [value]="25">25</mat-option>
           <mat-option [value]="100">100</mat-option>
@@ -18,10 +18,10 @@
       </mat-form-field>
     </div>    
     <div fxLayout="row">
-      <button mat-button [disabled]="!has_prior_results">
+      <button mat-button [disabled]="_page_number === 1" (click)="turnPage(false)">
         <mat-icon>chevron_left</mat-icon>
       </button>
-      <button mat-button [disabled]="!has_more_results">
+      <button mat-button [disabled]="!(num_loaded === _per_page)" (click)="turnPage(true)">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
