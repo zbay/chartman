@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatPaginator, MatSort, MatSortable, Sort, PageEvent } from '@angular/material';
 
 import { Observable } from 'rxjs';
-import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
 import { MyStockDataSource } from './my-stock-data-source.class';
@@ -25,8 +25,9 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     user_input: ['']
   });
   loading$: Observable<boolean>;
+  num_stocks$: Observable<number>;
   page_num = 0;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private readonly error_service: ErrorService,
@@ -35,6 +36,7 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     super();
     this.data_source = new MyStockDataSource(this.error_service, this.snackbar_service, this.stock_service);
     this.loading$ = this.data_source.loading$;
+    this.num_stocks$ = this.data_source.num_stocks$;
   }
 
   ngOnInit() {
@@ -46,7 +48,6 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     );
 
     this.sort.sortChange.subscribe((s: Sort) => {
-       // Change order_by_col, order_by_col_type, and order_direction
        this.data_source.updateQueryManager({
          order_direction: s.direction === 'asc' ? OrderDirection.ASC : OrderDirection.DESC,
          order_by_col: s.active,
@@ -55,14 +56,14 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
        this.data_source.loadStocks();
     });
 
-    this.paginator.page.subscribe((event: PageEvent) => {
-      const go_to_next_page = this.page_num !== event.pageIndex;
-      this.data_source.updateQueryManager({
-        per_page: event.pageSize
-      }, go_to_next_page);
-      this.data_source.loadStocks();
-      this.page_num = event.pageIndex;
-    });
+    // this.paginator.page.subscribe((event: PageEvent) => {
+    //   const go_to_next_page = this.page_num !== event.pageIndex;
+    //   this.data_source.updateQueryManager({
+    //     per_page: event.pageSize
+    //   }, go_to_next_page);
+    //   this.data_source.loadStocks();
+    //   this.page_num = event.pageIndex;
+    // });
 
     this.data_source.loadStocks();
 

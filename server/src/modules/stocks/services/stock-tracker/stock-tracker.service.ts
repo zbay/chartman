@@ -29,11 +29,11 @@ export class StockTrackerService {
     }
 
     async getMyStocks(user_id: number, options: any): Promise<Stock[]> {
-        return this.postgres_query_service.queryFunctionWithPagination(Object.assign({
-            function: `fn_get_my_stocks`,
-            function_params: [user_id],
-            err_msg: `Could not retrieve your stock trackers.`
-        }, options));
+        return this.postgres_query_service.queryFunctionWithPagination(Object.assign(options,
+            {   function: `fn_get_my_stocks`,
+                function_params: [user_id, options.function_params],
+                err_msg: `Could not retrieve your stock trackers.`
+            }));
     }
 
     async addStockTracker(user_id: number, symbol: string, stock_id: number): Promise<any> {

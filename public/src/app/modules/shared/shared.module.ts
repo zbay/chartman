@@ -11,14 +11,16 @@ import { ErrorDialogComponent } from '@app/modules/shared/components/error-dialo
 import { NotFoundComponent } from '@app/modules/shared/components/not-found/not-found.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { ExitAnimatingComponent } from './components/exit-animating/exit-animating.component';
+import { IndexlessPaginatorComponent } from './components/indexless-paginator/indexless-paginator.component';
 
 @NgModule({
   declarations: [
-    SubscribingComponent,
     ErrorDialogComponent,
+    ExitAnimatingComponent,
+    IndexlessPaginatorComponent,
     NotFoundComponent,
     ProgressSpinnerComponent,
-    ExitAnimatingComponent
+    SubscribingComponent
   ],
   imports: [
     CommonModule,
@@ -30,6 +32,7 @@ import { ExitAnimatingComponent } from './components/exit-animating/exit-animati
   exports: [
     CommonModule,
     FlexLayoutModule,
+    IndexlessPaginatorComponent,
     MaterialModule,
     ProgressSpinnerComponent,
     ReactiveFormsModule

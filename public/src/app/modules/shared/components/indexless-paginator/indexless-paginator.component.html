@@ -1,0 +1,29 @@
+<div class="paginator-wrapper" fxFlex fxLayout.gt-xs="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between center">
+  <div fxLayout="column" fxLayoutAlign="center"
+    class="per-page-label">
+    Page {{ page_number }}
+  </div>
+  <div fxLayout.gt-xs="row" fxLayout.lt-sm="column">
+    <div fxLayout="row">
+      <div fxLayout="column" fxLayoutAlign="center" class="per-page-label">
+        <label><span>Per page:</span> </label>
+      </div>
+      <mat-form-field class="per-page-selector">
+        <mat-select [(value)]="selected">
+          <mat-option [value]="10">10</mat-option>
+          <mat-option [value]="25">25</mat-option>
+          <mat-option [value]="100">100</mat-option>
+          <mat-option [value]="99999">All</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>    
+    <div fxLayout="row">
+      <button mat-button [disabled]="!has_prior_results">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-button [disabled]="!has_more_results">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

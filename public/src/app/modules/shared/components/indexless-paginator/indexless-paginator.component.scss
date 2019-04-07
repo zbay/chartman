@@ -1,0 +1,22 @@
+.paginator-wrapper {
+ padding-top: 20px;
+}
+
+.per-page-label {
+    padding-right: 20px;
+    color: rgba(255,255,255,0.7);
+    span {
+        font-size: 16px;
+        vertical-align: 40%;
+    }
+}
+
+button {
+    position: relative;
+    top: -5%;
+}
+
+.per-page-selector {
+    max-width: 100px;
+    margin-right: 15px;
+}

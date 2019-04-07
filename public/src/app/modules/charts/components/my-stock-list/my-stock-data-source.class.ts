@@ -2,29 +2,31 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
 
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 
-import { Stock } from '@charts/models/stock';
-import { StockService } from '@charts/services/stock/stock.service';
+import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
-import { ErrorService } from '@app/services/error/error.service';
+import { Stock } from '@charts/models/stock';
+import { StockService } from '@charts/services/stock/stock.service';
 
-// TODO: have real page numbers, and reorganize for better separation of concerns
 export class MyStockDataSource implements DataSource<Stock> {
 
+    private has_loaded_once = false;
     private stocks$ = new BehaviorSubject<Stock[]>([]);
-    private loadingSubject = new BehaviorSubject<boolean>(false);
-    private paginationQueryManager: PaginationQueryManager;
-
-    public loading$ = this.loadingSubject.asObservable();
+    private loading_subject = new BehaviorSubject<boolean>(false);
+    private pagination_query_manager: PaginationQueryManager;
+    public num_stocks$: Observable<number> = this.stocks$.asObservable()
+        .pipe(map((stocks: Stock[]) => stocks.length));
+    public loading$ = this.loading_subject.asObservable();
 
     constructor(private readonly error_service: ErrorService,
                 private readonly snackbar_service: SnackBarService,
                 private readonly stock_service: StockService) {
-        this.paginationQueryManager = new PaginationQueryManager({
+        this.pagination_query_manager = new PaginationQueryManager({
             cursor_point: `0`,
+            function_params: `''`,
             order_by_col: `symbol`,
             order_by_col_type: `text`,
             order_direction: OrderDirection.ASC,
@@ -38,23 +40,25 @@ export class MyStockDataSource implements DataSource<Stock> {
 
     disconnect(collection_viewer: CollectionViewer): void {
         this.stocks$.complete();
-        this.loadingSubject.complete();
+        this.loading_subject.complete();
     }
 
     loadStocks() {
+        if (!this.has_loaded_once) {
+            this.has_loaded_once = true;
+            this.loading_subject.next(true);
+        }
 
-        this.loadingSubject.next(true);
-
-        this.stock_service.getMyStocks(this.paginationQueryManager.options).pipe(
+        this.stock_service.getMyStocks(this.pagination_query_manager.options).pipe(
             catchError(() => of([])),
-            finalize(() => this.loadingSubject.next(false))
+            finalize(() => this.loading_subject.next(false))
         )
         .subscribe(lessons => this.stocks$.next(lessons));
     }
 
     addStock(new_stock: Stock): void {
-        const order_by_col = this.paginationQueryManager.options.order_by_col;
-        const order_direction = this.paginationQueryManager.options.order_direction;
+        const order_by_col = this.pagination_query_manager.options.order_by_col;
+        const order_direction = this.pagination_query_manager.options.order_direction;
         const new_list = [new_stock].concat(this.stocks$.getValue());
         new_list.sort((a: Stock, b: Stock) => {
             if (order_direction === OrderDirection.ASC && a[order_by_col] < b[order_by_col]
@@ -69,9 +73,8 @@ export class MyStockDataSource implements DataSource<Stock> {
 
     filterStocks(filter_criteria: string): void {
         this.updateQueryManager({
-            where_condition: ` q->>'symbol' ILIKE '%${filter_criteria}%'
-                OR q->>'name' ILIKE '%${filter_criteria}%'`,
-            cursor_point: this.paginationQueryManager.options.order_direction === OrderDirection.ASC
+            function_params: `'${filter_criteria}'`,
+            cursor_point: this.pagination_query_manager.options.order_direction === OrderDirection.ASC
                 ? `0` : `ZZZZZZZZZZZZZZZZZZZZ`
         });
         this.loadStocks();
@@ -98,9 +101,9 @@ export class MyStockDataSource implements DataSource<Stock> {
       }
 
     updateQueryManager(opts: any, update_cursor: boolean = false) {
-        Object.assign(this.paginationQueryManager.options, opts);
+        Object.assign(this.pagination_query_manager.options, opts);
         if (update_cursor) {
-            this.paginationQueryManager.setNextCursor(this.stocks$.getValue());
+            this.pagination_query_manager.setNextCursor(this.stocks$.getValue());
         }
       }
 

@@ -82,7 +82,7 @@ mat-card.background-box {
   }
 }
 
-.mat-autocomplete-panel {
+.mat-select-panel, .mat-autocomplete-panel {
   background-color: $bookend-background-color-light;
 
   mat-option:hover {
