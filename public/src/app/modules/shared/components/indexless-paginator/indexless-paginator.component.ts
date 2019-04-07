@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
+import { Observable } from 'rxjs';
 
 export interface PerPageOption {
   value: number;
@@ -16,7 +17,15 @@ export class IndexlessPaginatorComponent implements OnInit {
 
   @Input() has_more_results = false;
   @Input() has_prior_results = false;
-  @Input() num_loaded = 0;
+  @Input() set num_loaded(nl: number) {
+    if (this._page_number > 1 && nl === 0) {
+      this._page_number--;
+    }
+    this._num_loaded = nl;
+    this._in_transition = false;
+  }
+  private _in_transition = false;
+  private _num_loaded = 0;
   private _page_number = 1;
   private _per_page = 10;
 
@@ -33,7 +42,12 @@ export class IndexlessPaginatorComponent implements OnInit {
   }
 
   turnPage(is_forward: boolean) {
-    is_forward ? this._page_number++ : this._page_number--;
+    this._in_transition = true;
+    if (!is_forward) {
+      this._page_number--;
+    } else {
+      this._page_number++;
+    }
     this.page_change.emit(is_forward);
   }
 }

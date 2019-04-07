@@ -1,8 +1,8 @@
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
 
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, merge } from 'rxjs';
+import { catchError, finalize, map, filter } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
@@ -18,11 +18,18 @@ const MAX_STRING = `zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz`;
 export class MyStockDataSource implements DataSource<Stock> {
 
     private has_loaded_once = false;
+    private loaded_stocks$ = new BehaviorSubject<Stock[]>([]);
     private loading_subject = new BehaviorSubject<boolean>(false);
     private pagination_query_manager: PaginationQueryManager;
     private stocks$ = new BehaviorSubject<Stock[]>([]);
-    public num_stocks$: Observable<number> = this.stocks$.asObservable()
-        .pipe(map((stocks: Stock[]) => stocks.length));
+    private _num_stocks$ = new BehaviorSubject<number>(0);
+    private _reachedLastPage$ = new BehaviorSubject<boolean>(false);
+    public num_stocks$: Observable<number> = merge(
+        this._num_stocks$.asObservable(),
+        this._reachedLastPage$
+            .pipe(filter((reachedLastPage: boolean) => reachedLastPage),
+                map(() => 0)
+        ));
     public loading$ = this.loading_subject.asObservable();
 
     constructor(private readonly error_service: ErrorService,
@@ -47,17 +54,30 @@ export class MyStockDataSource implements DataSource<Stock> {
         this.loading_subject.complete();
     }
 
-    loadStocks() {
+    loadStocks(from_filter: boolean = false) {
         if (!this.has_loaded_once) {
             this.has_loaded_once = true;
             this.loading_subject.next(true);
         }
-        console.log('loading stocks');
+        console.log(this.pagination_query_manager.options);
         this.stock_service.getMyStocks(this.pagination_query_manager.options).pipe(
             catchError(() => of([])),
             finalize(() => this.loading_subject.next(false))
         )
-        .subscribe(stocks => this.stocks$.next(stocks));
+        .subscribe((stocks: Stock[]) => {
+            this._num_stocks$.next(stocks.length);
+            if (stocks.length === 0 && this.stocks$.getValue().length) {
+                if (from_filter) {
+                    this.stocks$.next(stocks);
+                } else {
+                    this._reachedLastPage$.next(true);
+                }
+            } else {
+                this._reachedLastPage$.next(false);
+                this.stocks$.next(stocks);
+                this.loaded_stocks$.next(stocks);
+            }
+        });
     }
 
     addStock(new_stock: Stock): void {
@@ -81,7 +101,7 @@ export class MyStockDataSource implements DataSource<Stock> {
             cursor_point: this.pagination_query_manager.options.order_direction === OrderDirection.ASC
                 ? MIN_STRING : MAX_STRING
         });
-        this.loadStocks();
+        this.loadStocks(true);
     }
 
     deleteStock(deleted_stock: Stock): void {
@@ -106,7 +126,8 @@ export class MyStockDataSource implements DataSource<Stock> {
 
     updateQueryManager(opts: any, page_op: PageOperation = PageOperation.NONE) {
         Object.assign(this.pagination_query_manager.options, opts);
-        this.pagination_query_manager.setNextCursor(this.stocks$.getValue(), page_op);
+        this.pagination_query_manager.setNextCursor(this.loaded_stocks$.getValue(), page_op);
+        // Use loaded_stocks$ for setting the cursor since we can't plan for what the user may have added/deleted from the current page
       }
 
 }

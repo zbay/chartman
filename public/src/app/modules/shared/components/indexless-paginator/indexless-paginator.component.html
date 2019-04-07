@@ -18,10 +18,10 @@
       </mat-form-field>
     </div>    
     <div fxLayout="row">
-      <button mat-button [disabled]="_page_number === 1" (click)="turnPage(false)">
+      <button mat-button [disabled]="(_page_number === 1 || _per_page === 99999) || _in_transition" (click)="turnPage(false)">
         <mat-icon>chevron_left</mat-icon>
       </button>
-      <button mat-button [disabled]="!(num_loaded === _per_page)" (click)="turnPage(true)">
+      <button mat-button [disabled]="(_num_loaded < _per_page) || _in_transition" (click)="turnPage(true)">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>

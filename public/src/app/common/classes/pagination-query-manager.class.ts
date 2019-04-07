@@ -29,29 +29,19 @@ export class PaginationQueryManager {
             this.resetCursor();
             return;
         }
+        if (page_op === PageOperation.BACKWARD) {
+            this.options.cursor_point = this.previous_cursor_points.pop();
+            return;
+        }
         const order_by_col = this.options.order_by_col;
         if (data.length) {
-            if (page_op === PageOperation.BACKWARD) {
-                this.options.cursor_point = this.previous_cursor_points.pop();
-            } else {
-                const maxReducer = (max, current) => {
-                    const currentVal = this.normalizeIfString(current[order_by_col]);
-                    return (currentVal > max || !max) ? currentVal : max;
-                };
-                const minReducer = (min, current) => {
-                    const currentVal = this.normalizeIfString(current[order_by_col]);
-                    return (currentVal < min || !min) ? currentVal : min;
-                };
-                this.previous_cursor_points.push(this.options.cursor_point);
-                this.options.cursor_point = this.options.order_direction === OrderDirection.ASC
-                    ? data.reduce(maxReducer, data[0][order_by_col])
-                    : data.reduce(minReducer, data[0][order_by_col]);
+            if (!this.previous_cursor_points.length
+                || this.options.cursor_point !== this.previous_cursor_points[this.previous_cursor_points.length - 1]) {
+                    this.previous_cursor_points.push(this.options.cursor_point);
             }
+            // Assumes that the data is already sorted for that particular column, on the front-end
+            this.options.cursor_point = data[data.length - 1][order_by_col];
         }
-    }
-
-    private normalizeIfString(val: any) {
-        return typeof val === `string` ? val.toLocaleLowerCase() : val;
     }
 
     toggleOrderDirection() {

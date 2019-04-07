@@ -15,17 +15,17 @@ import { SubscribingComponent } from '@app/modules/shared/components/subscribing
   styleUrls: ['./my-currency-list.component.scss']
 })
 export class MyCurrencyListComponent extends SubscribingComponent implements OnInit {
-  dataSource = new MatTableDataSource([]);
-  displayedColumns = ['sort_id', 'names', 'delete'];
+  data_source = new MatTableDataSource([]);
+  displayed_columns = ['sort_id', 'names', 'delete'];
   isLoading = true;
-  currencyPairs: CurrencyPair[] = [];
+  currency_pairs: CurrencyPair[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private readonly errorService: ErrorService,
-    private readonly snackbarService: SnackBarService,
-    private readonly currencyService: CurrencyService) {
+  constructor(private readonly error_service: ErrorService,
+    private readonly snackbar_service: SnackBarService,
+    private readonly currency_service: CurrencyService) {
     super();
   }
 
@@ -37,12 +37,12 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
         }
       );
 
-      this.currencyService.getMyCurrencyPairs()
+      this.currency_service.getMyCurrencyPairs()
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.isLoading = false))
-      .subscribe((currencyPairs: CurrencyPair[]) => {
-        this.currencyPairs = currencyPairs;
+      .subscribe((currency_pairs: CurrencyPair[]) => {
+        this.currency_pairs = currency_pairs;
         this.updateTable();
        },
        (err) => {
@@ -50,26 +50,26 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
        });
 
 
-    this.currencyService.new_currency_pair$.pipe(takeUntil(this.destroy$))
-      .subscribe((currencyPair: CurrencyPair) => {
-        this.currencyPairs.unshift(currencyPair);
+    this.currency_service.new_currency_pair$.pipe(takeUntil(this.destroy$))
+      .subscribe((currency_pair: CurrencyPair) => {
+        this.currency_pairs.unshift(currency_pair);
         this.updateTable();
       });
   }
 
   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.data_source.filter = filterValue.trim().toLowerCase();
   }
 
-  deleteCurrencyPair(deletedCurrencyPair: CurrencyPair): void {
-    this.currencyService.deleteCurrencyPair(deletedCurrencyPair.from.id, deletedCurrencyPair.to.id)
+  deleteCurrencyPair(deleted_currency_pair: CurrencyPair): void {
+    this.currency_service.deleteCurrencyPair(deleted_currency_pair.from.id, deleted_currency_pair.to.id)
       .subscribe(() => {
-        this.currencyPairs = this.currencyPairs
-          .filter((currencyPair) => {
-            return (currencyPair.from.id !== deletedCurrencyPair.from.id)
-              || (currencyPair.to.id !== deletedCurrencyPair.to.id);
+        this.currency_pairs = this.currency_pairs
+          .filter((currency_pair) => {
+            return (currency_pair.from.id !== deleted_currency_pair.from.id)
+              || (currency_pair.to.id !== deleted_currency_pair.to.id);
           });
-        this.snackbarService.openSnackBar(`Currency pair deleted!`);
+        this.snackbar_service.openSnackBar(`Currency pair deleted!`);
         this.updateTable();
       }, (err) => {
         this.showError(err, `Failed to delete currency pair!`, true);
@@ -78,7 +78,7 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
 
   showError(err: Error, msg: string, customError: boolean = false): void {
     const errMsg = customError ? msg : `Failed to retrieve your currency pairs!`;
-    this.errorService.openErrorDialog({
+    this.error_service.openErrorDialog({
       message: errMsg,
       name: err.name,
       stack: err.stack
@@ -90,9 +90,9 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
   }
 
   updateTable() {
-    this.dataSource = new MatTableDataSource(this.currencyPairs);
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    this.data_source = new MatTableDataSource(this.currency_pairs);
+    this.data_source.sort = this.sort;
+    this.data_source.paginator = this.paginator;
   }
 
 }
