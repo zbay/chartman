@@ -35,5 +35,6 @@
       <tr mat-header-row *matHeaderRowDef="displayed_columns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayed_columns;"></tr>
     </table>
-    <app-indexless-paginator [num_loaded]="(num_stocks$ | async)"></app-indexless-paginator>
+    <app-indexless-paginator [num_loaded]="(num_stocks$ | async)" [per_page_options]="per_page_options">
+    </app-indexless-paginator>
 </mat-card>

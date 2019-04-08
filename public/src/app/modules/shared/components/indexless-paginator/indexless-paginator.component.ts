@@ -1,11 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
-import { Observable } from 'rxjs';
 
-export interface PerPageOption {
-  value: number;
-  view_value: string;
-}
+import { PerPageOption } from '@shared/interfaces/per-page-option.interface';
 
 // TODO: proper themeing for "Per page" color
 @Component({
@@ -24,10 +20,12 @@ export class IndexlessPaginatorComponent implements OnInit {
     this._num_loaded = nl;
     this._in_transition = false;
   }
+  @Input() per_page_options: PerPageOption[] = [];
+
   private _in_transition = false;
   private _num_loaded = 0;
   private _page_number = 1;
-  private _per_page = 10;
+  private _per_page: number = this.per_page_options[0] ? this.per_page_options[0].value : 10;
 
   @Output() page_change: EventEmitter<boolean> = new EventEmitter();
   @Output() per_page: EventEmitter<number> = new EventEmitter();
@@ -43,11 +41,7 @@ export class IndexlessPaginatorComponent implements OnInit {
 
   turnPage(is_forward: boolean) {
     this._in_transition = true;
-    if (!is_forward) {
-      this._page_number--;
-    } else {
-      this._page_number++;
-    }
+    is_forward ? this._page_number++ : this._page_number--;
     this.page_change.emit(is_forward);
   }
 }

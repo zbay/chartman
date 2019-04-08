@@ -11,6 +11,6 @@ export class TokenService {
 
       async getToken(user_id: number, roles: string): Promise<string> {
         const userToken: JwtPayload = { sub: user_id, scope: roles };
-        return this.jwtService.sign(userToken);
+        return this.jwtService.sign(userToken, { expiresIn: '1 day' });
       }
 }

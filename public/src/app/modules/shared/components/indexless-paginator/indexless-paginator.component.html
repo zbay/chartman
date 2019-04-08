@@ -9,11 +9,10 @@
         <label><span>Per page:</span> </label>
       </div>
       <mat-form-field class="per-page-selector">
-        <mat-select [(value)]="_per_page" (selectionChange)="changePerPage($event)">
-          <mat-option [value]="10">10</mat-option>
-          <mat-option [value]="25">25</mat-option>
-          <mat-option [value]="100">100</mat-option>
-          <mat-option [value]="99999">All</mat-option>
+        <mat-select [value]="_per_page" (selectionChange)="changePerPage($event)">
+          <mat-option *ngFor="let option of per_page_options" [value]="option.value">
+            {{option.view_value}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>    

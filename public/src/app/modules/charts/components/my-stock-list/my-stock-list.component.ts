@@ -6,14 +6,15 @@ import { Observable } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
+import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
 import { MyStockDataSource } from './my-stock-data-source.class';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
-import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
 import { PageOperation } from '../../enums/page-operation.enum';
+import { PerPageOption } from '@app/modules/shared/interfaces/per-page-option.interface';
 
 @Component({
   selector: 'app-my-stock-list',
@@ -28,6 +29,12 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
   });
   loading$: Observable<boolean>;
   num_stocks$: Observable<number>;
+  per_page_options: PerPageOption[] = [
+    { value: 10, view_value: '10'},
+    { value: 25, view_value: '25'},
+    { value: 100, view_value: `100`},
+    { value: 99999, view_value: `Any`}
+  ];
 
   @ViewChild(IndexlessPaginatorComponent) paginator: IndexlessPaginatorComponent;
   @ViewChild(MatSort) sort: MatSort;
@@ -66,7 +73,7 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     this.paginator.per_page.subscribe((per_page: number) => {
       this.data_source.updateQueryManager({
         per_page: per_page
-      });
+      }, PageOperation.SIZE_CHANGE);
       this.data_source.loadStocks();
     });
 

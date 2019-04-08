@@ -28,9 +28,10 @@ export class PaginationQueryManager {
         if (page_op === PageOperation.NONE) {
             this.resetCursor();
             return;
-        }
-        if (page_op === PageOperation.BACKWARD) {
+        } else if (page_op === PageOperation.BACKWARD) {
             this.options.cursor_point = this.previous_cursor_points.pop();
+            return;
+        } else if (page_op === PageOperation.SIZE_CHANGE) {
             return;
         }
         const order_by_col = this.options.order_by_col;
