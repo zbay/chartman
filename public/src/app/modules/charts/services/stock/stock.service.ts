@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
 import { objToParams } from '@app/common/functions/obj-to-params';
-import { PaginatedFunctionOptions } from '@app/common/interfaces/paginated-function-options.enum';
+import { PaginatedQueryOptions } from '@app/common/interfaces/paginated-query-options.enum';
 import { Stock } from '@charts/models/stock';
 
 const stocks_url = `${environment.api_endpoint}/stocks`;
@@ -33,13 +33,14 @@ export class StockService {
     this.new_stock.next(stock);
   }
 
+  getMyStocks(options: PaginatedQueryOptions, search_filter: string = ``): Observable<Stock[]> {
+    return this.http.get<Stock[]>(`${stocks_url}/my-stocks`, { params: objToParams(options, { search_filter }) })
+      .pipe(map((res: any) => res.data));
+  }
+
   getStocksForAutoComplete(search_query: string): Observable<Stock[]> {
     return this.http.post<Stock[]>(`${stocks_url}/autocomplete`, {search_query})
       .pipe(map((res: any) => res.data));
   }
 
-  getMyStocks(options: PaginatedFunctionOptions): Observable<Stock[]> {
-    return this.http.get<Stock[]>(`${stocks_url}/my-stocks`, { params: objToParams(options) })
-      .pipe(map((res: any) => res.data));
-  }
 }

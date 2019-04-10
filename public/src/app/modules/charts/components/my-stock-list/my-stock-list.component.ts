@@ -8,12 +8,10 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 import { ErrorService } from '@app/services/error/error.service';
 import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
 import { MyStockDataSource } from './my-stock-data-source.class';
-import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
-import { PageOperation } from '../../enums/page-operation.enum';
 import { PerPageOption } from '@app/modules/shared/interfaces/per-page-option.interface';
 
 @Component({
@@ -33,7 +31,7 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     { value: 10, view_value: '10'},
     { value: 25, view_value: '25'},
     { value: 100, view_value: `100`},
-    { value: 99999, view_value: `Any`}
+    { value: 99999, view_value: `All`}
   ];
 
   @ViewChild(IndexlessPaginatorComponent) paginator: IndexlessPaginatorComponent;
@@ -57,24 +55,15 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     );
 
     this.sort.sortChange.subscribe((s: Sort) => {
-       this.data_source.updateQueryManager({
-         order_direction: s.direction === 'asc' ? OrderDirection.ASC : OrderDirection.DESC,
-         order_by_col: s.active,
-         cursor_point: s.direction === `asc` ? `0` : `zzzzzzzzzzzzzzzzzzzz`
-       }, PageOperation.NONE);
-       this.data_source.loadStocks();
+      this.data_source.setSort(s);
     });
 
-    this.paginator.page_change.subscribe((flip_forward: boolean) => {
-      this.data_source.updateQueryManager({}, flip_forward ? PageOperation.FORWARD : PageOperation.BACKWARD);
-      this.data_source.loadStocks();
+    this.paginator.page_change.subscribe((flip_is_forward: boolean) => {
+      this.data_source.turnPage(flip_is_forward);
     });
 
     this.paginator.per_page.subscribe((per_page: number) => {
-      this.data_source.updateQueryManager({
-        per_page: per_page
-      }, PageOperation.SIZE_CHANGE);
-      this.data_source.loadStocks();
+      this.data_source.setPerPage(per_page);
     });
 
     this.data_source.loadStocks();

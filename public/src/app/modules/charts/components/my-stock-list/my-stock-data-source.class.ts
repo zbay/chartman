@@ -1,16 +1,17 @@
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
+import { Sort } from '@angular/material';
 
 import { BehaviorSubject, Observable, of, merge } from 'rxjs';
 import { catchError, finalize, map, filter } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
+import { PageOperation } from '../../enums/page-operation.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
-import { PageOperation } from '../../enums/page-operation.enum';
 
 const MIN_STRING = `0`;
 const MAX_STRING = `zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz`;
@@ -37,7 +38,6 @@ export class MyStockDataSource implements DataSource<Stock> {
                 private readonly stock_service: StockService) {
         this.pagination_query_manager = new PaginationQueryManager({
             cursor_point: `0`,
-            function_params: `''`,
             order_by_col: `symbol`,
             order_by_col_type: `text`,
             order_direction: OrderDirection.ASC,
@@ -54,20 +54,20 @@ export class MyStockDataSource implements DataSource<Stock> {
         this.loading_subject.complete();
     }
 
-    loadStocks(from_filter: boolean = false) {
+    loadStocks(search_filter: string = ``) {
         if (!this.has_loaded_once) {
             this.has_loaded_once = true;
             this.loading_subject.next(true);
         }
         console.log(this.pagination_query_manager.options);
-        this.stock_service.getMyStocks(this.pagination_query_manager.options).pipe(
+        this.stock_service.getMyStocks(this.pagination_query_manager.options, search_filter).pipe(
             catchError(() => of([])),
             finalize(() => this.loading_subject.next(false))
         )
         .subscribe((stocks: Stock[]) => {
             this._num_stocks$.next(stocks.length);
             if (stocks.length === 0 && this.stocks$.getValue().length) {
-                if (from_filter) {
+                if (search_filter) {
                     this.stocks$.next(stocks);
                 } else {
                     this._reachedLastPage$.next(true);
@@ -97,11 +97,10 @@ export class MyStockDataSource implements DataSource<Stock> {
 
     filterStocks(filter_criteria: string): void {
         this.updateQueryManager({
-            function_params: `'${filter_criteria}'`,
             cursor_point: this.pagination_query_manager.options.order_direction === OrderDirection.ASC
                 ? MIN_STRING : MAX_STRING
         });
-        this.loadStocks(true);
+        this.loadStocks(filter_criteria);
     }
 
     deleteStock(deleted_stock: Stock): void {
@@ -115,7 +114,16 @@ export class MyStockDataSource implements DataSource<Stock> {
         });
     }
 
-    showError(err: Error, msg: string, customError: boolean = false): void {
+    setSort(s: Sort) {
+        this.updateQueryManager({
+            order_direction: s.direction === 'asc' ? OrderDirection.ASC : OrderDirection.DESC,
+            order_by_col: s.active,
+            cursor_point: s.direction === `asc` ? `0` : `zzzzzzzzzzzzzzzzzzzz`
+          }, PageOperation.NONE);
+          this.loadStocks();
+    }
+
+    private showError(err: Error, msg: string, customError: boolean = false): void {
         const errMsg = customError ? msg : `Failed to retrieve your data`;
         this.error_service.openErrorDialog({
           message: errMsg,
@@ -124,7 +132,19 @@ export class MyStockDataSource implements DataSource<Stock> {
         });
       }
 
-    updateQueryManager(opts: any, page_op: PageOperation = PageOperation.NONE) {
+    setPerPage(per_page: number) {
+        this.updateQueryManager({
+            per_page: per_page
+        }, PageOperation.SIZE_CHANGE);
+        this.loadStocks();
+    }
+
+    turnPage(flip_is_forward: boolean) {
+        this.updateQueryManager({}, flip_is_forward ? PageOperation.FORWARD : PageOperation.BACKWARD);
+        this.loadStocks();
+    }
+
+    private updateQueryManager(opts: any, page_op: PageOperation = PageOperation.NONE) {
         Object.assign(this.pagination_query_manager.options, opts);
         this.pagination_query_manager.setNextCursor(this.loaded_stocks$.getValue(), page_op);
         // Use loaded_stocks$ for setting the cursor since we can't plan for what the user may have added/deleted from the current page
