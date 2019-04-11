@@ -7,6 +7,8 @@ import { Currency } from '@charts/models/currency';
 import { CurrencyPair } from '@charts/models/currency-pair';
 import { environment } from '@env/environment';
 import { map } from 'rxjs/operators';
+import { objToParams } from '@app/common/functions/obj-to-params';
+import { PaginatedQueryOptions } from '@app/common/interfaces/paginated-query-options.enum';
 
 const currencies_url = `${environment.api_endpoint}/currencies`;
 
@@ -38,8 +40,8 @@ export class CurrencyService {
       .pipe(map((res: any) => res.data));
   }
 
-  getMyCurrencyPairs(): Observable<CurrencyPair[]> {
-    return this.http.get<CurrencyPair[]>(`${currencies_url}/my-currency-pairs`)
+  getMyCurrencyPairs(options: PaginatedQueryOptions, search_filter: string = ``): Observable<CurrencyPair[]> {
+    return this.http.get<CurrencyPair[]>(`${currencies_url}/my-currency-pairs`, { params: objToParams(options, { search_filter }) })
     .pipe(map((res: any) => res.data));
   }
 }

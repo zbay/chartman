@@ -8,6 +8,7 @@ import { CurrencyPairChartData } from '@currencies/interfaces/currency-pair-char
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CurrencySearchQueryDTO } from '@currencies/dto/currency-search-query.dto';
 import { CurrencyTrackerService } from '@currencies/services/currency-tracker/currency-tracker.service';
+import { GetMyTrackersDTO } from '@shared/dto/get-my-trackers.dto';
 
 // Start rate-limiting from the DB. Track all API calls in the last 24 hours.
     // If per-minute rate (5) has been exceeded for alphavantage, tell user to try again in a minute.
@@ -32,8 +33,9 @@ export class CurrenciesController {
 
     @Get('my-currency-pairs')
     @HttpCode(HttpStatus.OK)
-    getMyCurrencyPairs(@Req() req): Promise<CurrencyPair[]> {
-        return this.currency_tracker_service.getMyCurrencyPairs(req.payload.sub);
+    getMyCurrencyPairs(@Req() req, @Query() query: GetMyTrackersDTO): Promise<CurrencyPair[]> {
+        return this.currency_tracker_service.getMyCurrencyPairs(req.payload.sub
+            , query);
     }
 
     @Post('autocomplete')

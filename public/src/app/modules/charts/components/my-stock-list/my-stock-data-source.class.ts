@@ -141,7 +141,7 @@ export class MyStockDataSource implements DataSource<Stock> {
           name: err.name,
           stack: err.stack
         });
-      }
+    }
 
     setPerPage(per_page: number) {
         this.updateQueryManager({

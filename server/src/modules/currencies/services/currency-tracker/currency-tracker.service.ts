@@ -12,6 +12,7 @@ import { CurrencyPair } from '@currencies/interfaces/currency-pair.interface';
 import { CurrencyPairIdsDTO } from '@currencies/dto/currency-pair-ids.dto';
 import { CurrencySearchQueryDTO } from '@currencies/dto/currency-search-query.dto';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
+import { GetMyTrackersDTO } from '@shared/dto/get-my-trackers.dto';
 
 @Injectable()
 export class CurrencyTrackerService {
@@ -61,14 +62,11 @@ export class CurrencyTrackerService {
             err_msg: `Could not delete currency pair!`
         });
     }
-    async getMyCurrencyPairs(user_id: number): Promise<CurrencyPair[]> {
-        return this.postgres_query_service.queryFunctionWithPagination({
+    async getMyCurrencyPairs(user_id: number, options: GetMyTrackersDTO): Promise<CurrencyPair[]> {
+        return this.postgres_query_service.queryFunctionWithPagination(Object.assign(options, {
             function: `fn_get_my_currency_pairs`,
-            function_params: [user_id],
-            err_msg: `Could not retrieve your currency pairs.`,
-            order_by_col: 'sort_id',
-            order_by_col_type: 'text',
-            cursor_point: `''`
-        });
+            function_params: [user_id, `'${options.search_filter}'`],
+            err_msg: `Could not retrieve your currency pairs.`
+        }));
     }
 }
