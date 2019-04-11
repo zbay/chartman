@@ -6,6 +6,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { ALPHAVANTAGE_PREFIX } from '@common/vars/prefixes';
 import { ChartmanAppConfig } from '@shared/interfaces/chartman-app-config';
 import { ConfigService } from '@shared/services/config/config.service';
+import { GetMyTrackersDTO } from '@shared/dto/get-my-trackers.dto';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { Stock } from '@stocks/interfaces/stock.interface';
 
@@ -28,7 +29,7 @@ export class StockTrackerService {
         });
     }
 
-    async getMyStocks(user_id: number, options: any): Promise<Stock[]> {
+    async getMyStocks(user_id: number, options: GetMyTrackersDTO): Promise<Stock[]> {
         return this.postgres_query_service.queryFunctionWithPagination(Object.assign(options,
             {   function: `fn_get_my_stocks`,
                 function_params: [user_id, `'${options.search_filter}'`],

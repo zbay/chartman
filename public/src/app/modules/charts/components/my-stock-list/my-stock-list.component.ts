@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatSort, MatSortable, Sort } from '@angular/material';
 
 import { Observable } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
 import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
@@ -67,11 +67,6 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     });
 
     this.data_source.loadStocks();
-
-    this.stock_service.new_stock$.pipe(takeUntil(this.destroy$))
-      .subscribe((stock: Stock) => {
-        this.data_source.addStock(stock);
-      });
 
     this.filter_group.get(`user_input`)
       .valueChanges

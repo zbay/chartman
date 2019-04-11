@@ -7,7 +7,7 @@ import { catchError, finalize, map, filter } from 'rxjs/operators';
 
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
-import { PageOperation } from '../../enums/page-operation.enum';
+import { PageOperation } from '@charts/enums/page-operation.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
@@ -20,18 +20,20 @@ export class MyStockDataSource implements DataSource<Stock> {
 
     private has_loaded_once = false;
     private loaded_stocks$ = new BehaviorSubject<Stock[]>([]);
-    private loading_subject = new BehaviorSubject<boolean>(false);
+    private _loading$ = new BehaviorSubject<boolean>(false);
     private pagination_query_manager: PaginationQueryManager;
     private stocks$ = new BehaviorSubject<Stock[]>([]);
     private _num_stocks$ = new BehaviorSubject<number>(0);
     private _reachedLastPage$ = new BehaviorSubject<boolean>(false);
+    private _new_stock$: Observable<Stock>;
+
     public num_stocks$: Observable<number> = merge(
         this._num_stocks$.asObservable(),
         this._reachedLastPage$
             .pipe(filter((reachedLastPage: boolean) => reachedLastPage),
                 map(() => 0)
         ));
-    public loading$ = this.loading_subject.asObservable();
+    public loading$ = this._loading$.asObservable();
 
     constructor(private readonly error_service: ErrorService,
                 private readonly snackbar_service: SnackBarService,
@@ -43,26 +45,33 @@ export class MyStockDataSource implements DataSource<Stock> {
             order_direction: OrderDirection.ASC,
             per_page: 10
           });
+        this._new_stock$ = this.stock_service.new_stock$;
     }
 
     connect(collection_viewer: CollectionViewer): Observable<Stock[]> {
+        this._new_stock$.subscribe((stock: Stock) => {
+            this.addStock(stock);
+        });
         return this.stocks$.asObservable();
     }
 
     disconnect(collection_viewer: CollectionViewer): void {
         this.stocks$.complete();
-        this.loading_subject.complete();
+        this._loading$.complete();
+        this._num_stocks$.complete();
+        this._reachedLastPage$.complete();
+        this.loaded_stocks$.complete();
     }
 
     loadStocks(search_filter: string = ``) {
         if (!this.has_loaded_once) {
             this.has_loaded_once = true;
-            this.loading_subject.next(true);
+            this._loading$.next(true);
         }
         console.log(this.pagination_query_manager.options);
         this.stock_service.getMyStocks(this.pagination_query_manager.options, search_filter).pipe(
             catchError(() => of([])),
-            finalize(() => this.loading_subject.next(false))
+            finalize(() => this._loading$.next(false))
         )
         .subscribe((stocks: Stock[]) => {
             this._num_stocks$.next(stocks.length);
@@ -77,6 +86,8 @@ export class MyStockDataSource implements DataSource<Stock> {
                 this.stocks$.next(stocks);
                 this.loaded_stocks$.next(stocks);
             }
+        }, (err) => {
+            this.showError(err, `Failed to load trackers!`, true);
         });
     }
 
