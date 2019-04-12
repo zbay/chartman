@@ -15,7 +15,7 @@
         <td mat-cell *matCellDef="let currency_pair">
           <a [routerLink]="['chart']" 
               [queryParams]="{from: currency_pair.from.id, to: currency_pair.to.id}">
-            {{currency_pair.from.code}} / {{currency_pair.to.code}}
+            {{currency_pair.sort_id}}
           </a>
         </td>
       </ng-container>
@@ -23,7 +23,7 @@
       <ng-container matColumnDef="names">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Names </th>
         <td mat-cell *matCellDef="let currency_pair"> 
-          {{currency_pair.from.name}} / {{currency_pair.to.name}} 
+          {{currency_pair.names}}
         </td>
       </ng-container>
 

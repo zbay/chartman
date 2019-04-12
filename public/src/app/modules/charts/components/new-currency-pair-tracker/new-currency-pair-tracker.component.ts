@@ -90,7 +90,8 @@ export class NewCurrencyPairTrackerComponent implements OnInit {
       this.new_currency_pair.from = currency;
     }
     if (this.new_currency_pair.from && this.new_currency_pair.to) {
-      this.new_currency_pair.sort_id = `${this.new_currency_pair.from.code}v${this.new_currency_pair.to.code}`;
+      this.new_currency_pair.sort_id = `${this.new_currency_pair.from.code} / ${this.new_currency_pair.to.code}`;
+      this.new_currency_pair.names = `${this.new_currency_pair.from.name} / ${this.new_currency_pair.to.name}`;
     }
   }
 
