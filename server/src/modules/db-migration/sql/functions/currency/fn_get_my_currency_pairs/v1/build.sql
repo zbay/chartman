@@ -7,7 +7,8 @@ declare
 begin
 	search_query_wc := '%' || search_query || '%';
 	-- select both currencies, with one the numerator and the other the denominator of a json object
-	return query select json_build_object('sort_id', f.code || 'v' || t.code
+	return query select json_build_object('sort_id', f.code || ' / ' || t.code
+		, 'names', f."name" || ' / ' || t."name"
 		,'from'
 			, json_build_object('id', f.id, 'code',  f.code, 'name', f."name", 'is_crypto', f.is_crypto)
 		, 'to'
