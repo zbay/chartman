@@ -1,12 +1,12 @@
 import { OrderDirection } from '@common/enums/order-direction.enum';
-import { PageOperation } from '@app/modules/charts/enums/page-operation.enum';
+import { PageOperation } from '@app/common/enums/page-operation.enum';
 import { PaginatedQueryOptions } from '@app/common/interfaces/paginated-query-options.enum';
 
-export class PaginationQueryManager {
-    options: PaginatedQueryOptions;
+export class PaginationQueryManager<T extends PaginatedQueryOptions> {
+    options: T;
     private previous_cursor_points: any[] = [];
 
-    constructor(options: PaginatedQueryOptions) {
+    constructor(options: T) {
         if (!options.order_direction) {
             options.order_direction = OrderDirection.ASC;
         }
@@ -23,7 +23,7 @@ export class PaginationQueryManager {
         this.previous_cursor_points = [];
     }
 
-    setNextCursor(data: any, page_op: PageOperation): void {
+    setNextCursor(data: any[], page_op: PageOperation): void {
         if (page_op === PageOperation.NONE) {
             this.resetCursor();
             return;

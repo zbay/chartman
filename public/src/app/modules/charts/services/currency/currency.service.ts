@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Subject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
 import { Currency } from '@charts/models/currency';
 import { CurrencyPair } from '@charts/models/currency-pair';
 import { environment } from '@env/environment';
-import { map } from 'rxjs/operators';
-import { objToParams } from '@app/common/functions/obj-to-params';
-import { PaginatedQueryOptions } from '@app/common/interfaces/paginated-query-options.enum';
+import { objToParams } from '@common/functions/obj-to-params';
+import { SearchablePaginationOptions } from '@common/interfaces/searchable-pagination-options.enum';
 
 const currencies_url = `${environment.api_endpoint}/currencies`;
 
@@ -40,8 +40,8 @@ export class CurrencyService {
       .pipe(map((res: any) => res.data));
   }
 
-  getMyCurrencyPairs(options: PaginatedQueryOptions, search_filter: string = ``): Observable<CurrencyPair[]> {
-    return this.http.get<CurrencyPair[]>(`${currencies_url}/my-currency-pairs`, { params: objToParams(options, { search_filter }) })
+  getMyCurrencyPairs(options: SearchablePaginationOptions): Observable<CurrencyPair[]> {
+    return this.http.get<CurrencyPair[]>(`${currencies_url}/my-currency-pairs`, { params: objToParams(options) })
     .pipe(map((res: any) => res.data));
   }
 }

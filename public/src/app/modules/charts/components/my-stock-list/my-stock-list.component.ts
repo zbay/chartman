@@ -43,7 +43,7 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
     super();
     this.data_source = new MyStockDataSource(this.error_service, this.snackbar_service, this.stock_service);
     this.loading$ = this.data_source.loading$;
-    this.num_stocks$ = this.data_source.num_stocks$;
+    this.num_stocks$ = this.data_source.num_items$;
   }
 
   ngOnInit() {
@@ -66,22 +66,18 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
       this.data_source.setPerPage(per_page);
     });
 
-    this.data_source.loadStocks();
+    this.data_source.loadItems();
 
     this.filter_group.get(`user_input`)
       .valueChanges
       .pipe(debounceTime(300))
       .subscribe((value: string) => {
-        this.data_source.filterStocks(value);
+        this.data_source.filterItems(value);
       });
   }
 
-  applyFilter(filter_value: string) {
-    this.data_source.filterStocks(filter_value);
-  }
-
   deleteStock(deleted_stock: Stock): void {
-    this.data_source.deleteStock(deleted_stock);
+    this.data_source.deleteItem(deleted_stock);
   }
 
   trackByFn(index: number, item: Stock) {

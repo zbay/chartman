@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
 import { objToParams } from '@app/common/functions/obj-to-params';
-import { PaginatedQueryOptions } from '@app/common/interfaces/paginated-query-options.enum';
+import { SearchablePaginationOptions } from '@common/interfaces/searchable-pagination-options.enum';
 import { Stock } from '@charts/models/stock';
 
 const stocks_url = `${environment.api_endpoint}/stocks`;
@@ -33,8 +33,8 @@ export class StockService {
     this.new_stock.next(stock);
   }
 
-  getMyStocks(options: PaginatedQueryOptions, search_filter: string = ``): Observable<Stock[]> {
-    return this.http.get<Stock[]>(`${stocks_url}/my-stocks`, { params: objToParams(options, { search_filter }) })
+  getMyStocks(options: SearchablePaginationOptions): Observable<Stock[]> {
+    return this.http.get<Stock[]>(`${stocks_url}/my-stocks`, { params: objToParams(options) })
       .pipe(map((res: any) => res.data));
   }
 

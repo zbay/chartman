@@ -44,7 +44,7 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
     super();
     this.data_source = new MyCurrencyPairDataSource(this.error_service, this.snackbar_service, this.currency_service);
     this.loading$ = this.data_source.loading$;
-    this.num_currency_pairs$ = this.data_source.num_currency_pairs$;
+    this.num_currency_pairs$ = this.data_source.num_items$;
   }
 
   ngOnInit() {
@@ -67,23 +67,18 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
         this.data_source.setPerPage(per_page);
       });
 
-      this.data_source.loadCurrencyPairs();
+      this.data_source.loadItems();
 
       this.filter_group.get(`user_input`)
         .valueChanges
         .pipe(debounceTime(300))
         .subscribe((value: string) => {
-          this.data_source.filterStocks(value);
+          this.data_source.filterItems(value);
         });
-
-  }
-
-  applyFilter(filter_value: string) {
-    this.data_source.filterStocks(filter_value);
   }
 
   deleteCurrencyPair(deleted_currency_pair: CurrencyPair): void {
-    this.data_source.deleteCurrencyPair(deleted_currency_pair);
+    this.data_source.deleteItem(deleted_currency_pair);
   }
 
   showError(err: Error, msg: string, customError: boolean = false): void {

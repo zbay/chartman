@@ -65,7 +65,7 @@ export class CurrencyTrackerService {
     async getMyCurrencyPairs(user_id: number, options: GetMyTrackersDTO): Promise<CurrencyPair[]> {
         return this.postgres_query_service.queryFunctionWithPagination(Object.assign(options, {
             function: `fn_get_my_currency_pairs`,
-            function_params: [user_id, `'${options.search_filter}'`],
+            function_params: [user_id, options.search_filter],
             err_msg: `Could not retrieve your currency pairs.`
         }));
     }
