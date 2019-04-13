@@ -7,9 +7,11 @@ declare
 	comparison_operator text := '>';
 	cursor_point text := '0';
 	order_by_col text := 'id';
+	order_by_col_type text := 'int';
 	order_direction text := 'ASC';
 	per_page int := 100;
 	retrieve_query text;
+	retrieved_columns text := '*';
 	query_table text;
 begin
 	-- Use this function responsibly. Index any columns you end up searching on. Wrap any text cursor_point values in single quotes
@@ -24,6 +26,9 @@ begin
 	if opts->>'order_by_col' is not null then
 		order_by_col := opts->>'order_by_col';
 	end if;
+	if opts->>'order_by_col_type' is not null then
+		order_by_col_type := opts->>'order_by_col_type';
+	end if;
 	if opts->>'order_direction' = 'DESC' then
 		comparison_operator := '<';
 		order_direction := 'DESC';
@@ -37,16 +42,27 @@ begin
 	if opts->>'where_condition' is not null then
 		additional_where_condition := opts->>'where_condition';
 	end if;
+	if opts->>'retrieved_columns' is not null then
+		retrieved_columns := opts->>'retrieved_columns';
+	end if;
 	retrieve_query := 'SELECT row_to_json(q) FROM (' ||
-		' SELECT *' ||  
+		' SELECT %s' ||  
 		' FROM public.%I' ||
-		' WHERE %I %s %s' ||
+		' WHERE %I %s ''%s''::%s' || -- 		' WHERE (%s->>''%I'')::%s %s ''%s''::%s' ||
 		' AND %s' ||
 		' ORDER BY %I %s ' 
 		' LIMIT %s) q';
+--	raise exception 'Query is: %s', format(retrieve_query
+--	, retrieved_columns
+--	, query_table
+--	, order_by_col, comparison_operator, cursor_point, order_by_col_type
+--	, additional_where_condition
+--	, order_by_col, order_direction
+--	, per_page);
 	return query execute format(retrieve_query
+	, retrieved_columns
 	, query_table
-	, order_by_col, comparison_operator, cursor_point
+	, order_by_col, comparison_operator, cursor_point, order_by_col_type
 	, additional_where_condition
 	, order_by_col, order_direction
 	, per_page);

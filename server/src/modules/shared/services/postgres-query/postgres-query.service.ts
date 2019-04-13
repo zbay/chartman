@@ -3,7 +3,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { Pool, QueryResult } from 'pg';
 
 import { PostgresConnectionService } from '../postgres-connection/postgres.connection.service';
-import { PostgresFunctionQueryOptions } from '@shared/interfaces/postgres-query-options.interface';
+import { PostgresFunctionQueryOptions } from '@shared/interfaces/postgres-function-query-options.interface';
 import { PostgresPaginatedFunctionOptions } from '@shared/interfaces/postgres-paginated-function-options.interface';
 import { PostgresPaginatedTableOptions } from '@shared/interfaces/postgres-paginated-table-options.interface';
 
@@ -62,6 +62,7 @@ export class PostgresQueryService {
                 });
             })
             .catch((err: Error) => {
+                // tslint:disable-next-line:no-console
                 console.log(err);
                 throw new HttpException({
                     name: `${options.function} paginated retrieval error`,

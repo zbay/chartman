@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AdminHomeComponent } from '@admin/admin-home/admin-home.component';
+import { UserManagementComponent } from '@app/modules/admin/user-management/user-management.component';
 
 const routes: Routes = [
   { path: '',
+    pathMatch: 'full',
+    redirectTo: 'users'
+  },
+  { path: 'users',
   pathMatch: 'full',
-  component: AdminHomeComponent
+  component: UserManagementComponent
 },
 ];
 

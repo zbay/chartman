@@ -7,5 +7,6 @@ export interface PostgresPaginatedTableOptions {
     order_by_col?: string;
     order_direction?: OrderDirection;
     per_page?: number;
+    retrieved_columns?: string;
     where_condition?: string;
 }
