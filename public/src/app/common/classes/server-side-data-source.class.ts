@@ -39,9 +39,11 @@ export abstract class ServerSideDataSource<I, O extends SearchablePaginationOpti
     }
 
     connect(collection_viewer: CollectionViewer): Observable<I[]> {
-        this._new_item$.subscribe((item: I) => {
-            this.addItem(item);
-        });
+        if (this._new_item$) {
+            this._new_item$.subscribe((item: I) => {
+                this.addItem(item);
+            });
+        }
         return this.items$.asObservable();
     }
 

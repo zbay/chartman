@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AccountService } from '@account/services/account-service';
 import { Animations } from '@common/animations/animations';
-import { BasicProfile } from '@common/models/basic-profile';
+import { BasicProfile } from '@app/common/interfaces/basic-profile.interface';
 import { ErrorService } from '@app/services/error/error.service';
 import { ExitAnimatingComponent } from '@app/modules/shared/components/exit-animating/exit-animating.component';
 import { MatchingPasswordsValidator } from '@app/validators/matching-passwords';
@@ -36,7 +36,7 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
     private readonly navigation_service: NavigationService,
     private readonly snackbar_service: SnackBarService) {
       super();
-     }
+    }
 
   ngOnInit() {
     this.loadCurrentProfile();

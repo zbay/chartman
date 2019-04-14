@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
+import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
+import { ServerSideDataSource } from '@common/classes/server-side-data-source.class';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
-import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
-import { ServerSideDataSource } from '@common/classes/server-side-data-source.class';
 
 export class MyStockDataSource extends ServerSideDataSource<Stock, SearchablePaginationOptions> implements DataSource<Stock> {
 

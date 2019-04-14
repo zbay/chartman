@@ -4,10 +4,12 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
-import { BasicProfile } from '@common/models/basic-profile';
+import { BasicProfile } from '@app/common/interfaces/basic-profile.interface';
 import { environment } from '@env/environment';
-import { NewCredentials } from '@common/models/new-credentials';
+import { NewCredentials } from '@app/common/interfaces/new-credentials.interface';
 import { PasswordChangeCredentials } from '@account/models/password-change-credentials';
+import { objToParams } from '@app/common/functions/obj-to-params';
+import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
 
 const accounts_url = `${environment.api_endpoint}/accounts`;
 
@@ -28,6 +30,11 @@ export class AccountService {
 
   checkValidPasswordChangeRequest (route_id: string): Observable<any> {
     return this.http.get(`${accounts_url}/reset-password/validate-change-request/${route_id}`);
+  }
+
+  getAllUsers (options: SearchablePaginationOptions): Observable<any> {
+    return this.http.get(`${accounts_url}/user/search`, { params: objToParams(options) })
+      .pipe(map((res: any) => res.data));
   }
 
   getLoggedInUser (): Observable<BasicProfile> {

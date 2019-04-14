@@ -8,12 +8,14 @@ import { debounceTime } from 'rxjs/operators';
 import { ErrorService } from '@app/services/error/error.service';
 import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
 import { MyStockDataSource } from './my-stock-data-source.class';
+import { PerPageOption } from '@app/modules/shared/interfaces/per-page-option.interface';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
-import { PerPageOption } from '@app/modules/shared/interfaces/per-page-option.interface';
 
+// TODO: support multi-column sort for this and all similar components
+// This is not possible with MatSort. Make a new directive that can do it
 @Component({
   selector: 'app-my-stock-list',
   templateUrl: './my-stock-list.component.html',

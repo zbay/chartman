@@ -7,10 +7,10 @@ import * as jwt_decode from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Credentials } from '@common/models/credentials';
+import { Credentials } from '@app/common/interfaces/credentials.interface';
 import { environment } from '@env/environment';
 import { ErrorService } from '../error/error.service';
-import { NewCredentials } from '@common/models/new-credentials';
+import { NewCredentials } from '@app/common/interfaces/new-credentials.interface';
 import { Role } from '@app/common/enums/role.enum';
 import { SnackBarService } from '../snack-bar/snack-bar.service';
 

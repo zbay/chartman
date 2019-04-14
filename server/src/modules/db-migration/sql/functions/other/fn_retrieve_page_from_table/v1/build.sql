@@ -48,7 +48,7 @@ begin
 	retrieve_query := 'SELECT row_to_json(q) FROM (' ||
 		' SELECT %s' ||  
 		' FROM public.%I' ||
-		' WHERE %I %s ''%s''::%s' || -- 		' WHERE (%s->>''%I'')::%s %s ''%s''::%s' ||
+		' WHERE %I %s ''%s''::%s' ||
 		' AND %s' ||
 		' ORDER BY %I %s ' 
 		' LIMIT %s) q';

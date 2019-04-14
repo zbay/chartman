@@ -10,6 +10,7 @@ export interface PaginatedQueryOptions {
     where_condition?: string;
     is_function?: boolean;
     function_params?: any[] | string;
+    retrieved_columns?: string;
     retrieval_error_message?: string;
     retrieval_success_message?: string;
     deletion_error_message?: string;

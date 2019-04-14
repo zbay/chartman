@@ -5,11 +5,13 @@ import { randomBytes } from 'crypto';
 
 import { AwsService } from '@shared/services/aws/aws.service';
 import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
+import { GetMyTrackersDTO } from '@shared/dto/get-my-trackers.dto';
 import { JwtPayload } from '@accounts/interfaces/jwt-payload';
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
 import { PostgresQueryService } from '@shared/services/postgres-query/postgres-query.service';
 import { TokenService } from '@accounts/services/token/token.service';
 import { User } from '@accounts/interfaces/user';
+import { UserForAdmin } from '@accounts/interfaces/user-for-admin.interface';
 
 @Injectable()
 export class UserService {
@@ -106,5 +108,13 @@ export class UserService {
 
     async validateUser(payload: JwtPayload): Promise<any> {
         return await this.findOneByID(payload.sub);
+    }
+
+    async search(options: GetMyTrackersDTO): Promise<UserForAdmin[]> {
+        return this.postgres_query_service.queryFunctionWithPagination(Object.assign(options,
+            {   function: `fn_get_users`,
+                function_params: [options.search_filter],
+                err_msg: `Could not retrieve users.`
+            }));
     }
 }

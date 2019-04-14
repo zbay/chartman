@@ -9,7 +9,6 @@ export class UserManagementComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }

@@ -8,6 +8,7 @@ import { ResetPasswordController } from '@accounts/controllers/reset-password/re
 import { TokenService } from '@accounts/services/token/token.service';
 import { UserController } from '@accounts/controllers/user/user.controller';
 import { UserService } from '@accounts/services/user/user.service';
+import { Role } from '@common/enums/role.enum';
 
 @Module({
     controllers: [LoginController, ResetPasswordController, UserController],
@@ -28,6 +29,8 @@ export class AccountsModule {
           .exclude(
             { path: 'accounts/user', method: RequestMethod.POST }
           )
-          .forRoutes(UserController);
+          .forRoutes(UserController)
+          .apply(hasJWT(Role.ADMIN))
+          .forRoutes('/accounts/user/search');
       }
 }

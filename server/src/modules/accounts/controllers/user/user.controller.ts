@@ -1,8 +1,10 @@
-import { Controller, Post, Patch, Body, HttpStatus, HttpCode, Req, Get, Param } from '@nestjs/common';
+import { Controller, Post, Patch, Body, HttpStatus, HttpCode, Req, Get, Param, Query } from '@nestjs/common';
 
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
 import { UserService } from '@accounts/services/user/user.service';
 import { User } from '@accounts/interfaces/user';
+import { GetMyTrackersDTO } from '@shared/dto/get-my-trackers.dto';
+import { UserForAdmin } from '@accounts/interfaces/user-for-admin.interface';
 
 @Controller('accounts/user')
 export class UserController {
@@ -26,5 +28,11 @@ export class UserController {
     @HttpCode(HttpStatus.CREATED)
     async createUser(@Body() newUser: NewUserDTO): Promise<string> {
         return this.userService.createUser(newUser);
+    }
+
+    @Get(`/search`)
+    @HttpCode(HttpStatus.OK)
+    async searchUsers(@Query() query: GetMyTrackersDTO): Promise<UserForAdmin[]> {
+        return this.userService.search(query);
     }
 }
