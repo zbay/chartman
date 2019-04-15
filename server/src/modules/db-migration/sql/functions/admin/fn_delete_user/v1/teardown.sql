@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.fn_delete(text, jsonb);

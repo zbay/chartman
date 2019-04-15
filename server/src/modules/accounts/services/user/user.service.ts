@@ -59,8 +59,8 @@ export class UserService {
 
     async deleteUser(user_id: number): Promise<any> {
         return this.postgres_query_service.queryFunction({
-            function: `fn_delete_user`,
-            params: [user_id],
+            function: `fn_delete`,
+            params: [`users`, {id: user_id}],
             err_msg: `Failed to delete user!`
         });
     }

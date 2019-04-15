@@ -92,6 +92,11 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.FUNCTION,
+            name: `account/fn_get_users`
+        },
+        {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
             name: `stock/fn_add_stock_tracker`
         },
         {
@@ -183,6 +188,11 @@ export const operations: MigrationOperation[] = [
             verb: MigrationVerb.BUILD,
             type: MigrationType.FUNCTION,
             name: `admin/fn_save_complaint`
+        },
+        {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
+            name: `admin/fn_delete`
         },
         {
             verb: MigrationVerb.BUILD,
