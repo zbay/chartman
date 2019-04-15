@@ -5,6 +5,7 @@ create table public.users (
 	email text unique not null,
 	"password" text not null,
 	roles text[],
+	last_login timestamp,
 	last_login_attempt timestamp,
 	strikes smallint default 0
 );

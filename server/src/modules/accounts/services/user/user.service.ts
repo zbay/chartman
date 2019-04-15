@@ -57,6 +57,14 @@ export class UserService {
         .then(async (user) => await this.token_service.getToken(user.id, user.roles));
     }
 
+    async deleteUser(user_id: number): Promise<any> {
+        return this.postgres_query_service.queryFunction({
+            function: `fn_delete_user`,
+            params: [user_id],
+            err_msg: `Failed to delete user!`
+        });
+    }
+
     async editUser(user: NewUserDTO, user_id: number): Promise<boolean> {
         if (!this.passwordsDoMatch(user)) {
             throw new HttpException({name: `Password Mismatch`

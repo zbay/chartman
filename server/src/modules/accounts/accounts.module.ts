@@ -31,6 +31,6 @@ export class AccountsModule {
           )
           .forRoutes(UserController)
           .apply(hasJWT(Role.ADMIN))
-          .forRoutes('/accounts/user/search');
+          .forRoutes('/accounts/user/search', '/accounts/user/:user_id');
       }
 }

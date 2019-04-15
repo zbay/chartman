@@ -28,9 +28,9 @@
         <td mat-cell *matCellDef="let user"> {{user.roles.join(', ')}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="last_login_attempt">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Login Attempt </th>
-        <td mat-cell *matCellDef="let user"> {{user.last_login_attempt}} </td>
+      <ng-container matColumnDef="last_login">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Login </th>
+        <td mat-cell *matCellDef="let user"> {{user.last_login}} </td>
       </ng-container>
 
       <ng-container matColumnDef="delete">

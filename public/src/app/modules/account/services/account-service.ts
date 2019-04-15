@@ -7,8 +7,8 @@ import { Observable, throwError } from 'rxjs';
 import { BasicProfile } from '@app/common/interfaces/basic-profile.interface';
 import { environment } from '@env/environment';
 import { NewCredentials } from '@app/common/interfaces/new-credentials.interface';
-import { PasswordChangeCredentials } from '@account/models/password-change-credentials';
 import { objToParams } from '@app/common/functions/obj-to-params';
+import { PasswordChangeCredentials } from '@account/models/password-change-credentials';
 import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
 
 const accounts_url = `${environment.api_endpoint}/accounts`;
@@ -30,6 +30,10 @@ export class AccountService {
 
   checkValidPasswordChangeRequest (route_id: string): Observable<any> {
     return this.http.get(`${accounts_url}/reset-password/validate-change-request/${route_id}`);
+  }
+
+  deleteUser (user_id: number): Observable<any> {
+    return this.http.delete(`${accounts_url}/user/${user_id}`);
   }
 
   getAllUsers (options: SearchablePaginationOptions): Observable<any> {

@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Body, HttpStatus, HttpCode, Req, Get, Param, Query } from '@nestjs/common';
+import { Controller, Post, Patch, Body, HttpStatus, HttpCode, Req, Get, Param, Query, Delete } from '@nestjs/common';
 
 import { NewUserDTO } from '@accounts/dto/new-user.dto';
 import { UserService } from '@accounts/services/user/user.service';
@@ -34,5 +34,11 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     async searchUsers(@Query() query: GetMyTrackersDTO): Promise<UserForAdmin[]> {
         return this.userService.search(query);
+    }
+
+    @Delete('/:user_id')
+    @HttpCode(HttpStatus.OK)
+    async deleteUser(@Param('user_id') user_id: number): Promise<any> {
+        return this.userService.deleteUser(user_id);
     }
 }

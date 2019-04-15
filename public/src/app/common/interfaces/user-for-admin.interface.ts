@@ -3,6 +3,6 @@ export interface UserForAdmin {
     email: string;
     name: string;
     roles: string[];
-    last_login_attempt: Date;
+    last_login: Date;
     strikes?: number;
 }

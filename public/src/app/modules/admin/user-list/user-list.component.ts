@@ -21,7 +21,7 @@ import { UserDataSource } from '@admin/user-list//user-data-source.class';
 })
 export class UserListComponent  extends SubscribingComponent implements OnInit {
   data_source: UserDataSource;
-  displayed_columns = ['name', 'email', 'roles', 'last_login_attempt'];
+  displayed_columns = ['name', 'email', 'roles', 'last_login', 'delete'];
   readonly filter_group: FormGroup = new FormBuilder().group({
     user_input: ['']
   });

@@ -1,5 +1,10 @@
-create or replace function fn_reset_user_strikes(user_email text) returns void as $$
+CREATE OR REPLACE FUNCTION public.fn_reset_user_strikes(user_email text)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
 	begin
-		update public.users set strikes = 0 where email = user_email;
+		update public.users 
+		set strikes = 0, last_login = current_timestamp 
+		where email = user_email;
 	end;
-$$ language plpgsql;
+$function$;

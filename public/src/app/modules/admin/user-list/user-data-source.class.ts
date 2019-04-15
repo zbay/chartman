@@ -7,9 +7,9 @@ import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
 import { ServerSideDataSource } from '@app/common/classes/server-side-data-source.class';
-import { UserForAdmin } from '@app/common/interfaces/user-for-admin.interface';
 import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
+import { UserForAdmin } from '@app/common/interfaces/user-for-admin.interface';
 
 export class UserDataSource extends ServerSideDataSource<UserForAdmin, SearchablePaginationOptions> implements DataSource<UserForAdmin> {
 
@@ -32,14 +32,12 @@ export class UserDataSource extends ServerSideDataSource<UserForAdmin, Searchabl
         return this.account_service.getAllUsers(options);
     }
 
-    // TODO
     protected deleteItemFromServer(deleted_user: UserForAdmin): Observable<any> {
-        // this.updateQueryManager({
-        //     deletion_success_message: `Tracker for ${deleted_stock.symbol} deleted!`,
-        //     deletion_error_message: `Failed to delete tracker for ${deleted_stock.symbol}`
-        // });
-        // return this.stock_service.deleteStock(deleted_stock.id);
-        return of([]);
+        this.updateQueryManager({
+            deletion_success_message: `User: ${deleted_user.email} deleted!`,
+            deletion_error_message: `Failed to delete user: ${deleted_user.email}`
+        });
+        return this.account_service.deleteUser(deleted_user.id);
     }
 
 }
