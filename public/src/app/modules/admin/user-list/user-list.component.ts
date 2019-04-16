@@ -21,7 +21,12 @@ import { UserDataSource } from '@admin/user-list//user-data-source.class';
 })
 export class UserListComponent  extends SubscribingComponent implements OnInit {
   data_source: UserDataSource;
-  displayed_columns = ['name', 'email', 'roles', 'last_login', 'delete'];
+  readonly displayed_columns = ['name', 'email', 'roles', 'last_login', 'delete'];
+  readonly sortable_column_types = {
+    name: `text`,
+    email: `text`,
+    last_login: `date`
+  };
   readonly filter_group: FormGroup = new FormBuilder().group({
     user_input: ['']
   });
@@ -56,7 +61,7 @@ export class UserListComponent  extends SubscribingComponent implements OnInit {
       );
 
       this.sort.sortChange.subscribe((s: Sort) => {
-        this.data_source.setSort(s);
+        this.data_source.setSort(s, this.sortable_column_types[s.active]);
       });
 
       this.paginator.page_change.subscribe((flip_is_forward: boolean) => {

@@ -13,7 +13,12 @@ import { SearchablePaginationOptions } from '@common/interfaces/searchable-pagin
 
 const MIN_STRING = `0`;
 const MAX_STRING = `zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz`;
+const MIN_INT = Number.MIN_SAFE_INTEGER;
+const MAX_INT = Number.MAX_SAFE_INTEGER;
+const MIN_DATE = `1970-01-01 00:00:00`;
+const MAX_DATE = `4000-12-31 23:59:59`;
 
+// TODO: a type matching column name to its type in all sortable list components
 export abstract class ServerSideDataSource<I, O extends SearchablePaginationOptions> {
 
     protected has_loaded_once = false;
@@ -133,11 +138,21 @@ export abstract class ServerSideDataSource<I, O extends SearchablePaginationOpti
         this.loadItems();
     }
 
-    setSort(s: Sort) {
+    setSort(s: Sort, order_by_col_type: string = `text`) {
+        let min_cursor: any = MIN_STRING;
+        let max_cursor: any = MAX_STRING;
+        if (order_by_col_type === `int`) {
+            min_cursor = MIN_INT;
+            max_cursor = MAX_INT;
+        } else if ((order_by_col_type === `date`) || (order_by_col_type === `timestamp`)) {
+            min_cursor = MIN_DATE;
+            max_cursor = MAX_DATE;
+        }
         this.updateQueryManager({
             order_direction: s.direction === 'asc' ? OrderDirection.ASC : OrderDirection.DESC,
             order_by_col: s.active,
-            cursor_point: s.direction === `asc` ? MIN_STRING : MAX_STRING
+            order_by_col_type,
+            cursor_point: s.direction === `asc` ? min_cursor : max_cursor
           }, true, PageOperation.NONE);
           this.loadItems();
     }
