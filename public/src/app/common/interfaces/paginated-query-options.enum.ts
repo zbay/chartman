@@ -1,10 +1,11 @@
+import { ColumnSortType } from '@common/enums/column-sort-type.enum';
 import { OrderDirection } from '@common/enums/order-direction.enum';
 
 export interface PaginatedQueryOptions {
     query_subject?: string;
     cursor_point?: string | number | boolean | Date;
     order_by_col?: string;
-    order_by_col_type?: string;
+    order_by_col_type?: ColumnSortType;
     order_direction?: OrderDirection;
     per_page?: number;
     where_condition?: string;

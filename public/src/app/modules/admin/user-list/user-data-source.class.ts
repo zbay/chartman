@@ -1,8 +1,9 @@
 import { DataSource } from '@angular/cdk/table';
 
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AccountService } from '@app/modules/account/services/account-service';
+import { ColumnSortType } from '@app/common/enums/column-sort-type.enum';
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
@@ -11,6 +12,7 @@ import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-p
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { UserForAdmin } from '@app/common/interfaces/user-for-admin.interface';
 
+// TODO: Modal for user operations
 export class UserDataSource extends ServerSideDataSource<UserForAdmin, SearchablePaginationOptions> implements DataSource<UserForAdmin> {
 
     constructor(protected readonly error_service: ErrorService,
@@ -20,7 +22,7 @@ export class UserDataSource extends ServerSideDataSource<UserForAdmin, Searchabl
         this.pagination_query_manager = new PaginationQueryManager({
             cursor_point: `0`,
             order_by_col: `name`,
-            order_by_col_type: `text`,
+            order_by_col_type: ColumnSortType.TEXT,
             order_direction: OrderDirection.ASC,
             per_page: 10,
             search_filter: `''`,

@@ -4,6 +4,7 @@ import { Sort } from '@angular/material';
 import { BehaviorSubject, merge, Observable, of } from 'rxjs';
 import { catchError, filter, finalize, map } from 'rxjs/operators';
 
+import { ColumnSortType } from '@common/enums/column-sort-type.enum';
 import { ErrorService } from '@app/services/error/error.service';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { OrderDirection } from '@common/enums/order-direction.enum';
@@ -18,7 +19,6 @@ const MAX_INT = Number.MAX_SAFE_INTEGER;
 const MIN_DATE = `1970-01-01 00:00:00`;
 const MAX_DATE = `4000-12-31 23:59:59`;
 
-// TODO: a type matching column name to its type in all sortable list components
 export abstract class ServerSideDataSource<I, O extends SearchablePaginationOptions> {
 
     protected has_loaded_once = false;
@@ -138,13 +138,13 @@ export abstract class ServerSideDataSource<I, O extends SearchablePaginationOpti
         this.loadItems();
     }
 
-    setSort(s: Sort, order_by_col_type: string = `text`) {
+    setSort(s: Sort, order_by_col_type: ColumnSortType = ColumnSortType.TEXT) {
         let min_cursor: any = MIN_STRING;
         let max_cursor: any = MAX_STRING;
-        if (order_by_col_type === `int`) {
+        if (order_by_col_type === ColumnSortType.INT || order_by_col_type === ColumnSortType.FLOAT) {
             min_cursor = MIN_INT;
             max_cursor = MAX_INT;
-        } else if ((order_by_col_type === `date`) || (order_by_col_type === `timestamp`)) {
+        } else if ((order_by_col_type === ColumnSortType.DATE) || (order_by_col_type === ColumnSortType.TIMESTAMP)) {
             min_cursor = MIN_DATE;
             max_cursor = MAX_DATE;
         }

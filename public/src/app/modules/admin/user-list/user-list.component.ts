@@ -13,19 +13,20 @@ import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { SubscribingComponent } from '@shared/components/subscribing/subscribing.component';
 import { UserForAdmin } from '@common/interfaces/user-for-admin.interface';
 import { UserDataSource } from '@admin/user-list//user-data-source.class';
+import { ColumnSortType } from '@app/common/enums/column-sort-type.enum';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent  extends SubscribingComponent implements OnInit {
+export class UserListComponent extends SubscribingComponent implements OnInit {
   data_source: UserDataSource;
   readonly displayed_columns = ['name', 'email', 'roles', 'last_login', 'delete'];
   readonly sortable_column_types = {
-    name: `text`,
-    email: `text`,
-    last_login: `date`
+    name: ColumnSortType.TEXT,
+    email: ColumnSortType.TEXT,
+    last_login: ColumnSortType.DATE
   };
   readonly filter_group: FormGroup = new FormBuilder().group({
     user_input: ['']

@@ -3,6 +3,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
 import { Trim } from 'class-sanitizer';
 
+import { ColumnSortType } from '@common/enums/column-sort-type.enum';
 import { OrderDirection } from '@shared/enums/order-direction.enum';
 
 export class PaginatedFunctionQueryDTO {
@@ -31,11 +32,11 @@ export class PaginatedFunctionQueryDTO {
     @Trim()
     readonly ordr_by_col: string;
 
-    @ApiModelProperty({ example: `text` })
+    @ApiModelProperty({ example: ColumnSortType.TEXT })
     @IsOptional()
     @IsString()
     @Trim()
-    readonly order_by_col_type: string;
+    readonly order_by_col_type: ColumnSortType;
 
     @ApiModelProperty({ example: OrderDirection.ASC })
     @IsOptional()

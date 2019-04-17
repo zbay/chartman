@@ -2,6 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 
 import { Observable } from 'rxjs';
 
+import { ColumnSortType } from '@app/common/enums/column-sort-type.enum';
 import { CurrencyPair } from '@charts/models/currency-pair';
 import { CurrencyService } from '@charts/services/currency/currency.service';
 import { ErrorService } from '@app/services/error/error.service';
@@ -22,7 +23,7 @@ export class MyCurrencyPairDataSource
         this.pagination_query_manager = new PaginationQueryManager<SearchablePaginationOptions>({
             cursor_point: `''`,
             order_by_col: `sort_id`,
-            order_by_col_type: `text`,
+            order_by_col_type: ColumnSortType.TEXT,
             order_direction: OrderDirection.ASC,
             per_page: 10,
             search_filter: `''`,

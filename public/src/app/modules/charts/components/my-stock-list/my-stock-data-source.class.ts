@@ -2,6 +2,7 @@ import { DataSource } from '@angular/cdk/table';
 
 import { Observable } from 'rxjs';
 
+import { ColumnSortType } from '@app/common/enums/column-sort-type.enum';
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
@@ -20,7 +21,7 @@ export class MyStockDataSource extends ServerSideDataSource<Stock, SearchablePag
         this.pagination_query_manager = new PaginationQueryManager({
             cursor_point: `0`,
             order_by_col: `symbol`,
-            order_by_col_type: `text`,
+            order_by_col_type: ColumnSortType.TEXT,
             order_direction: OrderDirection.ASC,
             per_page: 10,
             search_filter: `''`,
