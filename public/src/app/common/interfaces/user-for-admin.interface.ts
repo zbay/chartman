@@ -1,8 +1,10 @@
 export interface UserForAdmin {
     id: number;
     email: string;
+    first_name: string;
+    last_name: string;
     name: string;
     roles: string[];
-    last_login: Date;
-    strikes?: number;
+    strikes: number;
+    last_login?: Date;
 }

@@ -12,6 +12,7 @@ import { NotFoundComponent } from '@app/modules/shared/components/not-found/not-
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { ExitAnimatingComponent } from './components/exit-animating/exit-animating.component';
 import { IndexlessPaginatorComponent } from './components/indexless-paginator/indexless-paginator.component';
+import { UserEditorComponent } from './components/user-editor/user-editor.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { IndexlessPaginatorComponent } from './components/indexless-paginator/in
     IndexlessPaginatorComponent,
     NotFoundComponent,
     ProgressSpinnerComponent,
-    SubscribingComponent
+    SubscribingComponent,
+    UserEditorComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { IndexlessPaginatorComponent } from './components/indexless-paginator/in
     IndexlessPaginatorComponent,
     MaterialModule,
     ProgressSpinnerComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UserEditorComponent
   ]
 })
 export class SharedModule { }

@@ -56,9 +56,17 @@ th.mat-header-cell {
 }
 
 mat-card.background-box {
-  color: white;
   background-color: $bookend-background-color;
   border: 3px solid $accent-light;
+}
+
+mat-card.editor-box {
+  background-color: $editor-background-color !important;
+  border: 3px solid white;
+}
+
+mat-card.background-box, mat-card.editor-box {
+  color: white;
   box-sizing: border-box;
   border-radius: 1em;
   margin: 20px auto;
@@ -93,4 +101,8 @@ mat-card.background-box {
 
 .mat-form-field-infix {
   width: 250px !important;
+}
+
+mat-dialog-actions {
+  padding-bottom: 24px !important;
 }

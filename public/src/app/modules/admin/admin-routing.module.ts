@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { UserManagementComponent } from '@app/modules/admin/user-management/user-management.component';
+import { ExitAnimationGuard } from '../shared/guards/exit-animation/exit-animation.guard';
 
 const routes: Routes = [
   { path: '',
@@ -9,9 +10,10 @@ const routes: Routes = [
     redirectTo: 'users'
   },
   { path: 'users',
-  pathMatch: 'full',
-  component: UserManagementComponent
-},
+    pathMatch: 'full',
+    component: UserManagementComponent,
+    canDeactivate: [ExitAnimationGuard]
+  }
 ];
 
 @NgModule({

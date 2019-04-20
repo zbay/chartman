@@ -105,3 +105,18 @@ svg.viz {
 .full-width {
   width: 100%;
 }
+
+.faux-link {
+  color: $light-cyan;
+  text-decoration: underline;
+}
+.faux-link:hover {
+color: white;
+}
+.faux-link:active {
+color: orange;
+}
+
+.invisible {
+  opacity: 0;
+}

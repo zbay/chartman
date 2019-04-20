@@ -10,7 +10,7 @@ import { CurrencyService } from '../../services/currency/currency.service';
 import { ErrorService } from '@app/services/error/error.service';
 import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
 import { MyCurrencyPairDataSource } from './my-currency-pair-data-source.class';
-import { PerPageOption } from '@app/modules/shared/interfaces/per-page-option.interface';
+import { SelectOption } from '@app/modules/shared/interfaces/select-option.interface';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 
@@ -28,7 +28,7 @@ export class MyCurrencyListComponent extends SubscribingComponent implements OnI
   loading$: Observable<boolean>;
   currency_pairs: CurrencyPair[] = [];
   num_currency_pairs$: Observable<number>;
-  per_page_options: PerPageOption[] = [
+  per_page_options: SelectOption[] = [
     { value: 10, view_value: '10'},
     { value: 25, view_value: '25'},
     { value: 100, view_value: `100`},

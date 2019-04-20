@@ -8,7 +8,9 @@ begin
 	search_query_wc := '%' || search_query || '%';
 	return query
 		SELECT row_to_json(q) from (
-		select * from (select id, last_name || ', ' || first_name as "name", email, roles, last_login::date as last_login
+		select * from (select id, last_name || ', ' || first_name as "name"
+		, email, roles, last_login::date as last_login
+		, strikes, first_name, last_name
 		from public.users u) q
 		where q."name" ilike search_query_wc or q.email ilike search_query_wc
     ) q;

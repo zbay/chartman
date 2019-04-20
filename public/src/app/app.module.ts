@@ -18,6 +18,7 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavButtonComponent } from './components/nav-button/nav-button.component';
 import { SharedModule } from '@app/modules/shared/shared.module';
+import { UserEditorComponent } from '@app/modules/shared/components/user-editor/user-editor.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -34,6 +35,7 @@ export function tokenGetter() {
     HeaderComponent
   ],
   imports: [
+    AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
@@ -43,14 +45,13 @@ export function tokenGetter() {
         whitelistedDomains: ['localhost', 'chartman.zbay.xyz']
       }
     }),
-    SharedModule,
-    AppRoutingModule
+    SharedModule
   ],
   providers: [AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtHttpInterceptor, multi: true },
     { provide: ErrorHandler, useClass: CentralErrorHandler }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ErrorDialogComponent]
+  entryComponents: [ErrorDialogComponent, UserEditorComponent]
 })
 export class AppModule { }

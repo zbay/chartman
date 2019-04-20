@@ -8,7 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import { ErrorService } from '@app/services/error/error.service';
 import { IndexlessPaginatorComponent } from '@app/modules/shared/components/indexless-paginator/indexless-paginator.component';
 import { MyStockDataSource } from './my-stock-data-source.class';
-import { PerPageOption } from '@app/modules/shared/interfaces/per-page-option.interface';
+import { SelectOption } from '@app/modules/shared/interfaces/select-option.interface';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { Stock } from '@charts/models/stock';
 import { StockService } from '@charts/services/stock/stock.service';
@@ -29,7 +29,7 @@ export class MyStockListComponent extends SubscribingComponent implements OnInit
   });
   loading$: Observable<boolean>;
   num_stocks$: Observable<number>;
-  per_page_options: PerPageOption[] = [
+  per_page_options: SelectOption[] = [
     { value: 10, view_value: '10'},
     { value: 25, view_value: '25'},
     { value: 100, view_value: `100`},

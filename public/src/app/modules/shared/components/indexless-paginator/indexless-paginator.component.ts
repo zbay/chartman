@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 
-import { PerPageOption } from '@shared/interfaces/per-page-option.interface';
+import { SelectOption } from '@app/modules/shared/interfaces/select-option.interface';
 
 // TODO: proper themeing for "Per page" color
 @Component({
@@ -20,7 +20,7 @@ export class IndexlessPaginatorComponent implements OnInit {
     this._num_loaded = nl;
     this._in_transition = false;
   }
-  @Input() per_page_options: PerPageOption[] = [];
+  @Input() per_page_options: SelectOption[] = [];
 
   private _in_transition = false;
   private _num_loaded = 0;
