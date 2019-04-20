@@ -6,7 +6,7 @@ declare
 	new_role_id int;
 begin
 	        
-	   select role_id 
+	   select id 
 	   from public.roles
 	   where "role" = new_role
 	   into new_role_id;
@@ -15,12 +15,10 @@ begin
 	  	raise exception 'Role "%" does not exist!', new_role; 
 	  end if;
 	 
-		insert into public.user_roles (expiration, user_id, role_id)
-		values (new_expiration, new_user_id, new_role_id);
+	insert into public.user_roles (expiration, user_id, role_id)
+	values (new_expiration, new_user_id, new_role_id)
+	on conflict (user_id, role_id)
+		DO UPDATE SET expiration = EXCLUDED.expiration;
 
-		update public.users u 
-		set roles = array_append(u.roles, new_role)
-		where u.id = new_user_id
-		and not new_role = ANY(u.roles);
 END;
 $function$;

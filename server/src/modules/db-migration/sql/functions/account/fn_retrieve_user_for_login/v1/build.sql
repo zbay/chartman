@@ -1,7 +1,11 @@
 create or replace function fn_retrieve_user_for_login(user_email text) RETURNS json AS $$
 	declare retrieved_user record;
 	begin
-		SELECT id, "password", roles, strikes, last_login_attempt
+		SELECT id, "password", strikes, last_login_attempt
+        , (select array(select "role" from public.roles r
+            join public.user_roles ur
+            	on ur.role_id = r.id
+            where user_id = u.id)) as roles
 		from public.users u
         WHERE u.email = user_email
         into retrieved_user;

@@ -6,7 +6,7 @@ declare
 	old_role_id int;
 begin
 	        
-	   select role_id 
+	   select id 
 	   from public.roles
 	   where role = old_role
 	   into old_role_id;

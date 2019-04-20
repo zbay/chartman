@@ -3,6 +3,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { hash as bcryptHash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 
+import { AdminEditedUserDTO } from '@accounts/dto/admin-edited-user.dto';
 import { AwsService } from '@shared/services/aws/aws.service';
 import { ChangePasswordUserDTO } from '@accounts/dto/change-password-user.dto';
 import { GetMyTrackersDTO } from '@shared/dto/get-my-trackers.dto';
@@ -55,6 +56,10 @@ export class UserService {
             err_msg: `Failed to save new user! Try another email address, or try again later.`
         })
         .then(async (user) => await this.token_service.getToken(user.id, user.roles));
+        // .catch((err) => {
+        //     console.log(err);
+        //     return err;
+        // });
     }
 
     async deleteUser(user_id: number): Promise<any> {
@@ -78,6 +83,23 @@ export class UserService {
             err_msg: `Failed to save your new account info! Try again later.`
         })
         .then(() =>  true);
+    }
+
+    async editUserAsAdmin(user: AdminEditedUserDTO): Promise<any> {
+        // console.log(user);
+        return this.postgres_query_service.queryFunction({
+            function: `fn_edit_from_id`,
+            params: [`users`, user],
+            err_msg: `Failed to save the changes to this account!`
+        });
+        // .then((res) => {
+        //     console.log(res);
+        //     return res;
+        // })
+        // .catch((err) => {
+        //     console.log(err);
+        //     return err;
+        // });
     }
 
     async findOneByID(id: number): Promise<User> {

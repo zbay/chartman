@@ -10,6 +10,7 @@ import { NewCredentials } from '@app/common/interfaces/new-credentials.interface
 import { objToParams } from '@app/common/functions/obj-to-params';
 import { PasswordChangeCredentials } from '@account/models/password-change-credentials';
 import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
+import { UserForAdmin } from '@app/common/interfaces/user-for-admin.interface';
 
 const accounts_url = `${environment.api_endpoint}/accounts`;
 
@@ -44,6 +45,10 @@ export class AccountService {
   getLoggedInUser (): Observable<BasicProfile> {
     return this.http.get(`${accounts_url}/user`)
       .pipe(map((res: any) => res.data));
+  }
+
+  patchUserAsAdmin (user: UserForAdmin): Observable<any> {
+    return this.http.patch(`${accounts_url}/admin/user`, user);
   }
 
   requestPasswordChange (email: string): Observable<any> {

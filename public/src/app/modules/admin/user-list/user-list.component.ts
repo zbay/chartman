@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatSort, MatSortable, Sort, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSort, MatSortable, Sort, MatDialogRef } from '@angular/material';
 
 import { debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -43,7 +43,7 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
     { value: 99999, view_value: `All`}
   ];
 
-  dialog: MatDialogRef<UserEditorComponent, any>;
+  dialog: MatDialogRef<UserEditorComponent, { user: UserForAdmin }>;
   @ViewChild(IndexlessPaginatorComponent) paginator: IndexlessPaginatorComponent;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -91,13 +91,18 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
     this.data_source.deleteItem(deleted_user);
   }
 
+  patchUser(patched_user: UserForAdmin): void {
+    this.data_source.patchItem(patched_user);
+  }
+
   openUserModal(user: UserForAdmin) {
     this.dialog = this.editor_service.openEditor(UserEditorComponent, { user });
     this.dialog.afterClosed().subscribe((data: any) => {
+      console.log(data);
       if (data.deleted) {
         this.deleteUser(data.deleted);
       } else if (data.edited) {
-        // this.editUser(data.edited);
+        this.patchUser(data.edited);
       }
     });
   }

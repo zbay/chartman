@@ -12,7 +12,6 @@ import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-p
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { UserForAdmin } from '@app/common/interfaces/user-for-admin.interface';
 
-// TODO: Modal for user operations
 export class UserDataSource extends ServerSideDataSource<UserForAdmin, SearchablePaginationOptions> implements DataSource<UserForAdmin> {
 
     constructor(protected readonly error_service: ErrorService,
@@ -40,6 +39,11 @@ export class UserDataSource extends ServerSideDataSource<UserForAdmin, Searchabl
             deletion_error_message: `Failed to delete user: ${deleted_user.email}`
         });
         return this.account_service.deleteUser(deleted_user.id);
+    }
+
+    patchItem(patched_user: UserForAdmin): Observable<any> {
+        console.log(patched_user);
+        return this.account_service.patchUserAsAdmin(patched_user);
     }
 
 }
