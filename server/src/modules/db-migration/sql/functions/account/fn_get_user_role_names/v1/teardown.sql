@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.fn_get_user_role_names(int);

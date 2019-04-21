@@ -11,10 +11,7 @@ AS $function$
                		current_timestamp, current_timestamp);
 
               select u.id, u.email
-              , (select array(select "role" from public.roles r
-                join public.user_roles ur
-                    on ur.role_id = r.id
-                where user_id = u.id)) as roles
+              , public.fn_get_user_role_names(u.id) as roles
               from public.users u
               where email = user_obj->>'email' 
               into just_created_user;

@@ -1,10 +1,10 @@
 insert into public.roles ("role")
-values ('free');
+values ('Free');
 insert into public.roles ("role")
-values ('admin');
+values ('Admin');
 insert into public.roles ("role")
-values ('premium_stocks');
+values ('Premium Stocks');
 insert into public.roles ("role")
-values ('premium_currencies');
+values ('Premium Currencies');
 insert into public.roles ("role")
-values ('premium_gambling');
+values ('Premium Gambling');

@@ -1,5 +1,5 @@
-<h2 mat-dialog-title style="margin-bottom: 4px">Editing: {{user.email}}</h2>
 <mat-dialog-content>
+    <h2 style="margin-bottom: 4px">Editing: {{user.email}}</h2>
     <mat-card [formGroup]="user_group"
     fxLayout="column"
     fxLayoutAlign="start center"
@@ -35,19 +35,36 @@
           formControlName="strikes"/>
         <mat-error>Invalid number!</mat-error>
       </mat-form-field>
-      <!-- <mat-form-field>
+      <mat-form-field>
         <mat-label>Roles</mat-label>
-        <mat-select formControlName="roles" multiple>
+        <mat-select formControlName="role_names" multiple>
           <mat-option *ngFor="let role of roles" [value]="role.value">
             {{role.view_value}}
           </mat-option>
         </mat-select>
-      </mat-form-field> -->
+      </mat-form-field>
+      <div formArrayName="role_expirations" fxLayout="column">
+        <mat-form-field *ngFor="let role_expiration of role_expirations.controls; let i = index"
+          class="datepicker-field">
+          <mat-label>{{role_names[i]}} expiration</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControlName]="i" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>        
+      </div>
     </mat-card>
   <div fxLayout="row wrap" fxLayoutAlign="center start" style="margin-top: 24px">
-      <button mat-button mat-dialog-close><mat-icon>close</mat-icon> Cancel</button>
-      <button mat-button color="warn" (click)="deleteUser()"><mat-icon>delete</mat-icon> Delete</button>
-      <button mat-button><mat-icon>security</mat-icon> Send Password Reset</button>
-      <button mat-button (click)="editUser()"><mat-icon>check</mat-icon> Save Changes</button>
+      <button mat-button mat-dialog-close>
+        <mat-icon>close</mat-icon> Cancel
+      </button>
+      <button mat-button color="warn" (click)="deleteUser()">
+        <mat-icon>delete</mat-icon> Delete
+      </button>
+      <button mat-button>
+        <mat-icon>security</mat-icon> Send Password Reset
+      </button>
+      <button mat-button (click)="editUser()" [disabled]="user_group.invalid">
+        <mat-icon>check</mat-icon> Save Changes
+      </button>
   </div>
 </mat-dialog-content>

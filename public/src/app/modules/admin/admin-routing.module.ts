@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { UserManagementComponent } from '@app/modules/admin/user-management/user-management.component';
-import { ExitAnimationGuard } from '../shared/guards/exit-animation/exit-animation.guard';
+import { UserManagementComponent } from '@app/modules/admin/components/user-management/user-management.component';
+import { ExitAnimationGuard } from '@shared/guards/exit-animation/exit-animation.guard';
 
 const routes: Routes = [
   { path: '',

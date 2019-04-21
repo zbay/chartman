@@ -2,10 +2,7 @@ create or replace function fn_retrieve_user_for_login(user_email text) RETURNS j
 	declare retrieved_user record;
 	begin
 		SELECT id, "password", strikes, last_login_attempt
-        , (select array(select "role" from public.roles r
-            join public.user_roles ur
-            	on ur.role_id = r.id
-            where user_id = u.id)) as roles
+        , public.fn_get_user_role_names(u.id) as roles
 		from public.users u
         WHERE u.email = user_email
         into retrieved_user;

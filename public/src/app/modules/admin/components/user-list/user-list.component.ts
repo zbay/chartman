@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSort, MatSortable, Sort, MatDialogRef } from '@angular/material';
 
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { AccountService } from '@app/modules/account/services/account-service';
@@ -13,7 +13,7 @@ import { IndexlessPaginatorComponent } from '@shared/components/indexless-pagina
 import { SelectOption } from '@app/modules/shared/interfaces/select-option.interface';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { SubscribingComponent } from '@shared/components/subscribing/subscribing.component';
-import { UserDataSource } from '@admin/user-list//user-data-source.class';
+import { UserDataSource } from '@admin/components/user-list//user-data-source.class';
 import { UserEditorComponent } from '@shared/components/user-editor/user-editor.component';
 import { UserForAdmin } from '@common/interfaces/user-for-admin.interface';
 
@@ -65,15 +65,15 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
         }
       );
 
-      this.sort.sortChange.subscribe((s: Sort) => {
+      this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe((s: Sort) => {
         this.data_source.setSort(s, this.sortable_column_types[s.active]);
       });
 
-      this.paginator.page_change.subscribe((flip_is_forward: boolean) => {
+      this.paginator.page_change.pipe(takeUntil(this.destroy$)).subscribe((flip_is_forward: boolean) => {
         this.data_source.turnPage(flip_is_forward);
       });
 
-      this.paginator.per_page.subscribe((per_page: number) => {
+      this.paginator.per_page.pipe(takeUntil(this.destroy$)).subscribe((per_page: number) => {
         this.data_source.setPerPage(per_page);
       });
 
@@ -81,7 +81,7 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
 
       this.filter_group.get(`user_input`)
         .valueChanges
-        .pipe(debounceTime(300))
+        .pipe(takeUntil(this.destroy$), debounceTime(300))
         .subscribe((value: string) => {
           this.data_source.filterItems(value);
         });

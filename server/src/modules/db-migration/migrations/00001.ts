@@ -72,6 +72,16 @@ export const operations: MigrationOperation[] = [
         {
             verb: MigrationVerb.BUILD,
             type: MigrationType.FUNCTION,
+            name: `account/fn_get_user_roles`
+        },
+        {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
+            name: `account/fn_get_user_role_names`
+        },
+        {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
             name: `account/fn_add_user`
         },
         {

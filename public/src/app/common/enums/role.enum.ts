@@ -1,7 +1,7 @@
 export enum Role {
-    ADMIN = 'admin',
-    FREE = 'free',
-    PREMIUM_CURRENCIES = 'premium_currencies',
-    PREMIUM_GAMBLING = 'premium_gambling',
-    PREMIUM_STOCKS = 'premium_stocks'
+    ADMIN = 'Admin',
+    FREE = 'Free',
+    PREMIUM_CURRENCIES = 'Premium Currencies',
+    PREMIUM_GAMBLING = 'Premium Gambling',
+    PREMIUM_STOCKS = 'Premium Stocks'
 }

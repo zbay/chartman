@@ -1,6 +1,8 @@
 @import '../chartman-theme.scss';
 
 $light-cyan: #66ffff;
+$datepicker-icon-width: 24px;
+$mat-form-field-width: 250px;
 
 .selected-chip {
   color: $accent-light !important;
@@ -90,17 +92,23 @@ mat-card.background-box, mat-card.editor-box {
   }
 }
 
-.mat-select-panel, .mat-autocomplete-panel {
+.mat-select-panel, .mat-autocomplete-panel, .mat-calendar {
   background-color: $bookend-background-color-light;
+  color: white;
 
   mat-option:hover {
     background-color: black;
+    color: $accent-light;
     font-weight: bold;
   }
 }
 
 .mat-form-field-infix {
-  width: 250px !important;
+  width: $mat-form-field-width !important;
+}
+
+.datepicker-field .mat-form-field-infix{
+  width: $mat-form-field-width - $datepicker-icon-width !important;
 }
 
 mat-dialog-actions {
