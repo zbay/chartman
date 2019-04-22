@@ -92,13 +92,14 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
   }
 
   patchUser(patched_user: UserForAdmin): void {
-    this.data_source.patchItem(patched_user);
+    this.data_source.patchItem(patched_user).subscribe(() => {}, (err) => {
+      console.log(err);
+    });
   }
 
   openUserModal(user: UserForAdmin) {
     this.dialog = this.editor_service.openEditor(UserEditorComponent, { user });
-    this.dialog.afterClosed().subscribe((data: any) => {
-      console.log(data);
+    this.dialog.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
       if (data.deleted) {
         this.deleteUser(data.deleted);
       } else if (data.edited) {

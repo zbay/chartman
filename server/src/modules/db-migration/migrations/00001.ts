@@ -215,6 +215,11 @@ export const operations: MigrationOperation[] = [
             name: `other/fn_retrieve_page_from_function`
         },
         {
+            verb: MigrationVerb.BUILD,
+            type: MigrationType.FUNCTION,
+            name: `account/fn_update_user_as_admin`
+        },
+        {
             verb: MigrationVerb.POPULATE, // populate op is implied to be a table
             name: `exchanges`
         },

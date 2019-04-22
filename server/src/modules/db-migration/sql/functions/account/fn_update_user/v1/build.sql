@@ -20,7 +20,7 @@ create or replace function public.fn_update_user(user_obj jsonb, update_user_id 
 	          	"password" = user_obj->>'password'
 	          where id = update_user_id;
 	         
-	         select id, email, roles from users where email = user_obj->>'email' into just_updated_user;
+	         select id, email from users where email = user_obj->>'email' into just_updated_user;
 
              return row_to_json(just_updated_user);
         END;

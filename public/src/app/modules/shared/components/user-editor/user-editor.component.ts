@@ -2,11 +2,12 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+import { takeUntil } from 'rxjs/operators';
+
 import { Role } from '@common/enums/role.enum';
 import { SelectOption } from '@shared/interfaces/select-option.interface';
 import { UserForAdmin } from '@common/interfaces/user-for-admin.interface';
 import { SubscribingComponent } from '../subscribing/subscribing.component';
-import { takeUntil } from 'rxjs/operators';
 
 const ROLE_EXPIRATIONS = `role_expirations`;
 const ROLE_NAMES = `role_names`;
@@ -92,9 +93,18 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
     this.dialogRef.close({ deleted: this.user});
   }
 
-  editUser() {
-    console.log(this.user_group.value);
-    this.dialogRef.close({ edited: this.user_group.value });
+  saveChanges() {
+    const form_data = this.user_group.value;
+    this.dialogRef.close({ edited: {
+      id: this.user.id,
+      first_name: form_data.first_name,
+      last_name: form_data.last_name,
+      email: form_data.email,
+      strikes: form_data.strikes,
+      roles: form_data.role_names.map((name, i) => {
+        return { role: name, expiration: form_data.role_expirations[i] };
+      })
+    }});
   }
 
 }

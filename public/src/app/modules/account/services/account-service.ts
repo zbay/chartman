@@ -48,7 +48,7 @@ export class AccountService {
   }
 
   patchUserAsAdmin (user: UserForAdmin): Observable<any> {
-    return this.http.patch(`${accounts_url}/admin/user`, user);
+    return this.http.patch(`${accounts_url}/user/admin/edit`, user);
   }
 
   requestPasswordChange (email: string): Observable<any> {

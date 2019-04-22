@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION public.fn_add_role(new_user_id int, new_role text, new_expiration timestamptz)
+
+CREATE OR REPLACE FUNCTION public.fn_add_role(new_user_id integer, new_role text, new_expiration date)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$

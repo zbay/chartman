@@ -86,20 +86,11 @@ export class UserService {
     }
 
     async editUserAsAdmin(user: AdminEditedUserDTO): Promise<any> {
-        // console.log(user);
         return this.postgres_query_service.queryFunction({
-            function: `fn_edit_from_id`,
-            params: [`users`, user],
+            function: `fn_update_user_as_admin`,
+            params: [user],
             err_msg: `Failed to save the changes to this account!`
         });
-        // .then((res) => {
-        //     console.log(res);
-        //     return res;
-        // })
-        // .catch((err) => {
-        //     console.log(err);
-        //     return err;
-        // });
     }
 
     async findOneByID(id: number): Promise<User> {

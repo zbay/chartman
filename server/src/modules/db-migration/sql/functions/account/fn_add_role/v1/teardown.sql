@@ -1,1 +1,1 @@
-DROP FUNCTION IF EXISTS public.fn_add_role(int, text, timestamptz);
+DROP FUNCTION IF EXISTS public.fn_add_role(int, text, date);
