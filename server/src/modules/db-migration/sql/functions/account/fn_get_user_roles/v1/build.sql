@@ -11,7 +11,7 @@ begin
 	from public.roles r
 	join public.user_roles ur
 		on ur.role_id = r.id
-	where ur.user_id = 8) q) into roles;
+	where ur.user_id = specific_user_id) q) into roles;
 	return roles;
 end;
 $function$;
