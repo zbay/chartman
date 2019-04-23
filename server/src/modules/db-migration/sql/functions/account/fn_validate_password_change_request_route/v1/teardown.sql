@@ -1,1 +1,1 @@
-drop function if exists public.fn_validate_password_change_request_route(char(96));
+drop function if exists public.fn_validate_password_change_request_route(char(96), text);

@@ -8,6 +8,8 @@ import { Role } from '@common/enums/role.enum';
 import { SelectOption } from '@shared/interfaces/select-option.interface';
 import { UserForAdmin } from '@common/interfaces/user-for-admin.interface';
 import { SubscribingComponent } from '../subscribing/subscribing.component';
+import { AccountService } from '@app/modules/account/services/account-service';
+import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 
 const ROLE_EXPIRATIONS = `role_expirations`;
 const ROLE_NAMES = `role_names`;
@@ -39,6 +41,8 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
   ];
 
   constructor(private dialogRef: MatDialogRef<UserEditorComponent>,
+    private readonly account_service: AccountService,
+    private readonly snackbar_service: SnackBarService,
     @Inject(MAT_DIALOG_DATA) data) {
       super();
       this.user = data.user;
@@ -81,6 +85,10 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
       });
   }
 
+  get new_email(): string {
+    return this.user_group.get(`email`).value;
+  }
+
   get role_names(): string[] {
     return this.user_group.get(ROLE_NAMES).value;
   }
@@ -105,6 +113,12 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
         return { role: name, expiration: form_data.role_expirations[i] };
       })
     }});
+  }
+
+  sendPasswordReset() {
+    this.account_service.requestPasswordChange(this.user.email).subscribe(() => {
+      this.snackbar_service.openSnackBar(`Sent password reset email to: ${this.user.email}`);
+    }, );
   }
 
 }
