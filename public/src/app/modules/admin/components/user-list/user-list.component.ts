@@ -87,21 +87,15 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
         });
   }
 
-  deleteUser(deleted_user: UserForAdmin): void {
-    this.data_source.deleteItem(deleted_user);
-  }
-
-  patchUser(patched_user: UserForAdmin): void {
-    this.data_source.patchItem(patched_user);
-  }
-
   openUserModal(user: UserForAdmin) {
     this.dialog = this.editor_service.openEditor(UserEditorComponent, { user });
     this.dialog.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      if (data.deleted) {
-        this.deleteUser(data.deleted);
-      } else if (data.edited) {
-        this.patchUser(data.edited);
+      if (data) {
+        if (data.deleted) {
+          this.data_source.deleteItem(data.deleted);
+        } else if (data.edited) {
+          this.data_source.patchItem(data.edited);
+        }
       }
     });
   }

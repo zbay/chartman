@@ -18,7 +18,7 @@ AS $function$
 
               insert into user_roles (user_id, role_id)
               	values ((select id from users where id = just_created_user.id),
-             	(select id from roles where "role" = 'free'));
+             	(select id from roles where "role" = 'Free'));
              return row_to_json(just_created_user);
         END;
 $function$;
