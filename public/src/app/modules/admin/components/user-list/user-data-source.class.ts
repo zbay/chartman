@@ -7,12 +7,13 @@ import { ColumnSortType } from '@app/common/enums/column-sort-type.enum';
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
-import { ServerSideDataSource } from '@app/common/classes/server-side-data-source.class';
+import { PatchableServerSideDataSource } from '@app/common/classes/patchable-server-side-data-source.class';
 import { SearchablePaginationOptions } from '@app/common/interfaces/searchable-pagination-options.enum';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
 import { UserForAdmin } from '@app/common/interfaces/user-for-admin.interface';
 
-export class UserDataSource extends ServerSideDataSource<UserForAdmin, SearchablePaginationOptions> implements DataSource<UserForAdmin> {
+// tslint:disable-next-line:max-line-length
+export class UserDataSource extends PatchableServerSideDataSource<UserForAdmin, SearchablePaginationOptions> implements DataSource<UserForAdmin> {
 
     constructor(protected readonly error_service: ErrorService,
                 protected readonly snackbar_service: SnackBarService,
@@ -41,9 +42,22 @@ export class UserDataSource extends ServerSideDataSource<UserForAdmin, Searchabl
         return this.account_service.deleteUser(deleted_user.id);
     }
 
-    patchItem(patched_user: UserForAdmin): Observable<any> {
-        console.log(patched_user);
+    protected patchItemOnServer(patched_user: UserForAdmin): Observable<any> {
         return this.account_service.patchUserAsAdmin(patched_user);
+    }
+
+    // tslint:disable-next-line:max-line-length
+    protected patchItemInBrowser(patched_user: UserForAdmin): (value: UserForAdmin, index?: number, array?: UserForAdmin[]) => UserForAdmin {
+        return (item: UserForAdmin): UserForAdmin => {
+            if (item.id === patched_user.id) {
+                item.first_name = patched_user.first_name;
+                item.last_name = patched_user.last_name;
+                item.name = `${item.last_name}, ${item.first_name}`;
+                item.email = patched_user.email;
+                item.roles = patched_user.roles;
+              }
+              return item;
+        };
     }
 
 }

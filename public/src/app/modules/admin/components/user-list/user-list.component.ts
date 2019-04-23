@@ -92,9 +92,7 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
   }
 
   patchUser(patched_user: UserForAdmin): void {
-    this.data_source.patchItem(patched_user).subscribe(() => {}, (err) => {
-      console.log(err);
-    });
+    this.data_source.patchItem(patched_user);
   }
 
   openUserModal(user: UserForAdmin) {

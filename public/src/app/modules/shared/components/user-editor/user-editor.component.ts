@@ -4,12 +4,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { takeUntil } from 'rxjs/operators';
 
+import { AccountService } from '@app/modules/account/services/account-service';
+import { ErrorService } from '@app/services/error/error.service';
 import { Role } from '@common/enums/role.enum';
 import { SelectOption } from '@shared/interfaces/select-option.interface';
-import { UserForAdmin } from '@common/interfaces/user-for-admin.interface';
-import { SubscribingComponent } from '../subscribing/subscribing.component';
-import { AccountService } from '@app/modules/account/services/account-service';
 import { SnackBarService } from '@app/services/snack-bar/snack-bar.service';
+import { SubscribingComponent } from '../subscribing/subscribing.component';
+import { UserForAdmin } from '@common/interfaces/user-for-admin.interface';
 
 const ROLE_EXPIRATIONS = `role_expirations`;
 const ROLE_NAMES = `role_names`;
@@ -42,6 +43,7 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
 
   constructor(private dialogRef: MatDialogRef<UserEditorComponent>,
     private readonly account_service: AccountService,
+    private readonly error_service: ErrorService,
     private readonly snackbar_service: SnackBarService,
     @Inject(MAT_DIALOG_DATA) data) {
       super();
@@ -59,8 +61,6 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
       expirations.forEach((expiration) => {
         this.role_expirations.push(new FormControl(expiration));
       });
-      // console.log(this.user.roles);
-      // console.log(this.user_group.value);
     }
 
   ngOnInit() {
@@ -118,7 +118,7 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
   sendPasswordReset() {
     this.account_service.requestPasswordChange(this.user.email).subscribe(() => {
       this.snackbar_service.openSnackBar(`Sent password reset email to: ${this.user.email}`);
-    }, );
+    }, this.error_service.standardSubscriptionErrorHandler);
   }
 
 }
