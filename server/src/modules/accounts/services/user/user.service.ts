@@ -56,10 +56,6 @@ export class UserService {
             err_msg: `Failed to save new user! Try another email address, or try again later.`
         })
         .then(async (user) => await this.token_service.getToken(user.id, user.roles));
-        // .catch((err) => {
-        //     console.log(err);
-        //     return err;
-        // });
     }
 
     async deleteUser(user_id: number): Promise<any> {

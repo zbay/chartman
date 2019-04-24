@@ -11,7 +11,7 @@ AS $function$
                		current_timestamp, current_timestamp);
 
               select u.id, u.email
-              , public.fn_get_user_role_names(u.id) as roles
+              , '{"Free"}'::text[] as roles
               from public.users u
               where email = user_obj->>'email' 
               into just_created_user;

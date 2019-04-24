@@ -52,7 +52,7 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
     private readonly error_service: ErrorService,
     private readonly snackbar_service: SnackBarService) {
       super();
-      this.data_source = new UserDataSource(this.error_service, this.snackbar_service, this.account_service);
+      this.data_source = new UserDataSource(this.error_service, this.snackbar_service, this.editor_service, this.account_service);
       this.loading$ = this.data_source.loading$;
       this.num_users$ = this.data_source.num_items$;
   }
@@ -87,17 +87,8 @@ export class UserListComponent extends SubscribingComponent implements OnInit {
         });
   }
 
-  openUserModal(user: UserForAdmin) {
-    this.dialog = this.editor_service.openEditor(UserEditorComponent, { user });
-    this.dialog.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      if (data) {
-        if (data.deleted) {
-          this.data_source.deleteItem(data.deleted);
-        } else if (data.edited) {
-          this.data_source.patchItem(data.edited);
-        }
-      }
-    });
+  openUserModal(user: UserForAdmin): void {
+    this.data_source.openEditorModal(user, UserEditorComponent);
   }
 
   trackByFn(index: number, item: UserForAdmin) {

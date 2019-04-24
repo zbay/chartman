@@ -47,7 +47,7 @@ export class UserEditorComponent extends SubscribingComponent implements OnInit 
     private readonly snackbar_service: SnackBarService,
     @Inject(MAT_DIALOG_DATA) data) {
       super();
-      this.user = data.user;
+      this.user = data.item;
       this.previous_role_names = this.user.roles.map((role) => role.role);
       this.user_group.patchValue({
         id: this.user.id,

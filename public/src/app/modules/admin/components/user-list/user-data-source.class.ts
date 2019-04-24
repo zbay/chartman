@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { AccountService } from '@app/modules/account/services/account-service';
 import { ColumnSortType } from '@app/common/enums/column-sort-type.enum';
+import { EditorService } from '@app/services/editor/editor.service';
 import { ErrorService } from '@app/services/error/error.service';
 import { OrderDirection } from '@app/common/enums/order-direction.enum';
 import { PaginationQueryManager } from '@app/common/classes/pagination-query-manager.class';
@@ -17,8 +18,9 @@ export class UserDataSource extends PatchableServerSideDataSource<UserForAdmin, 
 
     constructor(protected readonly error_service: ErrorService,
                 protected readonly snackbar_service: SnackBarService,
+                protected readonly editor_service: EditorService,
                 private readonly account_service: AccountService) {
-        super(error_service, snackbar_service);
+        super(error_service, snackbar_service, editor_service);
         this.pagination_query_manager = new PaginationQueryManager({
             cursor_point: `0`,
             order_by_col: `name`,
