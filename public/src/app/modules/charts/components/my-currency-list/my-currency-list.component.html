@@ -1,5 +1,5 @@
 <mat-card class="background-box tracker-list near-max-width mat-elevation-z4">
-  <h2>My currency pairs</h2>
+  <h3>My currency pairs</h3>
   <app-progress-spinner *ngIf="(loading$ | async)"></app-progress-spinner>
   <mat-form-field [formGroup]="filter_group">
     <input matInput formControlName="user_input" placeholder="Filter">

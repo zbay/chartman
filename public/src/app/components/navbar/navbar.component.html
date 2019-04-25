@@ -3,7 +3,7 @@
   [attr.fxLayoutAlign]="orientation === Orientation.HORIZONTAL ? 'end' : null"
   [class.horizMenu]="orientation === Orientation.HORIZONTAL">
   <app-nav-button link="/admin" textContent="Admin" 
-    [requireRole]="Role.ADMIN">
+    [requireRole]="Role.ADMIN" equivalentLink="/admin/users">
   </app-nav-button>
   <app-nav-button link="/about" textContent="About">
   </app-nav-button>
