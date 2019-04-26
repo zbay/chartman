@@ -36,7 +36,7 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
     private readonly navigation_service: NavigationService,
     private readonly snackbar_service: SnackBarService) {
       super();
-    }
+  }
 
   ngOnInit() {
     this.loadCurrentProfile();
@@ -90,5 +90,4 @@ export class AccountComponent extends ExitAnimatingComponent implements OnInit {
     }
     );
   }
-
 }
