@@ -10,6 +10,10 @@ body {
   background-image: $body-background;
 }
 
+svg.viz, #legend #legend-wrap {
+  background-color: $bookend-background-color;
+}
+
 .near-max-width {
   width: 90% !important;
 }
@@ -101,7 +105,6 @@ svg.viz {
 .fixed-position {
   position: fixed;
 }
-
 .full-width {
   width: 100%;
 }
@@ -133,4 +136,11 @@ color: orange;
   max-width: 40%;
   margin-left: auto;
   margin-right: auto;
+}
+
+app-sidenav {
+  background-color: $bookend-background-color-light;
+  // position: sticky !important;
+  // top: 90px;
+  // height: 100%;
 }

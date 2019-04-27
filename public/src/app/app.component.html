@@ -1,8 +1,13 @@
-<div class="wrapper chartman-theme" fxLayout="column" (scroll)="onScroll($event)">
-  <app-header></app-header>
-  <main id="mainContent" (click)="closeNavBar()">
-    <router-outlet></router-outlet>
-  </main>
+<div class="wrapper chartman-theme mat-elevation-z10" 
+  fxLayout="column" (scroll)="onScroll($event)">
+  <app-header ></app-header>
+  <div fxLayout="row" fxLayoutAlign="center stretch">
+    <app-sidenav></app-sidenav>
+    <main id="main-content" (click)="closeNavBar()">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <app-scroll-to-top></app-scroll-to-top>
   <footer class="bookend" fxLayout="column" fxLayoutAlign="center center" fxFlex="1">
     <div fxFlexAlign="start"></div>
     <h2>&copy; 2019 - Zbay Industries</h2>

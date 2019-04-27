@@ -1,11 +1,6 @@
-#headerNav {
-    padding-bottom: 5px;
-    a { 
-        display: block;
-    }
-}
+@import '../../../chartman-theme.scss';
 
-#headerNav.horizMenu {
+#header-nav {
     padding-left: 10px;
     padding-bottom: 0;
 

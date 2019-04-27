@@ -1,0 +1,10 @@
+@import '../../../chartman-theme.scss';
+
+.scroll-up-button {
+    left: 5px;
+    bottom: 5px;
+    background-color: $accent;
+    z-index: $header-z-index + 1;
+    border: 1px solid white;
+    border-radius: 50%;
+}

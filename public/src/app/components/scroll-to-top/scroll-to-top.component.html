@@ -1,0 +1,6 @@
+<button *ngIf="passed_scroll_threshold"
+  [@fadeInOut]
+  class="scroll-up-button fixed-position"
+  (click)="scrollToTop()">
+  <mat-icon color="primary">arrow_upward</mat-icon>
+</button>

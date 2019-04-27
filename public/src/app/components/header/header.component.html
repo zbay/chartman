@@ -1,25 +1,18 @@
-<header class="jumbotron fixed-position bookend"
-[class.mat-elevation-z10]="showingFullHeader || dropdownNavActivated"
-[@slideUpDown]="dropdownNavActivated || showingFullHeader"
-fxLayout="column">
+<header class="jumbotron bookend mat-elevation-z10"
+fxLayout="column" fxLayoutAlign="center">
   <div fxLayout="row" fxLayoutAlign="space-between center">
       <h1>&cent;hartman</h1>
       <div fxLayoutAlign="center center" class="dropdownToggle" fxHide.gt-md>
         <button mat-icon-button 
             class="menu-button"
-            (click)="toggleDropdownNav()">
-          <mat-icon *ngIf="!dropdownNavActivated">dehaze</mat-icon>
-          <mat-icon *ngIf="dropdownNavActivated">close</mat-icon>
+            [matMenuTriggerFor]="menu">
+          <mat-icon>dehaze</mat-icon>
         </button>
       </div>
-      <app-navbar *ngIf="!dropdownNavActivated" [orientation]="Orientation.HORIZONTAL" fxHide.lt-lg></app-navbar>
+      <app-navbar fxHide.lt-lg></app-navbar>
   </div>
-  <app-navbar [orientation]="Orientation.VERTICAL" [@elasticUpDown]="dropdownNavActivated"></app-navbar>
 </header>
-<div *ngIf="!showingFullHeader" fxLayout="row" fxLayoutAlign="end center" class="fixed-position full-width dropdownToggle">
-  <button fxFlexAlign="end"
-      class="menu-button"
-      (click)="scrollToTop()">
-    <mat-icon color="accent">arrow_upward</mat-icon>
-  </button>
-</div>
+<mat-menu #menu="matMenu" fxHide.gt-md class="mat-elevation-z10">
+  <app-navbar-vert fxHide.gt-md></app-navbar-vert>
+</mat-menu>
+

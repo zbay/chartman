@@ -1,0 +1,13 @@
+@import '../../../chartman-theme.scss';
+
+#header-nav {
+    padding-bottom: 5px;
+    padding-left: 0;
+    background-color: $bookend-background-color-light;
+    button {
+        z-index: $header-z-index+1;
+    }
+    a { 
+        display: block;
+    }
+}

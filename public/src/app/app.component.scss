@@ -1,7 +1,31 @@
-footer {
-    margin-top: 1em;
+@import '../chartman-theme.scss';
+
+app-header {
+    height: 90px;
+    margin-bottom: 0;
 }
 
-#mainContent {
-    margin-top: 95px;
+app-sidenav {
+    position: sticky;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    min-width: 200px;
+    max-width: 50%;
+    color: white;
+    font-weight: bold;
+}
+
+footer {
+    min-height: 90px;
+}
+
+app-sidenav {
+    z-index: $header-z-index;
+    margin-top: 0;
+}
+
+#main-content {
+    margin-top: 1em;
+    width: 100%;
 }

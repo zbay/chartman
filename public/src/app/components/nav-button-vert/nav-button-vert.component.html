@@ -1,0 +1,11 @@
+<a [routerLink]="link" (click)="closeNavBar()"
+*ngIf=" (requireLoggedOut && !(logged_in$ | async)) 
+  || (!requireRole && !requireLoggedOut)
+  || (requireRole && has_required_role)">
+  <button mat-button
+      [class.current]="(current_url$ | async) === link 
+        || (equivalentLink && ((current_url$ | async) === equivalentLink))">
+    {{textContent}}
+  </button>
+</a>
+   

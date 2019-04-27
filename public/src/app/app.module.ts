@@ -19,6 +19,10 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavButtonComponent } from './components/nav-button/nav-button.component';
 import { SharedModule } from '@app/modules/shared/shared.module';
 import { UserEditorComponent } from '@app/modules/shared/components/user-editor/user-editor.component';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { ScrollToTopComponent } from './components/scroll-to-top/scroll-to-top.component';
+import { NavbarVertComponent } from './components/navbar-vert/navbar-vert.component';
+import { NavButtonVertComponent } from './components/nav-button-vert/nav-button-vert.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -32,7 +36,11 @@ export function tokenGetter() {
     AboutComponent,
     NavbarComponent,
     NavButtonComponent,
-    HeaderComponent
+    HeaderComponent,
+    SidenavComponent,
+    ScrollToTopComponent,
+    NavbarVertComponent,
+    NavButtonVertComponent
   ],
   imports: [
     AppRoutingModule,

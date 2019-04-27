@@ -2,7 +2,6 @@
 
 header {
     box-sizing: border-box;
-    margin-bottom:1em;
     padding-left:20px;
     padding-right: 20px;
     padding-top: 0;
@@ -10,10 +9,7 @@ header {
     top: 0;
     width: 100vw;
     z-index: $header-z-index;
-
-    .menu-button {
-        margin-right: 5px;
-    }
+    height: 90px;
 }
 
 .hidden {

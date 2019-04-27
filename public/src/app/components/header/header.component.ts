@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { takeUntil } from 'rxjs/operators';
-
-import { combineLatest } from 'rxjs';
 
 import { Animations } from '@common/animations/animations';
 import { NavigationService } from '@app/services/navigation/navigation.service';
@@ -13,48 +11,28 @@ import { SubscribingComponent } from '@app/modules/shared/components/subscribing
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  animations: [Animations.elasticUpDown, Animations.slideUpDown]
+  animations: [Animations.elasticUpDown]
 })
 export class HeaderComponent extends SubscribingComponent implements OnInit {
-  dropdownNavActivated = false;
-  showingFullHeader = true;
+  dropdown_nav_activated = false;
   readonly Orientation = Orientation;
 
-  constructor(private readonly navigationService: NavigationService) {
+  constructor(private readonly navigation_service: NavigationService) {
     super();
    }
 
   ngOnInit() {
-      const scrollThreshold = 50;
-      this.navigationService.navClosings$.pipe(
+      this.navigation_service.navClosings$.pipe(
         takeUntil(this.destroy$)
       ).subscribe(() => this.closeDropdownNav());
-
-      combineLatest(this.navigationService.isShowingChart$, this.navigationService.scrollTop$)
-        .subscribe((vals) => {
-          const isShowingChart: boolean = vals[0];
-          const scrollTop: number = vals[1];
-          this.showingFullHeader = !isShowingChart || (scrollTop < scrollThreshold);
-        });
   }
 
   closeDropdownNav () {
-    this.dropdownNavActivated = false;
+    this.dropdown_nav_activated = false;
   }
 
-  scrollToTop () {
-    const scrollToTop = window.setInterval(() => {
-      const pos = window.pageYOffset;
-      if (pos > 0) {
-        window.scrollTo(0, pos - 20); // how far to scroll on each step
-      } else {
-          window.clearInterval(scrollToTop);
-      }
-    }, 16);
-}
-
   toggleDropdownNav () {
-    this.dropdownNavActivated = !this.dropdownNavActivated;
+    this.dropdown_nav_activated = !this.dropdown_nav_activated;
   }
 
 }

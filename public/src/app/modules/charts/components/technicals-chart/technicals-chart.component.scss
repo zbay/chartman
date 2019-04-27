@@ -10,14 +10,13 @@
     }
     
     svg.viz {
-      background-image: url("../../../../../assets/images/footer_lodyas.png") !important;
       display:block;
       margin: auto;
       width:98%;
       padding: 1em 0;
     }
     
-    .tooltip{
+    .tooltip {
       position:absolute;
       color:white;
       background-color:grey;
@@ -77,9 +76,9 @@
       justify-content: space-around;
       flex-wrap:wrap;
       margin:0 auto;
-      background-image: url("../../../../../assets/images/footer_lodyas.png");
       width:98%;
       height:10%;
+      border-bottom: 0;
     }
     #chart-header{
       text-align:center;
