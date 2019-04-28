@@ -1,3 +1,6 @@
-<nav>
-  sidenav works!
+<nav fxLayout="column">
+  <app-nav-button-vert *ngFor="let tab of tabs"
+  link="{{tab.path}}" textContent="{{tab.label}}"
+  equivalentLink="{{tab.equivalent_link}}">
+  </app-nav-button-vert>
 </nav>

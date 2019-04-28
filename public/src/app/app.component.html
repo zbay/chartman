@@ -2,7 +2,8 @@
   fxLayout="column" (scroll)="onScroll($event)">
   <app-header ></app-header>
   <div fxLayout="row" fxLayoutAlign="center stretch">
-    <app-sidenav></app-sidenav>
+    <!-- TODO: mobile version of sidenav outside document flow -->
+    <app-sidenav [@slideFadeInOutFromLeft]="should_display_sidenav"></app-sidenav>
     <main id="main-content" (click)="closeNavBar()">
       <router-outlet></router-outlet>
     </main>

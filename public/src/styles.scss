@@ -99,7 +99,7 @@ svg.viz {
 }
 
 .cdk-overlay-container {
-  z-index: $header-z-index + 1;
+  z-index: $header-z-index + 1 !important;
 }
 
 .fixed-position {
@@ -140,7 +140,4 @@ color: orange;
 
 app-sidenav {
   background-color: $bookend-background-color-light;
-  // position: sticky !important;
-  // top: 90px;
-  // height: 100%;
 }

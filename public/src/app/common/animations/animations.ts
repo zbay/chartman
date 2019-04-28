@@ -9,6 +9,11 @@ export const Animations = {
         transition('0 => 1', animate('200ms ease-in-out')),
         transition('1 => 0', animate('200ms ease-in-out'))
       ]),
+    slideFadeInOutFromLeft: trigger('slideFadeInOutFromLeft', [
+      state('0', style({ transform: 'translateX(-100%)', width: 0, opacity: 0})),
+      state('1', style({ transform: 'translateX(0)', width: '*', opacity: 1 })),
+      transition('* => *', animate('300ms ease-in-out'))
+    ]),
     elasticUpDown: trigger('elasticUpDown', [
         state('0', style({ height: 0, transform: 'scaleY(0)', opacity: 0 })),
         state('1', style({ height: '*', transform: 'scaleY(1)', opacity: 1 })),
