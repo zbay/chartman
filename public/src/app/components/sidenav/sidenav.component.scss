@@ -1,6 +1,13 @@
 nav {
     position: sticky;
     top: 0;
-    min-width: 200px;
-    max-width: 50%;
+    width: 200px !important;
+}
+@media only screen and (max-height: 400px) {
+    nav {
+      position: static !important;
+    }
+  }
+app-nav-button-vert {
+    width: 200px !important;
 }

@@ -2,7 +2,7 @@
   fxLayout="row wrap"
   fxLayoutAlign="end">
   <app-nav-button link="/admin" textContent="Admin"
-    [requireRole]="Role.ADMIN" equivalentLink="/admin/users">
+    [requireRole]="Role.ADMIN" equivalentPrefix="/admin">
   </app-nav-button>
   <app-nav-button link="/about" textContent="About">
   </app-nav-button>
@@ -12,9 +12,11 @@
   <app-nav-button link="/charting/stocks" textContent="Stocks"
     equivalentLink="/charting" [requireRole]="Role.FREE">
   </app-nav-button>
-  <app-nav-button link="/charting/currencies" textContent="Currencies">
+  <app-nav-button link="/charting/currencies" textContent="Currencies"
+  [requireRole]="Role.FREE">
   </app-nav-button>
-  <app-nav-button link="/account/manage" textContent="My Account">
+  <app-nav-button link="/account/manage" textContent="My Account"
+  [requireRole]="Role.FREE">
   </app-nav-button>
   <app-nav-button link="/logout" textContent="Log Out"
     [requireRole]="Role.FREE">

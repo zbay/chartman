@@ -11,8 +11,9 @@ export const Animations = {
       ]),
     slideFadeInOutFromLeft: trigger('slideFadeInOutFromLeft', [
       state('0', style({ transform: 'translateX(-100%)', width: 0, opacity: 0})),
-      state('1', style({ transform: 'translateX(0)', width: '*', opacity: 1 })),
-      transition('* => *', animate('300ms ease-in-out'))
+      state('1', style({ width: '*', opacity: 1 })),
+      transition('0 => 1', animate('300ms ease-in-out')),
+      transition('1 => 0', animate('300ms ease-in-out'))
     ]),
     elasticUpDown: trigger('elasticUpDown', [
         state('0', style({ height: 0, transform: 'scaleY(0)', opacity: 0 })),

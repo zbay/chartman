@@ -4,7 +4,8 @@
   || (requireRole && has_required_role)">
   <button mat-button
       [class.current]="(current_url$ | async) === link 
-        || (equivalentLink && ((current_url$ | async) === equivalentLink))">
+        || (equivalentLink && ((current_url$ | async) === equivalentLink))
+        || (equivalentPrefix && ((current_url$ | async).indexOf(equivalentPrefix) === 0))">
     {{textContent}}
   </button>
 </a>

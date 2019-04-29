@@ -26,6 +26,7 @@ export class NavButtonComponent extends SubscribingComponent implements OnInit, 
   NavbarLoadStatus: typeof NavbarLoadStatus = NavbarLoadStatus;
 
   @Input() equivalentLink: string;
+  @Input() equivalentPrefix: string;
   @Input() link: string;
   @Input() textContent: string;
   @Input() requireRole: Role;

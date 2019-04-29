@@ -12,7 +12,7 @@ import { SidenavTab } from './common/interfaces/sidenav-tab.interface';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [Animations.slideFadeInOutFromLeft]
+  animations: [Animations.slideFadeInOutFromLeft, Animations.fadeInOut]
 })
 export class AppComponent extends SubscribingComponent implements OnInit {
   should_display_sidenav = false;
@@ -25,7 +25,9 @@ export class AppComponent extends SubscribingComponent implements OnInit {
   ngOnInit () {
     this.sidenav_tab_service.tabs$.pipe(takeUntil(this.destroy$))
     .subscribe((tabs: SidenavTab[]) => {
-      this.should_display_sidenav = tabs.length > 0;
+      setTimeout(() => {
+        this.should_display_sidenav = tabs.length > 0;
+      }, 0);
     });
   }
 

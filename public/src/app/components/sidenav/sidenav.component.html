@@ -1,6 +1,7 @@
 <nav fxLayout="column">
   <app-nav-button-vert *ngFor="let tab of tabs"
   link="{{tab.path}}" textContent="{{tab.label}}"
+  icon="{{tab.icon}}"
   equivalentLink="{{tab.equivalent_link}}">
   </app-nav-button-vert>
 </nav>

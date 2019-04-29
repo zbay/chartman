@@ -1,4 +1,5 @@
 button {
+    font-size: 1em;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -6,15 +7,34 @@ button {
 
 a {
     text-decoration: none;
-    width: 100%;
+    width: 200px !important;
+}
+
+a button, a mat-icon {
+    color: silver;
 }
 
 a button {
-    color: silver;
     font-weight: bold;
     width: 100%;
 }
 
-.current {
+.pad-vert {
+    box-sizing: border-box;
+    height: 56px;
+}
+
+.current button, .current mat-icon {
     color: white !important;
+}
+
+.icon-box {
+    width: 30%;
+}
+
+.link-label {
+    width: 70%;
+    text-align: left;
+    white-space: initial;
+    word-wrap: break-word;
 }

@@ -105,6 +105,15 @@ svg.viz {
 .fixed-position {
   position: fixed;
 }
+
+.absolute-position {
+  position: absolute;
+}
+
+.sticky-position {
+  position: sticky;
+}
+
 .full-width {
   width: 100%;
 }
@@ -140,4 +149,12 @@ color: orange;
 
 app-sidenav {
   background-color: $bookend-background-color-light;
+}
+
+.action-button {
+  background-color: $accent;
+  z-index: $header-z-index + 1;
+  border: 1px solid white;
+  border-radius: 50%;
+  color: white;
 }

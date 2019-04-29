@@ -27,7 +27,7 @@ export class AdminComponent extends SubscribingComponent implements OnInit, OnDe
     {
       label: `Currencies`,
       path: `${ADMIN_PATH_PREFIX}${CURRENCIES_RELATIVE_PATH}`,
-      icon: `local_atm`
+      icon: `monetization_on`
     },
     {
       label: `Stocks`,

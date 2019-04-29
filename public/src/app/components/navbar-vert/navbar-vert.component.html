@@ -2,21 +2,29 @@
   fxLayout="column"
   class="chartman-theme">
   <app-nav-button-vert link="/admin" textContent="Admin"
-    [requireRole]="Role.ADMIN" equivalentLink="/admin/users">
+    icon="lock_open"
+    [requireRole]="Role.ADMIN" equivalentPrefix="/admin">
   </app-nav-button-vert>
-  <app-nav-button-vert link="/about" textContent="About">
+  <app-nav-button-vert link="/about" textContent="About" icon="help">
   </app-nav-button-vert>
   <app-nav-button-vert link="/login" textContent="Login"
+    icon="lock"
     [requireLoggedOut]="true" equivalentLink="/">
   </app-nav-button-vert>
   <app-nav-button-vert link="/charting/stocks" textContent="Stocks"
+    icon="work"
     equivalentLink="/charting" [requireRole]="Role.FREE">
   </app-nav-button-vert>
-  <app-nav-button-vert link="/charting/currencies" textContent="Currencies">
+  <app-nav-button-vert link="/charting/currencies" textContent="Currencies"
+  icon="monetization_on"
+  [requireRole]="Role.FREE">
   </app-nav-button-vert>
-  <app-nav-button-vert link="/account/manage" textContent="My Account">
+  <app-nav-button-vert link="/account/manage" textContent="My Account"
+  icon="assignment_ind"
+  [requireRole]="Role.FREE">
   </app-nav-button-vert>
   <app-nav-button-vert link="/logout" textContent="Log Out"
+    icon="exit_to_app"
     [requireRole]="Role.FREE">
   </app-nav-button-vert>
 </nav>

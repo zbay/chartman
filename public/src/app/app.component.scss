@@ -7,11 +7,19 @@ app-header {
 
 app-sidenav {
     position: sticky;
+    top: 0;
+    left: 0;
     color: white;
     font-weight: bold;
     z-index: $header-z-index;
     margin-top: 0;
 }
+
+@media only screen and (max-height: 400px) {
+    app-sidenav {
+      position: static !important;
+    }
+  }
 
 footer {
     min-height: 90px;
@@ -21,4 +29,16 @@ footer {
     margin-top: 1em;
     margin-bottom: 1em;
     width: 100%;
+}
+
+.sidenav-toggle-box {
+    z-index: $header-z-index + 1;
+    width: 0; 
+    height: 0; 
+    top: 0
+}
+
+.action-button {
+    margin-top: 5px;
+    margin-left: 5px;
 }

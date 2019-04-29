@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, DoCheck, ChangeDetectorRef } from '@angular/core';
-import { Role } from '@app/common/enums/role.enum';
+
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
+import { takeUntil } from 'rxjs/operators';
+
+import { AuthService } from '@app/services/auth/auth.service';
 import { NavbarLoadStatus } from '@app/enums/navbar-load-status';
 import { NavigationService } from '@app/services/navigation/navigation.service';
-import { AuthService } from '@app/services/auth/auth.service';
-import { takeUntil } from 'rxjs/operators';
+import { Role } from '@app/common/enums/role.enum';
+import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 
 @Component({
   selector: 'app-nav-button-vert',
@@ -22,6 +24,8 @@ export class NavButtonVertComponent extends SubscribingComponent implements OnIn
   NavbarLoadStatus: typeof NavbarLoadStatus = NavbarLoadStatus;
 
   @Input() equivalentLink: string;
+  @Input() equivalentPrefix: string;
+  @Input() icon: string;
   @Input() link: string;
   @Input() textContent: string;
   @Input() requireRole: Role;

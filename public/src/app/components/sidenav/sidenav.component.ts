@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { SidenavTab } from '@app/common/interfaces/sidenav-tab.interface';
 import { SidenavTabService } from '@app/services/sidenav-tab/sidenav-tab.service';
-import { ActivatedRoute } from '@angular/router';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 import { takeUntil } from 'rxjs/operators';
 

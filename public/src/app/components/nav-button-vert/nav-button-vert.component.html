@@ -1,11 +1,19 @@
 <a [routerLink]="link" (click)="closeNavBar()"
-*ngIf=" (requireLoggedOut && !(logged_in$ | async)) 
-  || (!requireRole && !requireLoggedOut)
-  || (requireRole && has_required_role)">
-  <button mat-button
-      [class.current]="(current_url$ | async) === link 
-        || (equivalentLink && ((current_url$ | async) === equivalentLink))">
-    {{textContent}}
+    *ngIf=" (requireLoggedOut && !(logged_in$ | async)) 
+      || (!requireRole && !requireLoggedOut)
+      || (requireRole && has_required_role)"
+    [class.current]="(current_url$ | async) === link 
+      || (equivalentLink && ((current_url$ | async) === equivalentLink))
+      || (equivalentPrefix && ((current_url$ | async).indexOf(equivalentPrefix) === 0))">
+  <button mat-button [class.pad-vert]="!!icon">
+    <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div *ngIf="icon" fxLayout="row" fxLayoutAlign="center" class="icon-box">
+            <mat-icon>{{ icon }}</mat-icon>
+        </div>
+        <div class="link-label">
+          {{textContent}}
+        </div>
+    </div>
   </button>
 </a>
    
