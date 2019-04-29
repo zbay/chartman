@@ -26,23 +26,23 @@
     "@nestjs/jwt": "^6.0.0",
     "@nestjs/platform-express": "^6.1.1",
     "@nestjs/swagger": "^3.0.2",
-    "aws-sdk": "^2.437.0",
+    "aws-sdk": "^2.444.0",
     "bcrypt": "^3.0.6",
     "class-sanitizer": "0.0.5",
     "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
     "custom-env": "^1.0.0",
-    "express-rate-limit": "^3.4.0",
+    "express-rate-limit": "^3.4.1",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
     "morgan": "^1.9.1",
     "node-cron": "^2.0.3",
-    "pg": "^7.9.0",
+    "pg": "^7.10.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
-    "rxjs": "^6.2.2",
+    "rxjs": "^6.5.1",
     "swagger-ui-express": "^4.0.2",
-    "typescript": "^3.4.3"
+    "typescript": "^3.4.5"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.1.1",
@@ -51,7 +51,7 @@
     "@types/jest": "^24.0.11",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/jwt-decode": "^2.2.1",
-    "@types/node": "^10.14.4",
+    "@types/node": "^10.14.6",
     "@types/node-cron": "^2.0.2",
     "@types/pg": "^7.4.14",
     "@types/supertest": "^2.0.5",
@@ -60,10 +60,10 @@
     "prettier": "^1.17.0",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.2",
-    "ts-loader": "^5.3.3",
+    "ts-loader": "^5.4.4",
     "ts-node": "^8.1.0",
     "tsconfig-paths": "^3.8.0",
-    "tslint": "^5.15.0"
+    "tslint": "^5.16.0"
   },
   "jest": {
     "moduleFileExtensions": [
