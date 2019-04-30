@@ -1,6 +1,15 @@
 <button *ngIf="passed_scroll_threshold"
   [@fadeInOut]
-  class="action-button fixed-position"
+  class="action-button fixed-position scroll-button"
   (click)="scrollToTop()">
   <mat-icon color="primary">arrow_upward</mat-icon>
 </button>
+<button *ngIf="passed_scroll_threshold"
+  [@fadeInOut]
+  class="action-button fixed-position top-nav-button"
+  [matMenuTriggerFor]="menu">
+  <mat-icon color="primary">more_horiz</mat-icon>
+</button>
+<mat-menu #menu="matMenu" fxHide.gt-md>
+  <app-navbar-vert></app-navbar-vert>
+</mat-menu>
