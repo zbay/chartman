@@ -5,9 +5,18 @@ nav {
 }
 @media only screen and (max-height: 400px) {
     nav {
-      position: static !important;
+      position: static !important; // easiest way to allow scrolling on small screen
     }
   }
 app-nav-button-vert {
     width: 200px !important;
+}
+
+.nav-label {
+  padding-top: 5px;
+  padding-bottom: 5px; 
+  border-top: 2px solid silver; 
+  border-bottom: 2px solid silver;
+  color: silver;
+  margin-top: 0;
 }

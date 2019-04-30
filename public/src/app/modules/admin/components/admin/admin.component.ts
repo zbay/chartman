@@ -47,10 +47,11 @@ export class AdminComponent extends SubscribingComponent implements OnInit, OnDe
 
   ngOnInit() {
     this.sidenav_tab_service.setTabs(this.sidenav_tabs);
+    this.sidenav_tab_service.setTitle(`Admin pages`);
   }
 
   ngOnDestroy() {
-    this.sidenav_tab_service.resetTabs();
+    this.sidenav_tab_service.resetSidenav();
   }
 
 }

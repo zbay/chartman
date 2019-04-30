@@ -4,6 +4,7 @@ import { SidenavTab } from '@app/common/interfaces/sidenav-tab.interface';
 import { SidenavTabService } from '@app/services/sidenav-tab/sidenav-tab.service';
 import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
 import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
@@ -12,9 +13,11 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class SidenavComponent extends SubscribingComponent implements OnInit {
   tabs: SidenavTab[] = [];
+  title$: BehaviorSubject<string>;
 
   constructor(private readonly sidenav_tab_service: SidenavTabService) {
       super();
+      this.title$ = this.sidenav_tab_service.title$;
   }
 
   ngOnInit() {

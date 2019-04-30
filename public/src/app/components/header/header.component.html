@@ -5,6 +5,7 @@ fxLayout="column" fxLayoutAlign="center">
       <div fxLayoutAlign="center center" class="dropdownToggle" fxHide.gt-md>
         <button mat-icon-button 
             class="menu-button"
+            #trigger
             [matMenuTriggerFor]="menu">
           <mat-icon>dehaze</mat-icon>
         </button>
@@ -12,6 +13,6 @@ fxLayout="column" fxLayoutAlign="center">
       <app-navbar fxHide.lt-lg></app-navbar>
   </div>
 </header>
-<mat-menu #menu="matMenu" fxHide.gt-md>
+<mat-menu #menu="matMenu">
   <app-navbar-vert fxHide.gt-md></app-navbar-vert>
 </mat-menu>

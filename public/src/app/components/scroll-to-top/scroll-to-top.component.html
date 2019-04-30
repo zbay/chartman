@@ -10,6 +10,7 @@
   [matMenuTriggerFor]="menu">
   <mat-icon color="primary">more_horiz</mat-icon>
 </button>
-<mat-menu #menu="matMenu" fxHide.gt-md>
-  <app-navbar-vert></app-navbar-vert>
+<div style="display: none" #trigger></div>
+<mat-menu #menu="matMenu">
+  <app-navbar-vert fxHide.gt-md></app-navbar-vert>
 </mat-menu>

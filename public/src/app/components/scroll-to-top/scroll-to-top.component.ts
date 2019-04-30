@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { Animations } from '@app/common/animations/animations';
 import { NavigationService } from '@app/services/navigation/navigation.service';
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
+import { takeUntil } from 'rxjs/operators';
+import { SubscribingComponent } from '@app/modules/shared/components/subscribing/subscribing.component';
+import { MatMenuTrigger } from '@angular/material';
 
 @Component({
   selector: 'app-scroll-to-top',
@@ -9,16 +13,27 @@ import { NavigationService } from '@app/services/navigation/navigation.service';
   styleUrls: ['./scroll-to-top.component.scss'],
   animations: [Animations.fadeInOut]
 })
-export class ScrollToTopComponent implements OnInit {
+export class ScrollToTopComponent extends SubscribingComponent implements OnInit {
   passed_scroll_threshold = false;
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
-  constructor(private readonly navigation_service: NavigationService) { }
+  constructor(private readonly navigation_service: NavigationService,
+    private readonly media_observer: MediaObserver) {
+      super();
+    }
 
   ngOnInit() {
     const scroll_threshold = 50;
     this.navigation_service.scrollTop$
     .subscribe((scroll_val: number) => {
       this.passed_scroll_threshold = scroll_val > scroll_threshold;
+    });
+
+    this.media_observer.media$.pipe(takeUntil(this.destroy$))
+    .subscribe((change: MediaChange) => {
+      if (change.mqAlias !== `xs` && change.mqAlias !== `sm`) {
+        this.trigger.closeMenu();
+      }
     });
   }
 

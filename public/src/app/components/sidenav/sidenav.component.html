@@ -1,4 +1,5 @@
 <nav fxLayout="column">
+  <div class="nav-label fancy-font">{{title$ | async}}</div>
   <app-nav-button-vert *ngFor="let tab of tabs"
   link="{{tab.path}}" textContent="{{tab.label}}"
   icon="{{tab.icon}}"
